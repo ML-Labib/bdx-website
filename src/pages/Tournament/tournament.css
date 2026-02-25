@@ -1,0 +1,7 @@
+.tournament-page {
+    margin: 0;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

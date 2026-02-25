@@ -1,0 +1,100 @@
+/* 1. The Main Wrapper */
+.subheader-wrapper {
+    position: relative;
+    /* Establish context for absolute children */
+    width: 100%;
+    height: 192px;
+    /* Fixed height per your design */
+    display: flex;
+    /* Aligns the two bg halves side-by-side */
+    overflow: hidden;
+    /* Cuts off any zoom overflow */
+}
+
+/* 2. Common styles for both background halves */
+.bg-half {
+    width: 50%;
+    /* Each takes exactly half width */
+    height: 100%;
+
+    /* CRITICAL: "cover" zooms the image to fill space without stretching */
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    /* OPTIONAL: Transition for smooth resizing effect 
+    transition: background-image 0.3s ease-in-out;
+    */
+}
+
+/* 3. Specifics for Left and Right */
+.bg-left {
+    /* Anchor to the right (the center of screen) so the middle content is visible */
+    background-position: left bottom;
+    /* Fallback color */
+    background-color: #052ae4;
+    /* Default Image (Mobile) */
+    background-image: url('../assets/subheader/left-1024.jpg');
+}
+
+.bg-right {
+    /* Anchor to the left (the center of screen) */
+    background-position: right bottom;
+    background-color: #5500b6;
+    /* Default Image (Mobile) */
+    background-image: url('../assets/subheader/right-1024.jpg');
+}
+
+/* 4. The Content Overlay */
+.subheader-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Center the text */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Ensure text sits ON TOP of the backgrounds */
+    z-index: 10;
+}
+
+.subheader-content h1 {
+    /* Text Styles */
+    font-size: 3rem;
+    font-weight: bold;
+    color: black;
+    text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+    .subheader-wrapper {
+        height: 184px;
+    }
+
+    .bg-left {
+        background-image: url('../assets/subheader/left-768.jpg');
+    }
+
+    .bg-right {
+        background-image: url('../assets/subheader/right-768.jpg');
+    }
+    .subheader-content h1 {
+    /* Text Styles */
+    font-size: 2rem;
+
+}
+}
+
+/* Desktop (e.g., 1080p / 4k) */
+@media (min-width: 1024px) {
+    .bg-left {
+        background-image: url('../assets/subheader/left-2560.jpg');
+    }
+
+    .bg-right {
+        background-image: url('../assets/subheader/right-2560.jpg');
+    }
+}

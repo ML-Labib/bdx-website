@@ -2,7 +2,7 @@
     font-family: Roboto, Avenir, Helvetica, Arial, sans-serif;
     color-scheme: light dark;
     --primary-color: rgba(239, 249, 35, 1);
-    --color: rgb(0, 0, 0);
+    --text-color: rgb(0, 0, 0);
     --background-color: #ffffff;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -22,6 +22,7 @@ body {
     min-height: 100vh;
     padding-top: 80px;
     background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 
