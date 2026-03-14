@@ -8,50 +8,13 @@
 
 }
 
-
-/* --- Filter Bar Styles --- */
-.filter-bar {
-    display: flex;
-    align-items: center;
-
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.select-wrapper select {
-    font-size: 1.2rem;
-    font-weight: bold;
-    border: none;
-    border-bottom: 2px solid black;
-    padding: 5px 20px 5px 0;
-    outline: none;
-    background: transparent;
-    cursor: pointer;
-}
-
-.refresh-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    background: white;
-    cursor: pointer;
-    font-size: 1.2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: background 0.2s;
-}
-
-.refresh-btn:hover {
-    background: #040000;
-}
-
 /* --- Table Styles --- */
 .t-table {
     width: 100%;
+    font-size: 1.2rem;
     border-collapse: collapse;
-    text-align: left;
+    text-align: center;
+    margin: 30px 0;
 }
 
 /* Header Styles */
@@ -65,42 +28,13 @@
     font-size: 0.9rem;
     padding: 18px 20px;
     text-transform: uppercase;
+    text-align: center;
 }
 
 .t-table thead th.th-left {
-    text-align: left;
+    text-align: center;
     padding-left: 40px;
     /* Indent for the first column */
-}
-
-/* Sorting Arrows Styles */
-.th-sortable {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-}
-
-.sort-arrows {
-    display: flex;
-    flex-direction: column;
-}
-
-.arrow-up,
-.arrow-down {
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-}
-
-.arrow-up {
-    border-bottom: 4px solid #666;
-    margin-bottom: 2px;
-}
-
-.arrow-down {
-    border-top: 4px solid #666;
 }
 
 
@@ -108,7 +42,7 @@
 .t-table tbody tr {
     border-bottom: 1px solid #e0e0e0;
     border-left: 1px solid #e0e0e0;
-    border-rightgit : 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
 
 
     background-color: white;
@@ -124,6 +58,7 @@
 /* Column 1: Logo & Name */
 .td-tournament {
     width: 40%;
+    text-align: left;
 }
 
 .t-info {
@@ -139,7 +74,7 @@
 }
 
 .t-name {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 800;
     /* Extra bold */
     text-transform: uppercase;
@@ -152,13 +87,14 @@
     width: 20%;
     font-size: 0.95rem;
     white-space: pre-line;
+
     /* Allows the \n to work */
 }
 
 /* Column 4: Status Badge */
 .td-status {
     width: 15%;
-    text-align: right;
+    text-align: center;
 }
 
 .status-badge {
@@ -181,12 +117,114 @@
 }
 
 .status-badge.live {
-    background-color: #E6F835;
+    background-color: #ff0000;
     /* Yellow for Live */
     color: black;
 }
 
 .status-badge.upcoming {
-    background-color: black;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.show-more button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.show-more-btn {
+    width: 100%;
+    height: 38px;
+    background-color: rgb(239, 238, 238);
+    color: var(--text-color);
+    margin-top: 30px;
+    margin-bottom: 40px;
+    border: none;
+}
+
+.mobile-view {
+    display: none;
+}
+
+
+
+@media (max-width: 1024px) {
+    .t-name {
+        font-size: 1rem;
+    }
+
+    .mobile-view {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-container {
+        padding: 0px 16px;
+    }
+
+    .pc-view {
+        display: none;
+    }
+
+    .mobile-view {
+        display: block;
+        width: 100%;
+    }
+    .t-table {
+        font-size: 16px;
+    }
+    .t-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+    .t-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .row-details {
+        display: flex;
+        align-items: start;
+        width: 100%;
+        margin: 24px 15px 24px 15px;
+        justify-content: space-evenly;
+        font-size: 13px;
+    
+    }
+
+    .label {
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-right: 8px;
+        color: var(--text-faded-color);
+    }
+    .price-details {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        margin: 0 20px 0 20px;
+        gap: 10px;
+        color: var(--text-color);
+    
+    }
+    .schedule-details {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        margin: 0px 20px 0px 20px;
+        gap: 10px;
+    }
+
+    .value {
+        align-items: start;
+    }
+
 }
