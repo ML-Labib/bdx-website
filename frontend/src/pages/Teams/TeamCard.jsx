@@ -1,7 +1,7 @@
 import React from "react";
 import "./teamCard.css";
 
-export function TeamCard ({ team }){
+export function TeamCard({ team }) {
     return (
         <div className="team-card">
             <div className="team-card-image">
@@ -9,7 +9,11 @@ export function TeamCard ({ team }){
             </div>
 
             <div className="team-card-content">
-                <h3>{team.name}</h3>
+                <h3>
+                    <span className="team-name">
+                        {team.name}
+                    </span>
+                </h3>
                 <p>{team.region}</p>
             </div>
         </div>

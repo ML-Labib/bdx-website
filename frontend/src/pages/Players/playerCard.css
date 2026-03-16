@@ -1,0 +1,124 @@
+.player-card {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 395px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.player-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+.player-card-image {
+
+    background-image: url("../../assets/teamCardBg.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    border-top: 1px solid rgb(230, 230, 230);
+    border-left: 1px solid rgb(230, 230, 230);
+    border-right: 1px solid rgb(230, 230, 230);
+}
+
+.player-card-image img {
+    margin-top: 7px;
+    max-width: 204px;
+    height: auto;
+
+
+}
+
+.player-card-content {
+    background: #ffffff;
+    position: relative;
+    padding: 32px;
+    border: 1px solid rgb(230, 230, 230);
+    height: 100%;
+}
+
+
+.team-logo {
+    position: absolute;
+    top: -20px;
+    right: 32px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgb(230, 230, 230);
+}
+
+.team-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.player-info {
+    margin-top: 24px;
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+.player-name {
+    display: inline-block;
+    position: relative;
+
+}
+
+.player-name::after {
+    content: "";
+    width: 0%;
+    display: block;
+    position: absolute;
+    height: 4px;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+
+}
+.player-card:hover .player-name::after {
+    width: 100%;
+}
+
+.player-team-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 0px;
+    border-top: 1px solid rgb(230, 230, 230);
+}
+
+.player-team-label {
+    font-size: 14px;
+    color: var(--text-faded-color);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.player-team{
+    font-size: 14px;
+    color: var(--text-color);
+    font-weight: 700;
+    text-align: end;
+}
+
+.player-nationality-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0px;
+    border-top: 1px solid rgb(230, 230, 230);
+    border-bottom: 1px solid rgb(230, 230, 230);
+}

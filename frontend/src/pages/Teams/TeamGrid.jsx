@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Header } from "../../components/Header"
 import { SubHeader } from "../../components/SubHeader"
 import { TeamCard } from "./TeamCard";
-import './TeamGrid.css'
+import './teamGrid.css'
 
 const teamsData = [
     {
@@ -15,13 +15,13 @@ const teamsData = [
         id: 2,
         name: "010 Esports",
         region: "EMEA",
-        logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
+        logo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-ZFORCE-TPNG.webp",
     },
     {
         id: 3,
         name: "17Gaming",
         region: "ASIA",
-        logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
+        logo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-VIPER.webp",
     },
     {
         id: 4,
@@ -109,7 +109,6 @@ export function TeamGrid() {
             <SubHeader subTitle="TEAMS" />
             <section className="team-page">
                 
-
                 <div className="team-filters">
                     <div className="search-wrap">
                         <div className="search-group">
@@ -120,7 +119,7 @@ export function TeamGrid() {
                                 onChange={(e) => setSearchTerm(e.target.value)}
 
                             />
-                            <span class="material-symbols-outlined">
+                            <span className="material-symbols-outlined">
                                 search
                             </span>
                         </div>
@@ -140,7 +139,7 @@ export function TeamGrid() {
                 </div>
                 <div className="show-more">
                     <button className="show-more-btn">
-                        <span class="material-symbols-outlined">
+                        <span className="material-symbols-outlined">
                             keyboard_arrow_down
                         </span>
                         <span>

@@ -4,6 +4,7 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     height: 296px;
     width: 100%;
+    cursor: pointer;
 }
 
 .team-card:hover {
@@ -14,13 +15,17 @@
 .team-card-image {
 
     background-image: url("../../assets/teamCardBg.png");
-
     background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
     height: 188px;
+    border-top: 1px solid rgb(230, 230, 230);
+    border-left: 1px solid rgb(230, 230, 230);
+    border-right: 1px solid rgb(230, 230, 230);
 }
 
 .team-card-image img {
@@ -32,12 +37,31 @@
 .team-card-content {
     display: flex;
     flex-direction: column;
-    background: #efefef;
+    background: #ffffff;
     text-align: center;
     justify-content: center;
     padding: 22px 12px 18px;
-    border-top: 1px solid #d7d7d7;
+    border: 1px solid rgb(230, 230, 230);
     height: 100%;
+}
+
+.team-name {
+    position: relative;
+    display: inline-block;
+}
+
+.team-name::after {
+    content: "";
+    width: 0%;
+    display: block;
+    position: absolute;
+    height: 4px;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.team-card:hover .team-name::after {
+    width: 100%;
 }
 
 .team-card-content h3 {

@@ -28,7 +28,7 @@ export function Header() {
 
     useEffect(() => {
         if (!isOpen || window.innerWidth >= 1024) return;
-        
+
         const handleClickOutside = (e) => {
             if (e.target.closest('.header') === null) {
                 setIsOpen(false);
@@ -48,15 +48,16 @@ export function Header() {
     return (
         <nav className="header">
             <div className="left-section">
-                <div className="all-logo-container">
-                    <img src={bdxTextLogo} alt="BD-Extreme" className="bdx-text-logo" />
-                    <img src={bdxTextShortLogo} alt="BD-Extreme" className="bdx-short-text-logo" />
-                    <div className="logo-container">
-                        <img src={bdxLogo} alt="" className="bdx-logo" />
+                <NavLink to="/" className="logo-link">
+                    <div className="all-logo-container">
+                        <img src={bdxTextLogo} alt="BD-Extreme" className="bdx-text-logo" />
+                        <img src={bdxTextShortLogo} alt="BD-Extreme" className="bdx-short-text-logo" />
+                        <div className="logo-container">
+                            <img src={bdxLogo} alt="" className="bdx-logo" />
+                        </div>
                     </div>
+                </NavLink>
 
-
-                </div>
                 {!isOpen ? (
                     <div className="menu" onClick={() => setIsOpen(true)}>
                         <span className="material-symbols-outlined">menu</span>
@@ -71,10 +72,12 @@ export function Header() {
 
             <div className="right-section">
                 <div className="links">
-                    <NavLink to="/" className="s-links"><span className="link-text">HOME</span></NavLink>
+                
                     <NavLink to="/tournament" className="s-links"><span className="link-text">TOURNAMENT</span></NavLink>
                     <NavLink to="/teams" className="s-links"><span className="link-text">TEAMS</span></NavLink>
                     <NavLink to="/players" className="s-links"><span className="link-text">PLAYERS</span></NavLink>
+                    <NavLink to="/about-us" className="s-links"><span className="link-text">ABOUT US</span></NavLink>
+
                 </div>
                 <div className="login-container">
                     <a href="#" className="l-links">
@@ -85,15 +88,16 @@ export function Header() {
             </div>
 
 
-                <div className={`side-bar ${isOpen ? "open" : ""}`} onClick={handleSidebarClick}>
-                    <div className="side-bar-links">
-                        <button href="#" >Log-in</button>
-                        <NavLink to="/" className="side-bar-link"><span >HOME</span></NavLink>
-                        <NavLink to="/tournament" className="side-bar-link"><span >TOURNAMENT</span></NavLink>
-                        <NavLink to="/teams" className="side-bar-link"><span >TEAMS</span></NavLink>
-                        <NavLink to="/players" className="side-bar-link"><span >PLAYERS</span></NavLink>
-                    </div>
+            <div className={`side-bar ${isOpen ? "open" : ""}`} onClick={handleSidebarClick}>
+                <div className="side-bar-links">
+                    <button href="#" >Log-in</button>
+    
+                    <NavLink to="/tournament" className="side-bar-link"><span >TOURNAMENT</span></NavLink>
+                    <NavLink to="/teams" className="side-bar-link"><span >TEAMS</span></NavLink>
+                    <NavLink to="/players" className="side-bar-link"><span >PLAYERS</span></NavLink>
+                    <NavLink to="/about-us" className="side-bar-link"><span >About us</span></NavLink>
                 </div>
+            </div>
 
         </nav>
     )

@@ -100,7 +100,7 @@ export function TournamentTable() {
 
             <div className="show-more">
                 <button className="show-more-btn">
-                    <span class="material-symbols-outlined">
+                    <span className="material-symbols-outlined">
                         keyboard_arrow_down
                     </span>
                     <span>

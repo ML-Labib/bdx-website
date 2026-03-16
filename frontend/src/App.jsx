@@ -2,7 +2,8 @@ import { Routes, Route } from "react-router";
 import { Header } from "./components/Header";
 import { Tournament } from "./pages/Tournament/Tournament";
 import { TeamGrid } from "./pages/Teams/TeamGrid";
-import { Players } from "./pages/Players/Players";
+import { PlayerGrid } from "./pages/Players/PlayerGrid";
+import { AboutUs } from "./pages/AboutUs/AboutUs";
 import './App.css'
 function App() {
 
@@ -13,7 +14,8 @@ function App() {
 		<Route path="/" element={<Header />} />
 		<Route path="/tournament" element={<Tournament />} />
 		<Route path="/teams" element={<TeamGrid />} />
-		<Route path="/players" element={<Players />} />
+		<Route path="/players" element={<PlayerGrid />} />
+		<Route path="/about-us" element={<AboutUs />} />
 		</ Routes>
 
 	)

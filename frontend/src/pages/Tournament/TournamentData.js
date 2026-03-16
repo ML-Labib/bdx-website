@@ -11,7 +11,7 @@ export const tournaments = [
   {
     id: 2,
     name: "PUBG GLOBAL CHAMPIONSHIP 2025",
-    logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
+    logo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-WFTW.webp",
     prize: "$1,500,000 + Pick'em",
     schedule: "2025-11-28\n2025-12-14",
     status: "LIVE"
@@ -19,7 +19,7 @@ export const tournaments = [
   {
     id: 3,
     name: "PUBG GLOBAL SERIES 10",
-    logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
+    logo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-VIPER.webp",
     prize: "300,000 USD",
     schedule: "2025-10-27\n2025-11-02",
     status: "ENDED"
@@ -27,7 +27,7 @@ export const tournaments = [
   {
     id: 4,
     name: "PUBG GLOBAL SERIES 10",
-    logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
+    logo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-ZFORCE-TPNG.webp",
     prize: "300,000 USD",
     schedule: "2025-10-27\n2025-11-02",
     status: "ENDED"
