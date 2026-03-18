@@ -79,6 +79,22 @@
     /* Extra bold */
     text-transform: uppercase;
     line-height: 1.2;
+    display: inline-block;
+    position: relative;
+}
+
+.t-name::after {
+    content: "";
+    width: 0%;
+    display: block;
+    position: absolute;
+    height: 4px;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.tr-tournament:hover .t-name::after {
+    width: 100%;
 }
 
 /* Column 2 & 3: Prize & Schedule */

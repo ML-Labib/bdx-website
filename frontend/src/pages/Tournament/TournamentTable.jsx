@@ -22,12 +22,14 @@ export function TournamentTable() {
                     </thead>
                     <tbody>
                         {tournaments.map((item) => (
-                            <tr key={item.id}>
+                            <tr key={item.id} className="tr-tournament">
                                 {/* Column 1: Logo + Text */}
                                 <td className="td-tournament">
                                     <div className="t-info">
                                         <img src={item.logo} alt="logo" className="t-logo" />
-                                        <span className="t-name">{item.name}</span>
+                                        <span className="t-name">
+                                            {item.name}
+                                        </span>
                                     </div>
                                 </td>
 

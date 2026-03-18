@@ -2,7 +2,7 @@
 export const tournaments = [
   {
     id: 1,
-    name: "PUBG PLAYERS MASTERS INVITATIONAL",
+    name: "Bangladesh Royale Championship Season 3",
     logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png", // Replace with actual logo URL
     prize: "200,000 USD",
     schedule: "2025-12-19\n2025-12-21",

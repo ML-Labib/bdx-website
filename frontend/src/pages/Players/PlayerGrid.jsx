@@ -6,9 +6,9 @@ import './playerGrid.css'
 const playersData = [
     {
         id: 1,
-        name: "04NB",
-        team: "Petrichor Road",
-        nationality: "China",
+        name: "SAiNT-ViLLAiN",
+        team: "BDX OBSIDIAN",
+        nationality: "Bangladesh",
         playerImage: "https://bd-extreme.com/wp-content/uploads/2025/09/Labib.png",
         teamLogo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-OBSIDIAN.webp"
     },
