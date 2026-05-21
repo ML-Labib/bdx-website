@@ -125,11 +125,11 @@
     font-size: 36px;
 }
 
-.login-container {
+.login-box {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+
     position: relative;
 }
 
@@ -284,7 +284,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    cursor: pointe color: var(--text-faded-color);
+    cursor: pointer;
+    color: var(--text-faded-color);
     transition: color 0.2s ease;
 }
 
@@ -381,7 +382,7 @@
     height: 100vh;
 }
 
-.sidebar-logout-btn {
+.side-bar-links .sidebar-logout-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -392,9 +393,10 @@
     margin-bottom: 40px;
     font-size: 16px;
     font-weight: 600;
+    color: white;
 }
 
-.side-bar-links a {
+.side-bar-links a{
     display: flex;
     flex-direction: column;
     text-decoration: none;
@@ -409,7 +411,7 @@
 
 .side-bar-links a.active {
     font-weight: 700;
-    color: black;
+    color: rgb(252, 252, 252);
 }
 
 

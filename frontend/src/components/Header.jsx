@@ -1,22 +1,57 @@
 import { useState, useEffect, useRef } from "react";
-import { NavLink, Link } from "react-router-dom"
+import { NavLink, Link } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 import "./header.css";
-import bdxLogo from "../assets/BDX_EXTREME.svg"
-import bdxTextLogo from "../assets/bd-extreme-text.svg"
-import bdxTextShortLogo from "../assets/bdx-text.svg"
+import bdxLogo from "../assets/BDX_EXTREME.svg";
+import bdxTextLogo from "../assets/bd-extreme-text.svg";
+import bdxTextShortLogo from "../assets/bdx-text.svg";
 
 export function Header() {
-    const user = { username: "Mahir Labib" }; // Placeholder for user authentication state
+    const { currentUser, logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [sidebarDropdownOpen, setSidebarDropdownOpen] = useState(false);
     const dropdownRef = useRef();
     const sidebarDropdownRef = useRef();
 
-    const handleLogout = () => {
-        // Implement logout functionality here
-        console.log("User logged out");
-    }
+    const handleLogout = async () => {
+        try {
+            await logout();
+            console.log("User logged out");
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        const mq = window.matchMedia('(min-width: 1025px)');
+        const handle = (e) => {
+            if (e.matches) setIsOpen(false);
+        };
+        // perform initial check asynchronously to avoid synchronous setState inside effect
+        const initTimeout = mq.matches ? setTimeout(() => setIsOpen(false), 0) : null;
+        if (mq.addEventListener) mq.addEventListener('change', handle);
+        else mq.addListener(handle);
+        return () => {
+            if (initTimeout) clearTimeout(initTimeout);
+            if (mq.removeEventListener) mq.removeEventListener('change', handle);
+            else mq.removeListener(handle);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!isOpen || window.innerWidth >= 1024) return;
+
+        const handleClickOutside = (e) => {
+            if (e.target.closest('.header') === null) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, [isOpen]);
 
     useEffect(() => {
         if (typeof window === "undefined") return;
@@ -106,8 +141,8 @@ export function Header() {
                     <NavLink to="/about-us" className="s-links"><span className="link-text">ABOUT US</span></NavLink>
 
                 </div>
-                <div className="login-container" ref={dropdownRef}>
-                    {user ? (
+                <div className="login-box" ref={dropdownRef}>
+                    {currentUser ? (
                         <>
                             <div className={`profile-btn-wrap ${dropdownOpen ? "active" : ""}`}>
                                 <button
@@ -115,12 +150,12 @@ export function Header() {
                                     onClick={() => setDropdownOpen(!dropdownOpen)}
                                 >
                                     <span className="material-symbols-outlined">account_circle</span>
-                                    <span className="username">{user.username}</span>
+                                    <span className="username">{currentUser.displayName || currentUser.email}</span>
                                     <span className={`material-symbols-outlined arrow ${dropdownOpen ? "open" : ""} `}>
                                         arrow_drop_down
                                     </span>
                                 </button>
-                            </ div>
+                            </div>
 
                             {dropdownOpen && (
                                 <div className="dropdown">
@@ -137,10 +172,10 @@ export function Header() {
                         </>
 
                     ) : (
-                        <a href="#" className="l-links">
+                        <NavLink to="/login" className="l-links">
                             <span className="material-symbols-outlined">account_circle</span>
                             Log-in
-                        </a>
+                        </NavLink>
                     )}
                 </div>
             </div>
@@ -149,7 +184,7 @@ export function Header() {
             <div className={`side-bar ${isOpen ? "open" : ""}`} onClick={handleSidebarClick}>
                 <div className="side-bar-links">
                     <div className="sidebar-login-container" ref={sidebarDropdownRef}>
-                        {user ? (
+                        {currentUser ? (
                             <>
                                 <div className={`sidebar-profile-btn-wrap ${sidebarDropdownOpen ? "active" : ""}`}>
                                     <button
@@ -157,7 +192,7 @@ export function Header() {
                                         onClick={() => setSidebarDropdownOpen(!sidebarDropdownOpen)}
                                     >
                                         <span className="material-symbols-outlined">account_circle</span>
-                                        <span className="username">{user.username}</span>
+                                        <span className="username">{currentUser.displayName || currentUser.email}</span>
                                         <span className={`material-symbols-outlined arrow ${sidebarDropdownOpen ? "open" : ""} `}>
                                             arrow_drop_down
                                         </span>
@@ -177,9 +212,9 @@ export function Header() {
                             </>
 
                         ) : (
-                            <button className="sidebar-logout-btn">
+                            <NavLink to="/login" className="sidebar-logout-btn">
                                 Log-in
-                            </button>
+                            </NavLink>
                         )}
                     </div>
 

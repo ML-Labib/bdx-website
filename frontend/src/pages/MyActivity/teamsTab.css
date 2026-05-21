@@ -1,0 +1,330 @@
+.team-wrap {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.team-info {
+    background-image: url("/src/assets/profileBG.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    max-width: 100%;
+    min-height: 300px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    flex-grow: 1;
+    align-self: stretch;
+    box-sizing: border-box;
+    padding: 64px;
+    gap: clamp(12px, 2vw, 50px);
+}
+
+.team-edit-icon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.team-logo-wrap {
+    position: relative;
+    cursor: pointer;
+}
+
+.team-logo-wrap img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.logo-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    opacity: 1;
+    pointer-events: none;
+}
+
+.team-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.teamNameInput {
+    font-size: 24px;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #767676;
+    background: rgba(30, 30, 30, 0.8);
+    color: #fff;
+}
+
+.team-edit-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+
+.team-logo-wrap {
+    background-image: url("/src/assets/teamCardBg.png");
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50cap;
+    width: 200px;
+    height: 200px;
+    margin-right: 36px;
+
+}
+
+.team-logo-wrap img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+
+}
+
+.teamName {
+    font-size: 24px;
+    color: white;
+    font-weight: 700;
+}
+
+.team-container {
+    width: 100%;
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.team-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.team-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    background: #242526;
+    color: white;
+    border: 1px solid #3f3f3f;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #3f3f3f;
+}
+
+.btn.secondary {
+    background: #555;
+}
+
+.btn.danger {
+    background: #b7282f;
+}
+
+.btn.small {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+}
+
+.team-edit-panel,
+.team-create-panel {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 14px;
+    border-radius: 12px;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.team-edit-panel h3,
+.members-section h2,
+.add-member-form h3 {
+    margin: 0;
+    color: white;
+}
+
+.team-edit-panel label,
+.add-member-form input,
+.team-create-panel input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: #fff;
+}
+
+.team-edit-panel input,
+.add-member-form input,
+.team-create-panel input {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #aaa;
+    background: #1f1f21;
+    color: #fff;
+}
+
+.edit-buttons,
+.create-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.members-section {
+    margin-top: 24px;
+}
+
+.member-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.member-card-square,
+.add-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #1b1c20;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 14px;
+    min-height: 250px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.member-card-square {
+    cursor: default;
+}
+
+.add-card {
+    cursor: pointer;
+    justify-content: center;
+    color: #ddd;
+    border: 2px dashed #555;
+}
+
+.add-card .add-icon {
+    font-size: 4rem;
+    line-height: 1;
+}
+
+.member-card-square img,
+.member-avatar-wrap img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.member-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: #fff;
+}
+
+.member-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+}
+
+.member-avatar-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 220px;
+    cursor: pointer;
+}
+
+.member-avatar-wrap .logo-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.member-avatar-wrap:hover .logo-overlay {
+    opacity: 1;
+}
+
+.add-member-form,
+.team-create-panel {
+    margin-top: 16px;
+    display: grid;
+    gap: 8px;
+}
+
+.add-member-form.card-form {
+    background: rgba(8, 6, 9, 0.7);
+    border: 1px solid #444;
+    padding: 14px;
+    border-radius: 12px;
+}
+
+.add-member-form.card-form input,
+.team-create-panel input,
+.teamNameInput,
+.team-edit-panel input {
+    width: 100%;
+}
+
+.no-team-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px;
+    color: #fff;
+    gap: 16px;
+}
