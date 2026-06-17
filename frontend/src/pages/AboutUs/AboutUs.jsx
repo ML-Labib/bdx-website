@@ -1,7 +1,7 @@
 import { Header } from "../../components/Header"
 import { SubHeader } from "../../components/SubHeader"
 
-import "./AboutUs.css";
+import "./aboutUs.css";
 
 
 export function AboutUs() {

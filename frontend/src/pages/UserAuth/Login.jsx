@@ -1,7 +1,8 @@
 import React from 'react';
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { auth, googleProvider } from "./firebase";
+import { AUTH_LOGIN_TIMESTAMP_KEY } from '../../components/authConstants';
 import './login.css';
 
 const Login = () => {
@@ -13,7 +14,9 @@ const Login = () => {
 
     const signInWithGoogle = async () => {
         try {
+            await setPersistence(auth, browserLocalPersistence);
             const result = await signInWithPopup(auth, googleProvider);
+            localStorage.setItem(AUTH_LOGIN_TIMESTAMP_KEY, Date.now().toString());
             console.log("User Info:", result.user);
             navigate(from, { replace: true });
         } catch (error) {

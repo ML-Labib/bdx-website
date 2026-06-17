@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Link } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "./useAuth.jsx";
 import "./header.css";
 import bdxLogo from "../assets/BDX_EXTREME.svg";
 import bdxTextLogo from "../assets/bd-extreme-text.svg";
