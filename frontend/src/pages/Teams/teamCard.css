@@ -45,12 +45,13 @@
     height: 100%;
 }
 
-.team-name {
+.team-card .team-name {
     position: relative;
     display: inline-block;
+    color: black;
 }
 
-.team-name::after {
+.team-card .team-name::after {
     content: "";
     width: 0%;
     display: block;

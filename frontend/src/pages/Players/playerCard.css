@@ -71,9 +71,11 @@
 }
 
 
-.player-name {
+.player-name-wrap .player-name {
     display: inline-block;
     position: relative;
+    color: black;
+    font-size: 1.2rem;
 
 }
 

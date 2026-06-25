@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./teamCard.css";
 
 export function TeamCard({ team }) {
@@ -10,9 +11,9 @@ export function TeamCard({ team }) {
 
             <div className="team-card-content">
                 <h3>
-                    <span className="team-name">
-                        {team.name}
-                    </span>
+                    <Link to="/team-info">
+                        <span className="team-name">{team.name}</span>
+                    </Link>
                 </h3>
                 <p>{team.region}</p>
             </div>

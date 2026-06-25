@@ -25,7 +25,7 @@
     flex-grow: 1;
     align-self: stretch;
     box-sizing: border-box;
-    padding: 64px;
+    margin-top: 64px;
     gap: clamp(12px, 2vw, 50px);
 }
 

@@ -1,0 +1,270 @@
+
+.team-info-bar {
+    width: 100%;
+    height: 50px;
+    background: #292929;
+    
+}
+
+.team-info-bar-inner {
+    display: flex;
+    align-items: center;
+    height: 100%;
+
+}
+
+.team-info-bar-text {
+    background: #eff923;
+    color: #101010;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    height: 100%;
+    padding: 0 150px 0 16px;
+    
+
+}
+
+.team-info-container {
+    width: min(1400px, calc(100% - 32px));
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transform: translateY(-110px);
+    color: #fff;
+    background-color: var(--background-color);
+}
+
+.team-hero {
+    background-image: url("../../assets/profileBG.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    min-height: 360px;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.team-hero-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) 1fr;
+    gap: 32px;
+    align-items: center;
+    height: 100%;
+}
+
+.hero-logo-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.team-page-logo {
+    background-image: url("../../assets/logoBG.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 172px;
+    height: 172px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.28);
+}
+
+.hero-team-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.team-hero-details {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.team-name {
+    font-size: 26px;
+    line-height: 30px;
+    margin: 0;
+    color: white;
+}
+
+.team-description {
+    margin: 0;
+    max-width: 740px;
+    color: #e6e7ea;
+}
+
+.team-region {
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+
+
+.team-summary-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.stat-card {
+
+    padding: 18px 20px 18px 0px;
+    min-height: 96px;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 0.09em;
+    margin-bottom: 10px;
+}
+
+.stat-card>strong {
+    color: var(--primary-color);
+}
+
+.team-section {
+    padding: 32px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.12);
+}
+
+.players-section,
+.coach-section {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.section-header h2 {
+    font-family: "Roboto", sans-serif;
+    font-size: 1.75rem;
+    color: #000000;
+    letter-spacing: 0.02em;
+}
+
+.team-player-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.coach-section {
+        margin-top: 12px;
+        background-color: var(--background-color);
+        
+
+
+}
+
+.coach-card-list {
+    padding: 24px;;
+    background-color: white;
+}
+
+.coach-card {
+    display: flex;
+    align-items: center;
+    color: black;
+
+
+}
+
+
+
+.coach-card h3 {
+    font-size: 1.5rem;
+    padding-bottom: 4px;
+}
+
+.coach-card p {
+    color: #000000;
+}
+
+@media (max-width: 1024px) {
+    .team-hero-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .team-page-logo {
+    width: 136px;
+    height: 136px;
+    }
+
+    .team-hero-details {
+        align-items: center;
+    }
+
+    .team-summary-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .team-info-container {
+        margin: 0;
+        width: 100%;
+    }
+    .team-hero {
+        padding: 16px 0px;
+    }
+    .team-hero-inner {
+        width: 100%;
+    }
+    .team-section {
+        padding: 24px;
+    }
+
+    .team-summary-stats {
+        grid-template-columns: 1fr;
+        width: 100%;
+        padding: 24px;
+        
+
+    }
+    .team-name-wrapper{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px;
+        width: 100%;
+        border-top: 1px solid rgb(51, 51, 51);
+        border-bottom: 1px solid rgb(51, 51, 51);
+
+    }
+
+    .stat-card {
+        min-height: auto;
+        padding: 0;
+    }
+
+    .team-player-grid {
+        gap: 14px;
+    }
+}

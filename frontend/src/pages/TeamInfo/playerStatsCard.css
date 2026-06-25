@@ -1,0 +1,77 @@
+.player-stats-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.player-stats-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+}
+
+.player-stats-image {
+    background-image: url("../../assets/teamCardBg.png");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.player-stats-image img {
+    width: auto;
+    max-width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.player-stats-meta {
+    padding: 24px 22px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.player-stats-meta h3 {
+    margin: 0 0 10px;
+    font-size: 1.15rem;
+    color: #111;
+}
+
+.player-stats-meta p {
+    margin: 0;
+    color: #6f7280;
+    font-size: 0.95rem;
+}
+
+.player-stats-body {
+    display: grid;
+    gap: 12px;
+    padding: 18px 22px 24px;
+}
+
+.player-stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.player-stats-row span {
+    color: #858a96;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.player-stats-row strong {
+    color: #111;
+    font-size: 0.95rem;
+}

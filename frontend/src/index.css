@@ -3,7 +3,7 @@
     color-scheme: light dark;
     --primary-color: rgba(239, 249, 35, 1);
     --text-color: rgb(0, 0, 0);
-    --background-color: #ffffff;
+    --background-color: rgba(241, 241, 241, 1);
     --text-faded-color: rgba(181, 181, 181, 1);
     font-synthesis: none;
     text-rendering: optimizeLegibility;

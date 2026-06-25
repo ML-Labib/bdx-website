@@ -8,6 +8,8 @@ import { TeamGrid } from "./pages/Teams/TeamGrid";
 import { PlayerGrid } from "./pages/Players/PlayerGrid";
 import { AboutUs } from "./pages/AboutUs/AboutUs";
 import { MyActivity } from "./pages/MyActivity/MyActivity";
+import { TeamInfo } from "./pages/TeamInfo/TeamInfo";
+import { PlayerInfo } from "./pages/PlayerInfo/PlayerInfo";
 import Login from "./pages/UserAuth/Login";
 import './App.css'
 
@@ -65,6 +67,8 @@ function App() {
                     <Route path="/about-us" element={<AboutUs />} />
                     <Route path="/my-activity" element={<RequireAuth><MyActivity /></RequireAuth>} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/team-info" element={<TeamInfo />} />
+                    <Route path="/player-info" element={<PlayerInfo />} />
                 </Routes>
             </AuthProvider>
         </ErrorBoundary>
