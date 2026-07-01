@@ -4,6 +4,7 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     height: 395px;
     width: 100%;
+    /* max-width: 310px; */
     cursor: pointer;
 }
 
@@ -43,25 +44,6 @@
 }
 
 
-.team-logo {
-    position: absolute;
-    top: -20px;
-    right: 32px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgb(230, 230, 230);
-}
-
-.team-logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
 
 .person-info {
     margin-top: 24px;
@@ -76,6 +58,7 @@
     position: relative;
     color: black;
     font-size: 1.2rem;
+    text-transform: uppercase;
 
 }
 

@@ -9,19 +9,48 @@ export function AboutUs() {
     const leaderData = [
         {
             id: 1,
-            name: "SAiNT-ViLLAiN",
-            team: "BDX OBSIDIAN",
+            name: "MMM Showaib",
+            code: "DELTA [00]",
             nationality: "Bangladesh",
-            playerImage: "https://bd-extreme.com/wp-content/uploads/2025/09/Labib.png",
-            teamLogo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-OBSIDIAN.webp"
+            playerImage: "https://bd-extreme.com/wp-content/uploads/2025/09/PNG-300x300.png",
         },
         {
             id: 2,
-            name: "10trip",
-            team: "Happie SQUAD",
-            nationality: "Philippines",
+            name: "Priotosh",
+            code: "DELTA [99]",
+            nationality: "Bangladesh",
+            playerImage: "https://bd-extreme.com/wp-content/uploads/2025/09/Priotosh.png",
+        }
+    ]
+
+    const adminData = [
+        {
+            id: 1,
+            name: "ML Labib",
+            code: "-",
+            nationality: "Bangladesh",
             playerImage: "https://bd-extreme.com/wp-content/uploads/2025/09/Labib.png",
-            teamLogo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-OBSIDIAN.webp"
+        },
+        {
+            id: 2,
+            name: "Tami",
+            code: "-",
+            nationality: "Bangladesh",
+            playerImage: "https://bd-extreme.com/wp-content/uploads/2025/09/Prisoner-min.png",
+        },
+        {
+            id: 3,
+            name: "Ruhit",
+            code: "-",
+            nationality: "Bangladesh",
+            playerImage: "https://bd-extreme.com/wp-content/uploads/2025/09/Ruhit-min.png",
+        },
+        {
+            id: 4,
+            name: "Adib",
+            code: "-",
+            nationality: "Bangladesh",
+            playerImage: "https://bd-extreme.com/wp-content/uploads/2025/09/Adib-min.png",
         }
     ]
 
@@ -65,6 +94,12 @@ export function AboutUs() {
                         <path d="M24 0 8.79 16H.095L0 15.899 15.114 0H24Z" fill="#000" />
                     </svg>
                     <h2> Admins of BD-EXTREME</h2>
+
+                </div>
+                <div className="supreme-leaders-container">
+                    {adminData.map((player) => (
+                        <PersonCard key={player.id} player={player} />
+                    ))}
                 </div>
             </div>
         </>
