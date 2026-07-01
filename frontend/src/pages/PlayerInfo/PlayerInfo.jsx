@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Header } from "../../components/Header";
 import { SubHeader } from "../../components/SubHeader";
+import { Link } from "react-router-dom";
 import "./playerInfo.css";
 
 const playerExperience = [
@@ -244,7 +245,12 @@ export const PlayerInfo = () => {
                             <div className="player-data">
 
                                 <div className="player-title-row">
-                                    <div >
+                                    <div className="player-name-wrapper">
+                                        <Link to="/team-info">
+                                        <div className="player-team-logo-wrapper">
+                                        <img src="https://wstatic-prod-boc.krafton.com/common/team/20250317/aZIXMx7n/55.png" alt="" className="player-team-logo" />
+                                        </div>
+                                        </Link>
                                         <h2 className="player-ign">SAiNT ViLLAiN</h2>
                                     </div>
                                 </div>

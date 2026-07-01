@@ -99,6 +99,30 @@
     margin-bottom: 6px;
 }
 
+.player-name-wrapper {
+    width: 100%;
+    display: flex;
+    gap: 16px;
+}
+
+.player-team-logo-wrapper {
+    display: flex;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    /* position: relative; */
+    background-color: #f8f8f8;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-team-logo {
+    width: 32px;
+    height: 32px;
+    /* position: absolute; */
+
+}
+
 .player-name {
     font-size: 2.1rem;
     line-height: 1.1;
@@ -123,12 +147,9 @@
 }
 
 .player-ign {
-    font-size: 2.1rem;
-    line-height: 1.1;
+    font-size: 2rem;
     margin: 0;
     color: #fff;
-    position: relative;
-    display: inline-block;
 }
 
 .player-ign::after {
@@ -176,7 +197,7 @@
     display: flex;
     align-items: center;
     height: 100%;
-    
+
 }
 
 .player-info-bar-text {
@@ -442,6 +463,7 @@
     .hero-avatar-block {
         padding: 0;
     }
+
     .player-hero-details {
         flex-direction: column;
         justify-content: center;
@@ -471,9 +493,10 @@
     }
 
     .player-avatar {
-    width: 256px;
-    height: 256px;
-}
+        width: 256px;
+        height: 256px;
+    }
+
     .player-avatar img {
         padding: 0px;
 
@@ -532,13 +555,19 @@
         left: 375px;
     }
 
+
+    .player-name-wrapper {
+        display: flex;
+        justify-content: center;
+    }
+
 }
 
 @media (max-width: 768px) {
 
     .player-info-container {
 
-    transform: translateY(-150px);
+        transform: translateY(-150px);
     }
 
 
@@ -649,6 +678,22 @@
     .player-summary-stats {
         flex-direction: column;
         justify-content: space-between;
+    }
+
+
+    .player-team-logo-wrapper {
+        width: 32px;
+        height: 32px;
+    }
+
+    .player-team-logo {
+        width: 24px;
+        height: 24px;
+
+    }
+
+    .player-ign {
+        font-size: 1.5rem;
     }
 
 }

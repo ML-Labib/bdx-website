@@ -1,0 +1,34 @@
+.about-us-container {
+    max-width: 1400px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+.supreme-leaders-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 4fr));
+    gap: 32px;
+    align-items: start;
+}
+
+.leader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.leader img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.leader-name {
+    font-weight: 700;
+    font-size: 1.8rem;
+}

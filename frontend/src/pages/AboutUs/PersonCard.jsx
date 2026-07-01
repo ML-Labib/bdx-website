@@ -1,14 +1,14 @@
 import React from "react";
 import defaultProfile from "../../assets/default-profile.png";
 import { Link } from "react-router-dom";
-import "./playerCard.css";
+import "./personCard.css";
 
-export function PlayerCard({ player }) {
+export function PersonCard({ player }) {
     return (
-        <div className="player-card">
-            <div className="player-card-image">
+        <div className="person-card">
+            <div className="person-card-image">
                 <img
-                    src={ player.playerImage || defaultProfile}
+                    src={player.playerImage || defaultProfile}
                     alt={player.name}
                     onError={(event) => {
                         event.currentTarget.onerror = null;
@@ -17,31 +17,31 @@ export function PlayerCard({ player }) {
                 />
             </div>
 
-            <div className="player-card-content">
+            <div className="person-card-content">
                 <div className="team-logo">
                     <img src={player.teamLogo} alt={player.team} />
                 </div>
-                <Link to={`/player-info`}>
-                    <h3 className="player-name-wrap">
-                        <span className="player-name">
+                <Link to={`/person-info`}>
+                    <h3 className="person-name-wrap">
+                        <span className="person-name">
                             {player.name}
                         </span>
                     </h3>
                 </Link>
-                <div className="player-info">
-                    <div className="player-team-wrap">
-                        <div className="player-team-label">
+                <div className="person-info">
+                    <div className="person-team-wrap">
+                        <div className="person-team-label">
                             <span>Team</span>
                         </div>
-                        <p className="player-team">
+                        <p className="person-team">
                             {player.team}
                         </p>
                     </div>
-                    <div className="player-nationality-wrap">
-                        <div className="player-team-label">
+                    <div className="person-nationality-wrap">
+                        <div className="person-team-label">
                             <span>Nationality</span>
                         </div>
-                        <p className="player-team">
+                        <p className="person-team">
                             {player.nationality}
                         </p>
                     </div>
