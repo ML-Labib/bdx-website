@@ -83,6 +83,12 @@
     position: relative;
 }
 
+.t-name-link {
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+}
+
 .t-name::after {
     content: "";
     width: 0%;

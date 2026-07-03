@@ -10,6 +10,8 @@ import { AboutUs } from "./pages/AboutUs/AboutUs";
 import { MyActivity } from "./pages/MyActivity/MyActivity";
 import { TeamInfo } from "./pages/TeamInfo/TeamInfo";
 import { PlayerInfo } from "./pages/PlayerInfo/PlayerInfo";
+import { TournamentInfo } from "./pages/TournamentInfo/TournamentInfo";
+
 import Login from "./pages/UserAuth/Login";
 import './App.css'
 
@@ -69,6 +71,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/team-info" element={<TeamInfo />} />
                     <Route path="/player-info" element={<PlayerInfo />} />
+                    <Route path="/tournament-info" element={<TournamentInfo />} />
                 </Routes>
             </AuthProvider>
         </ErrorBoundary>

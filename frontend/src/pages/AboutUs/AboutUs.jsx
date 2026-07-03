@@ -1,4 +1,3 @@
-import { Header } from "../../components/Header"
 import { SubHeader } from "../../components/SubHeader"
 import { PersonCard } from "./PersonCard.jsx"
 
@@ -56,7 +55,6 @@ export function AboutUs() {
 
     return (
         <>
-            <Header />
             <SubHeader subTitle="ABOUT US" />
             <div className="about-us-container">
                 <div className="title-bar">

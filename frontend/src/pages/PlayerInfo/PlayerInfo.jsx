@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Header } from "../../components/Header";
 import { SubHeader } from "../../components/SubHeader";
 import { Link } from "react-router-dom";
 import "./playerInfo.css";
@@ -225,7 +224,7 @@ export const PlayerInfo = () => {
 
     return (
         <>
-            <Header />
+            
             <SubHeader subTitle="" />
             <div className="player-info-container">
                 <section className="player-hero">
@@ -236,7 +235,7 @@ export const PlayerInfo = () => {
                             <div className="hero-avatar-block">
                                 <div className="player-avatar">
                                     <img
-                                        src="https://wstatic-prod-boc.krafton.com/entry/player/20240319/sSSzcylR.png"
+                                        src="https://ybnzezsvnqdzbszjfuku.supabase.co/storage/v1/object/sign/bdx-bucket/players/Labib-no-bg.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hMTQ4YmE3Ni05ZTM1LTQ0N2ItYjdlZS0yNmQ5M2Y2NWFlZjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZHgtYnVja2V0L3BsYXllcnMvTGFiaWItbm8tYmcucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MzAzNzI2MCwiZXhwIjoyMDk4Mzk3MjYwfQ.d6zF6czgzQ3-tK7FKKmW8-99TpAN2WtJWEviVOHjkhU"
                                         alt="KerakTMz"
                                     />
                                 </div>

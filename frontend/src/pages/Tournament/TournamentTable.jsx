@@ -1,4 +1,5 @@
 import { tournaments } from './TournamentData';
+import { Link } from 'react-router-dom';
 import './tournamentTable.css';
 
 export function TournamentTable() {
@@ -24,6 +25,7 @@ export function TournamentTable() {
                         {tournaments.map((item) => (
                             <tr key={item.id} className="tr-tournament">
                                 {/* Column 1: Logo + Text */}
+                                      <Link to={`/tournament-info`} className="t-name-link">
                                 <td className="td-tournament">
                                     <div className="t-info">
                                         <img src={item.logo} alt="logo" className="t-logo" />
@@ -32,6 +34,7 @@ export function TournamentTable() {
                                         </span>
                                     </div>
                                 </td>
+                                        </Link>
 
                                 {/* Column 2: Prize */}
                                 <td className="td-prize">{item.prize}</td>
