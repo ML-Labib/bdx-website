@@ -30,18 +30,15 @@ export function TournamentInfo() {
                 <section className="tournament-hero">
                     <div className="player-hero-inner">
 
-                        <div className="player-hero-details">
+                        <div className="tournament-hero-details">
 
-                            <div className="hero-avatar-block">
-                                <div className="player-avatar">
-                                    <img
-                                        src="https://ybnzezsvnqdzbszjfuku.supabase.co/storage/v1/object/sign/bdx-bucket/players/Labib-no-bg.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hMTQ4YmE3Ni05ZTM1LTQ0N2ItYjdlZS0yNmQ5M2Y2NWFlZjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZHgtYnVja2V0L3BsYXllcnMvTGFiaWItbm8tYmcucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MzAzNzI2MCwiZXhwIjoyMDk4Mzk3MjYwfQ.d6zF6czgzQ3-tK7FKKmW8-99TpAN2WtJWEviVOHjkhU"
-                                        alt="KerakTMz"
-                                    />
+                            <div className="tournament-logo-block">
+                                <div className="tournament-page-logo">
+                                    <img src="https://wstatic-prod-boc.krafton.com/common/team/20250317/aZIXMx7n/55.png" alt="Team Logo" className="hero-team-logo" />
                                 </div>
                             </div>
 
-                            <div className="player-data">
+                            <div className="tournament-data">
 
                                 <div className="tournament-title-row">
                                     <div className="tournament-name-wrapper">
@@ -92,7 +89,7 @@ export function TournamentInfo() {
                                 className={`tab-button ${activeTab === tab.id ? "active" : ""}`}
                                 onClick={() => _setActiveTab(tab.id)}
                             >
-                                {tab.label}
+                                <span>{tab.label}</span>
                             </button>
                         ))}
                     </div>
