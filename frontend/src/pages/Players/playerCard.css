@@ -29,9 +29,8 @@
 .player-card-image img {
     margin-top: 7px;
     max-width: 204px;
-    height: auto;
-
-
+    height: 204px;
+    object-fit: cover;
 }
 
 .player-card-content {
