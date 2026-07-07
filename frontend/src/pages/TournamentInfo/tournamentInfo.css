@@ -91,7 +91,7 @@
     display: flex;
     /* justify-content: space-evenly; */
     gap: 32px;
-    padding: 0 100px;
+    padding: 0 32px 0 100px;
 }
 
 .tournament-title-row {
@@ -182,19 +182,6 @@
     padding-bottom: 4px;
 }
 
-.section-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 18px;
-}
-
-.section-header h2 {
-    font-family: "Roboto", sans-serif;
-    font-size: 1.75rem;
-    color: #000;
-    letter-spacing: 0.02em;
-}
 
 .stat-card {
     width: 100%;
@@ -231,10 +218,11 @@
 
 
     .tournament-page-logo {
-    width: 136px;
-    height: 136px;
+        width: 136px;
+        height: 136px;
     }
-    .player-data {
+
+    .tournament-data {
         padding: 0;
     }
 
@@ -247,9 +235,9 @@
         padding: 12px 0;
     }
 
-.tournament-tabs-header button {
-    font-size: 0.8rem;
-}
+    .tournament-tabs-header button {
+        font-size: 0.8rem;
+    }
 
 
     .stat-card {
@@ -272,7 +260,7 @@
     }
 
 
-    
+
     .tournament-info-container {
         margin: 0;
         width: 100%;
@@ -287,35 +275,11 @@
     }
 
     .tournament-tabs-header {
-    grid-template-columns: repeat(2, 1fr);
-}
-
-    .tournament-info-bar-text {
-        padding: 0 60px 12px 12px;
-
+        grid-template-columns: repeat(2, 1fr);
     }
 
 
-    .table-controls {
-        flex-direction: column;
-        align-items: flex-start;
-    }
 
-
-    .experience-team-logo {
-        width: 32px;
-        height: 32px;
-    }
-
-    .experience-team-logo img {
-        width: 24px;
-        height: 24px;
-    }
-
-    .bottom-slider {
-        width: calc(100% - 200px - 24px);
-        left: 200px;
-    }
 
     .tournament-details-info {
         grid-template-columns: 1fr;

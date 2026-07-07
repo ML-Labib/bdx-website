@@ -214,19 +214,7 @@
     padding: 0 150px 0 16px;
 }
 
-.section-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 18px;
-}
 
-.section-header h2 {
-    font-family: "Roboto", sans-serif;
-    font-size: 1.75rem;
-    color: #000;
-    letter-spacing: 0.02em;
-}
 
 .stat-card {
     padding: 18px 0px 18px 0px;

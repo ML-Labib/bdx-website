@@ -6,7 +6,7 @@ export function PlayerStatsCard({ player }) {
     return (
         <article className="player-stats-card">
             <div className="player-stats-image">
-                <img src={player?.avatar || defaultProfile} alt={player.name} />
+                <img src={player?.playerImage || defaultProfile} alt={player.name} />
             </div>
             <div className="player-stats-meta">
                 <h3>{player.name}</h3>

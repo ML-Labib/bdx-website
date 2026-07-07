@@ -3,6 +3,9 @@ import { auth } from '../pages/UserAuth/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { AuthContext, AUTH_LOGIN_TIMESTAMP_KEY } from './authConstants';
 
+const isPopupBlockedError = (error) =>
+    typeof error?.message === 'string' && error.message.includes('Cross-Origin-Opener-Policy');
+
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 
 export function AuthProvider({ children }) {
@@ -55,6 +58,13 @@ export function AuthProvider({ children }) {
 
         try {
             await signOut(auth);
+        } catch (error) {
+            if (isPopupBlockedError(error)) {
+                clearAuthTimestamp();
+                setCurrentUser(null);
+                return;
+            }
+            throw error;
         } finally {
             clearAuthTimestamp();
         }

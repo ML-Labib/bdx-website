@@ -25,16 +25,16 @@ export function TournamentTable() {
                         {tournaments.map((item) => (
                             <tr key={item.id} className="tr-tournament">
                                 {/* Column 1: Logo + Text */}
-                                      <Link to={`/tournament-info`} className="t-name-link">
                                 <td className="td-tournament">
-                                    <div className="t-info">
-                                        <img src={item.logo} alt="logo" className="t-logo" />
-                                        <span className="t-name">
-                                            {item.name}
-                                        </span>
-                                    </div>
+                                    <Link to={`/tournament-info`} className="t-name-link">
+                                        <div className="t-info">
+                                            <img src={item.logo} alt="logo" className="t-logo" />
+                                            <span className="t-name">
+                                                {item.name}
+                                            </span>
+                                        </div>
+                                    </Link>
                                 </td>
-                                        </Link>
 
                                 {/* Column 2: Prize */}
                                 <td className="td-prize">{item.prize}</td>
