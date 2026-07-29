@@ -3,19 +3,21 @@ import { Link } from "react-router-dom";
 import { TeamCard } from "../Teams/TeamCard";
 import { useAuth } from "../../components/useAuth.jsx";
 import "./infoTab.css";
-export function InfoTab() {
+
+export function InfoTab({ tournament }) {
     const { currentUser } = useAuth();
     const [showTransactionForm, setShowTransactionForm] = useState(false);
     const [transactionId, setTransactionId] = useState("");
     const [showValidationError, setShowValidationError] = useState(false);
-    const alreadyRegistered = true; // Set this to true if the user has already registered, false otherwise
-    const registrationStatus = "Registration Rejected";// Set this to "Registered" or "Not Registered" based on the user's registration status 
-    const registrationDeadline = "2026-12-07"; // Set this to the actual registration deadline date
-    const hasTeam = true; // Set this to true if the user has a team, false otherwise
+    const alreadyRegistered = false;
+    const registrationStatus = "Registered";
+    const hasTeam = true;
     const hasPlayer = 7;
+
     const isRegistrationClosed = () => {
+        if (!tournament?.registrationEndDate) return false;
         const today = new Date();
-        const deadline = new Date(`${registrationDeadline}T23:59:59`);
+        const deadline = new Date(tournament.registrationEndDate);
         return today > deadline;
     };
 
@@ -136,27 +138,27 @@ export function InfoTab() {
                 <div className="info-tab-grid">
                     <div className="info-tab-card">
                         <h4> Registration Deadline</h4>
-                        <p>12-06-2026 ~ 12-07-2026</p>
+                        <p>{tournament?.registrationStartDate && tournament?.registrationEndDate ? `${new Date(tournament.registrationStartDate).toLocaleDateString()} - ${new Date(tournament.registrationEndDate).toLocaleDateString()}` : 'TBD'}</p>
                     </div>
                     <div className="info-tab-card">
                         <h4>Entry fee</h4>
-                        <p>400tk and Refundable</p>
+                        <p>{tournament?.entryFee || 'TBD'}</p>
                     </div>
                     <div className="info-tab-card">
                         <h4> Match Time</h4>
-                        <p>8:00 PM (UTC+6)</p>
+                        <p>{tournament?.matchTime || 'TBD'}</p>
                     </div>
                     <div className="info-tab-card">
                         <h4> Game Mode</h4>
-                        <p>TPP SQUAD</p>
+                        <p>{tournament?.gameMode || 'TBD'}</p>
                     </div>
                     <div className="info-tab-card">
                         <h4> Teams</h4>
-                        <p>16 Teams</p>
+                        <p>{tournament?.totalTeams ? `${tournament.totalTeams} Teams` : 'TBD'}</p>
                     </div>
                     <div className="info-tab-card">
                         <h4>Roster Lock</h4>
-                        <p>After registration deadline ends</p>
+                        <p>{tournament?.rosterLocked ? 'Roster locked' : 'Roster open until registration deadline ends'}</p>
                     </div>
                     <div className="info-tab-card">
                         <h4>Rules</h4>

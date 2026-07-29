@@ -5,8 +5,8 @@ import { TournamentTable } from "./TournamentTable"
 export function Tournament() {
     return (
         <>
-        <Header />
-        <SubHeader subTitle="Tournament" />
+ 
+        <SubHeader subTitle="Tournaments" />
         <div className="tournament-page">
             <TournamentTable />
         </div>

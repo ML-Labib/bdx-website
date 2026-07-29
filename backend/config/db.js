@@ -1,8 +1,25 @@
-const { createClient } = require('@supabase/supabase-js');
+const mongoose = require('mongoose');
+const dns = require('node:dns');
+dns.setServers(['8.8.8.8', '1.1.1.1']); // Google & Cloudflare DNS
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY;
+const connectDB = async () => {
+  try {
+    const mongoURI = process.env.MONGO_URI;
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    if (!mongoURI) {
+      throw new Error('MONGO_URI is not defined in environment variables');
+    }
 
-module.exports = supabase;
+    await mongoose.connect(mongoURI, {
+      serverSelectionTimeoutMS: 10000
+    });
+
+    console.log('MongoDB connected successfully');
+    return true;
+  } catch (error) {
+    console.error('MongoDB connection failed:', error.message);
+    return false;
+  }
+};
+
+module.exports = connectDB;

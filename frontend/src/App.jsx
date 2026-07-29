@@ -71,7 +71,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/team-info" element={<TeamInfo />} />
                     <Route path="/player-info" element={<PlayerInfo />} />
-                    <Route path="/tournament-info" element={<TournamentInfo />} />
+                    <Route path="/tournament-info/:id?" element={<TournamentInfo />} />
                 </Routes>
             </AuthProvider>
         </ErrorBoundary>

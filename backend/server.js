@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const connectDB = require('./config/db');
 require('dotenv').config();
 
 const app = express();
@@ -9,11 +10,12 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Connect to MongoDB
+connectDB();
+
 // Routes
-const teamRoutes = require('./routes/teams');
-
-app.use('/api/teams', teamRoutes);
-
+const tournamentRoutes = require('./routes/tournaments');
+app.use('/api/tournaments', tournamentRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -28,7 +30,7 @@ app.use((err, req, res, next) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server is running on port  http://localhost:${PORT}`);
+  console.log(`Server is running on port http://localhost:${PORT}`);
 });
 
 module.exports = app;
