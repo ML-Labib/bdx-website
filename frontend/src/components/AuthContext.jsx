@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { auth } from '../pages/UserAuth/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { AuthContext, AUTH_LOGIN_TIMESTAMP_KEY } from './authConstants';
-
+import { Loader } from './Loader';
 const isPopupBlockedError = (error) =>
     typeof error?.message === 'string' && error.message.includes('Cross-Origin-Opener-Policy');
 
@@ -76,12 +76,13 @@ export function AuthProvider({ children }) {
         loading
     };
 
+
     return (
         <AuthContext.Provider value={value}>
             {loading ? (
                 <div className="auth-loading">
                     <div className="auth-loading-spinner" />
-                    <span>Loading...</span>
+                    < Loader />
                 </div>
             ) : (
                 children

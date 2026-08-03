@@ -1,15 +1,18 @@
-import { Header } from "../../components/Header"
 import { SubHeader } from "../../components/SubHeader"
+import { Loader } from "../../components/Loader"
+import { lazy, Suspense } from "react"
+import './players.css'
 
+const PlayerGrid = lazy(() => import("./PlayerGrid").then(m => ({ default: m.PlayerGrid })));
 export function Players() {
     return (
         <>
-        <Header />
-        <SubHeader subTitle="Players" />
-        <div className="player-page">
-            <h1>BDX Players</h1>
-            <p>Details about the players will be announced soon. Stay tuned!</p>
-        </div>
+            <SubHeader subTitle="Players" />
+            <Suspense fallback={<Loader />}>
+                <div className="tournament-page">
+                    <PlayerGrid />
+                </div>
+            </Suspense>
         </>
     );
 }

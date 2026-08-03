@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Header } from "../../components/Header"
-import { SubHeader } from "../../components/SubHeader"
 import { PlayerCard } from "./PlayerCard";
 import './playerGrid.css'
 const playersData = [
@@ -10,7 +8,7 @@ const playersData = [
         team: "BDX OBSIDIAN",
         nationality: "Bangladesh",
         playerImage: "https://ybnzezsvnqdzbszjfuku.supabase.co/storage/v1/object/sign/bdx-bucket/players/Labib-no-bg.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hMTQ4YmE3Ni05ZTM1LTQ0N2ItYjdlZS0yNmQ5M2Y2NWFlZjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZHgtYnVja2V0L3BsYXllcnMvTGFiaWItbm8tYmcucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MzAzNzI2MCwiZXhwIjoyMDk4Mzk3MjYwfQ.d6zF6czgzQ3-tK7FKKmW8-99TpAN2WtJWEviVOHjkhU",
-        teamLogo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-OBSIDIAN.webp"
+        teamLogo: "https://ybnzezsvnqdzbszjfuku.supabase.co/storage/v1/object/sign/bdx-bucket/teams/BDX_EXTREME_png.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hMTQ4YmE3Ni05ZTM1LTQ0N2ItYjdlZS0yNmQ5M2Y2NWFlZjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZHgtYnVja2V0L3RlYW1zL0JEWF9FWFRSRU1FX3BuZy5wbmciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg1NDYxNTAxLCJleHAiOjQ5MDc1MjU1MDF9.NNFfJQWD2EqXXBBvarHjjIg-ZRxueDiIBSm4zhbZo7k"
     },
     {
         id: 2,
@@ -25,8 +23,8 @@ const playersData = [
         name: "16KK",
         team: "NEWHAPPY-ESPORTS",
         nationality: "China",
-        playerImage: "https://ybnzezsvnqdzbszjfuku.supabase.co/storage/v1/object/sign/bdx-bucket/players/Labib-no-bg.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hMTQ4YmE3Ni05ZTM1LTQ0N2ItYjdlZS0yNmQ5M2Y2NWFlZjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZHgtYnVja2V0L3BsYXllcnMvTGFiaWItbm8tYmcucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MzAzNzI2MCwiZXhwIjoyMDk4Mzk3MjYwfQ.d6zF6czgzQ3-tK7FKKmW8-99TpAN2WtJWEviVOHjkhU",
-        teamLogo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-VIPER.webp"
+        playerImage: "https://ybnzezsvnqdzbszjfuku.supabase.co/storage/v1/object/sign/bdx-bucket/players/Labib-no-bg.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtlV9hMTQ4YmE3Ni05ZTM1LTQ0N2ItYjdlZS0yNmQ5M2Y2NWFlZjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZHgtYnVja2V0L3BsYXllcnMvTGFiaWItbm8tYmcucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MzAzNzI2MCwiZXhwIjoyMDk4Mzk3MjYwfQ.d6zF6czgzQ3-tK7FKKmW8-99TpAN2WtJWEviVOHjkhU",
+        teamLogo: "https://ybnzezsvnqdzbszjfuku.supabase.co/storage/v1/object/sign/bdx-bucket/teams/BDX_EXTREME_png.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtlV9hMTQ4YmE3Ni05ZTM1LTQ0N2ItYjdlZS0yNmQ5M2Y2NWFlZjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZHgtYnVja2V0L3RlYW1zL0JEWF9FWFRSRU1FX3BuZy5wbmciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg1NDYxNTAxLCJleHAiOjQ5MDc1MjU1MDF9.NNFfJQWD2EqXXBBvarHjjIg-ZRxueDiIBSm4zhbZo7k"
     },
     {
         id: 4,
@@ -125,8 +123,6 @@ export function PlayerGrid() {
     });
     return (
         <>
-            <Header />
-            <SubHeader subTitle="Players" />
             <div className="player-page">
                 <div className="team-filters">
                     <div className="search-wrap">

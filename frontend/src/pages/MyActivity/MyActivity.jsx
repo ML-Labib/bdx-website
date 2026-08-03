@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Header } from "../../components/Header";
 import { SubHeader } from "../../components/SubHeader";
 import { ProfileTab } from "./ProfileTab";
 import { TeamsTab } from "./TeamsTab";
@@ -19,27 +18,27 @@ export function MyActivity() {
     const ActiveComponent = tabs.find(tab => tab.id === activeTab)?.component;
 
     return (
-        <div className="my-activity-page">
-            <Header />
+        <>
             <SubHeader subTitle="My Activities" />
-            <div className="content">
-                <div className="tabs-container">
-                    <div className="tabs-header">
-                        {tabs.map(tab => (
-                            <button
-                                key={tab.id}
-                                className={`tab-button ${activeTab === tab.id ? "active" : ""}`}
-                                onClick={() => setActiveTab(tab.id)}
-                            >
-                                {tab.label}
-                            </button>
-                        ))}
+            <div className="my-activity-page">
+                    <div className="profile-tabs-container">
+                        <div className="profile-tabs-header">
+                            {tabs.map(tab => (
+                                <button
+                                    key={tab.id}
+                                    className={`tab-button ${activeTab === tab.id ? "active" : ""}`}
+                                    onClick={() => setActiveTab(tab.id)}
+                                >
+                                    <span>{tab.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                        <div className="tab-content">
+                            {ActiveComponent && <ActiveComponent />}
+                        </div>
                     </div>
-                    <div className="tab-content">
-                        {ActiveComponent && <ActiveComponent />}
-                    </div>
-                </div>
+
             </div>
-        </div>
+        </>
     );
 }

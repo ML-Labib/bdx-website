@@ -57,7 +57,7 @@
 
 /* Column 1: Logo & Name */
 .td-tournament {
-    width: 40%;
+    width: 60%;
     text-align: left;
 }
 
@@ -145,8 +145,27 @@
 }
 
 .status-badge.upcoming {
+    background-color: rgb(34,187,51);
+    color: var(--text-color);
+}
+.status-badge.registration-open {
     background-color: var(--primary-color);
     color: var(--text-color);
+}
+
+.table-state-cell {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.table-state-error {
+    color: #c0392b;
+    font-weight: 700;
+}
+
+.table-loading-cell {
+    text-align: center;
+    padding: 20px 0;
 }
 
 .show-more button {

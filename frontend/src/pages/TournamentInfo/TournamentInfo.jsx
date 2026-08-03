@@ -3,9 +3,9 @@ import { MatchesTab } from "./MatchesTab";
 import { RankingTab } from "./RankingTab";
 import { StatsTab } from "./StatsTab";
 import { InfoTab } from "./InfoTab";
-
 import { SubHeader } from "../../components/SubHeader";
 import { useLocation, useParams } from "react-router-dom";
+import { Loader } from "../../components/Loader";
 import "./tournamentInfo.css";
 
 
@@ -59,7 +59,7 @@ export function TournamentInfo() {
         const fetchTournament = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`http://localhost:8080/api/tournaments/${id}`);
+                const response = await fetch(`/api/tournaments/${id}`);
                 if (!response.ok) {
                     throw new Error("Tournament not found");
                 }
@@ -94,7 +94,7 @@ export function TournamentInfo() {
             <>
                 <SubHeader subTitle="" />
                 <div className="tournament-info-container">
-                    <p>Loading tournament information...</p>
+                    < Loader />
                 </div>
             </>
         );
@@ -116,7 +116,7 @@ export function TournamentInfo() {
             <SubHeader subTitle="" />
             <div className="tournament-info-container">
                 <section className="tournament-hero">
-                    <div className="player-hero-inner">
+                    <div className="tournament-hero-inner">
 
                         <div className="tournament-hero-details">
 
@@ -182,7 +182,7 @@ export function TournamentInfo() {
                         ))}
                     </div>
                 </div>
-                <div className="tab-content">
+                <div className="tournament-tab-content">
                     {ActiveComponent && <ActiveComponent tournament={tournament} status={status} />}
                 </div>
             </div>

@@ -18,7 +18,7 @@
     padding: 40px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
     position: relative;
     overflow: hidden;
 }
@@ -45,6 +45,14 @@
     /* text-align: left; */
 
 
+}
+
+.tournament-hero-inner {
+    position: relative;
+    gap: 46px;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 .tournament-logo-block {
@@ -91,7 +99,8 @@
     display: flex;
     /* justify-content: space-evenly; */
     gap: 32px;
-    padding: 0 32px 0 100px;
+    padding: 0 32px 0 0px;
+    margin: 0 auto;
 }
 
 .tournament-title-row {
@@ -155,7 +164,6 @@
     align-items: center;
     min-height: 50px;
 
-    /* gap: 16px; */
 
 }
 
@@ -175,12 +183,26 @@
 
 }
 
+.tab-button:hover {
+    color: #ecf0f1;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tab-button.active {
+    color: var(--text-color);
+    background-color: var(--primary-color);
+    /* border-bottom-color: #3498db; */
+}
+
+
 .tournament-tabs-header button.active span {
     display: inline-block;
     background-image: linear-gradient(transparent calc(65% + 1px), #fff 6px);
     /* border-bottom: 2px solid #fff; */
     padding-bottom: 4px;
 }
+
+
 
 
 .stat-card {

@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Loader } from '../../components/Loader'; // Import your Loader component
 import './tournamentTable.css';
 
 const ITEMS_PER_PAGE = 10;
@@ -7,14 +8,23 @@ const ITEMS_PER_PAGE = 10;
 export function TournamentTable() {
     const [tournaments, setTournaments] = useState([]);
     const [hasMore, setHasMore] = useState(true);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const isFetchingRef = useRef(false);
 
     const fetchTournaments = useCallback(async (nextPage = 1) => {
-        if (loading) return;
+        if (isFetchingRef.current) return;
 
+        isFetchingRef.current = true;
         setLoading(true);
+        setError(null);
         try {
-            const response = await fetch(`http://localhost:8080/api/tournaments?page=${nextPage}&limit=${ITEMS_PER_PAGE}`);
+            const response = await fetch(`/api/tournaments?page=${nextPage}&limit=${ITEMS_PER_PAGE}`);
+
+            if (!response.ok) {
+                throw new Error(`Request failed with status ${response.status}`);
+            }
+
             const data = await response.json();
 
             setTournaments((prev) => {
@@ -27,10 +37,12 @@ export function TournamentTable() {
             setHasMore(nextPage < (data.totalPages || 1));
         } catch (error) {
             console.error('Failed to fetch tournaments:', error);
+            setError('Unable to load tournaments right now. Please try again later.');
         } finally {
             setLoading(false);
+            isFetchingRef.current = false;
         }
-    }, [loading]);
+    }, []);
 
     useEffect(() => {
         fetchTournaments(1);
@@ -78,110 +90,166 @@ export function TournamentTable() {
 
     return (
         <div className="page-container">
-            {/* --- The Table --- */}
+            {/* Desktop View */}
             <div className="pc-view">
                 <table className="t-table">
                     <thead>
                         <tr>
                             <th className="th-left">TOURNAMENT</th>
+                            <th>MODE</th>
                             <th>PRIZE</th>
                             <th className="th-sortable">SCHEDULE</th>
                             <th>STATUS</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {tournaments.map((item) => {
-                            const title = item.title;
-                            const prize = item.prize;
-                            const status = getTournamentStatus(item);
-                            const scheduleLines = formatSchedule(item);
+                        {loading && tournaments.length === 0 ? (
+                            <tr>
+                                <td colSpan="5" className="table-state-cell">
+                                    <Loader />
+                                </td>
+                            </tr>
+                        ) : error ? (
+                            <tr>
+                                <td colSpan="5" className="table-state-cell table-state-error">
+                                    {error}
+                                </td>
+                            </tr>
+                        ) : tournaments.length === 0 ? (
+                            <tr>
+                                <td colSpan="5" className="table-state-cell">
+                                    No data found
+                                </td>
+                            </tr>
+                        ) : (
+                            tournaments.map((item) => {
+                                const title = item.title;
+                                const prize = item.prize;
+                                const status = getTournamentStatus(item);
+                                const scheduleLines = formatSchedule(item);
 
-                            return (
-                                <tr key={item._id || item.id} className="tr-tournament">
-                                    {/* Column 1: Logo + Text */}
-                                    <td className="td-tournament">
-                                        <Link
-                                            to={`/tournament-info/${item._id || item.id}`}
-                                            state={{ tournament: item, status: status }}
-                                            className="t-name-link"
-                                        >
-                                            <div className="t-info">
-                                                <img src={item.logo || 'https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png'} alt="logo" className="t-logo" />
-                                                <span className="t-name">{title}</span>
-                                            </div>
-                                        </Link>
-                                    </td>
+                                return (
+                                    <tr key={item._id || item.id} className="tr-tournament">
+                                        <td className="td-tournament">
+                                            <Link
+                                                to={`/tournament-info/${item._id || item.id}`}
+                                                state={{ tournament: item, status: status }}
+                                                className="t-name-link"
+                                            >
+                                                <div className="t-info">
+                                                    <img src={item.logo || 'https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png'} alt="logo" className="t-logo" />
+                                                    <span className="t-name">{title}</span>
+                                                </div>
+                                            </Link>
+                                        </td>
 
-                                    {/* Column 2: Prize */}
-                                    <td className="td-prize">{prize}</td>
+                                        <td className="td-prize">{item.gameMode}</td>
+                                        <td className="td-prize">{prize}</td>
 
-                                    {/* Column 3: Schedule (Multiline) */}
-                                    <td className="td-schedule">
-                                        {scheduleLines.map((date, i) => (
-                                            <div key={i}>{date}</div>
-                                        ))}
-                                    </td>
+                                        <td className="td-schedule">
+                                            {scheduleLines.map((date, i) => (
+                                                <div key={i}>{date}</div>
+                                            ))}
+                                        </td>
 
-                                    {/* Column 4: Status Badge */}
-                                    <td className="td-status">
-                                        <span className={`status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`}>
-                                            {status}
-                                        </span>
-                                    </td>
-                                </tr>
-                            );
-                        })}
+                                        <td className="td-status">
+                                            <span className={`status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`}>
+                                                {status}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )}
                     </tbody>
                 </table>
             </div>
 
+            {/* Mobile View */}
             <div className="mobile-view">
-                <table className='t-table'>
+                <table className="t-table">
                     <thead>
                         <tr>
                             <th>TOURNAMENT</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {tournaments.map((item) => {
-                            const title = item.title || item.name || 'Untitled Tournament';
-                            const prize = item.prize || 'TBD';
-                            const status = getTournamentStatus(item);
-                            const scheduleLines = formatSchedule(item);
+                        {loading && tournaments.length === 0 ? (
+                            <tr>
+                                <td className="table-state-cell">
+                                    <Loader />
+                                </td>
+                            </tr>
+                        ) : error ? (
+                            <tr>
+                                <td className="table-state-cell table-state-error">
+                                    {error}
+                                </td>
+                            </tr>
+                        ) : tournaments.length === 0 ? (
+                            <tr>
+                                <td className="table-state-cell">
+                                    No data found
+                                </td>
+                            </tr>
+                        ) : (
+                            tournaments.map((item) => {
+                                const title = item.title || item.name || 'Untitled Tournament';
+                                const prize = item.prize || 'TBD';
+                                const status = getTournamentStatus(item);
+                                const scheduleLines = formatSchedule(item);
 
-                            return (
-                                <tr key={item._id}>
-                                    <td>
-                                        <div className="t-info">
-                                            <img src={item.logo || 'https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png'} alt="logo" className="t-logo" />
-                                            <span className="t-name">{title}</span>
-                                            <span className={`status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`}>
-                                                {status}
-                                            </span>
-                                            <div className="row-details">
-                                                <div className="price-details">
-                                                    <span className="label">Prize:</span>
-                                                    <span className="value">{prize}</span>
-                                                </div>
-                                                <div className="schedule-details">
-                                                    <span className="label">Schedule:</span>
-                                                    <span className="value">
-                                                        {scheduleLines.map((date, i) => (
-                                                            <div key={i}>{date}</div>
-                                                        ))}
-                                                    </span>
+                                return (
+                                    <tr key={item._id}>
+                                        <td>
+                                            <div className="t-info">
+                                                <img src={item.logo || 'https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png'} alt="logo" className="t-logo" />
+                                                <Link
+                                                    to={`/tournament-info/${item._id || item.id}`}
+                                                    state={{ tournament: item, status: status }}
+                                                    className="t-name-link"
+                                                >
+                                                    <span className="t-name">{title}</span>
+                                                </Link>
+                                                <span className={`status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`}>
+                                                    {status}
+                                                </span>
+                                                <div className="row-details">
+                                                    <div className="price-details">
+                                                        <span className="label">MODE:</span>
+                                                        <span className="value">{item.gameMode || 'TBD'}</span>
+                                                    </div>
+                                                    <div className="price-details">
+                                                        <span className="label">Prize:</span>
+                                                        <span className="value">{prize}</span>
+                                                    </div>
+                                                    <div className="schedule-details">
+                                                        <span className="label">Schedule:</span>
+                                                        <span className="value">
+                                                            {scheduleLines.map((date, i) => (
+                                                                <div key={i}>{date}</div>
+                                                            ))}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            );
-                        })}
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )}
                     </tbody>
                 </table>
             </div>
 
-            {hasMore && (
+            {/* Bottom Loader when fetching additional pages ("More" button click) */}
+            {loading && tournaments.length > 0 && (
+                <div className="table-loading-cell">
+                    <Loader />
+                </div>
+            )}
+
+            {!loading && hasMore && (
                 <div className="show-more">
                     <button className="show-more-btn" onClick={handleShowMore}>
                         <span className="material-symbols-outlined">keyboard_arrow_down</span>

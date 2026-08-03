@@ -20,7 +20,7 @@ exports.getTournaments = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const [tournaments, total] = await Promise.all([
-      Tournament.find().sort({ startDate: 1 }).skip(skip).limit(limit),
+      Tournament.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
       Tournament.countDocuments()
     ]);
 
