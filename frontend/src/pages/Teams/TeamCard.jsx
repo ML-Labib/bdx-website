@@ -11,11 +11,12 @@ export function TeamCard({ team }) {
 
             <div className="team-card-content">
                 <h3>
-                    <Link to="/team-info">
+                    <Link 
+                    to={`/teams/info/${team._id}`}>
                         <span className="team-name">{team.name}</span>
                     </Link>
                 </h3>
-                <p>{team.region}</p>
+                <p>{team.country}</p>
             </div>
         </div>
     );

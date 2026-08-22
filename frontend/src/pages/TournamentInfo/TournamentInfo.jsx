@@ -92,7 +92,6 @@ export function TournamentInfo() {
     if (loading) {
         return (
             <>
-                <SubHeader subTitle="" />
                 <div className="tournament-info-container">
                     < Loader />
                 </div>
@@ -103,9 +102,9 @@ export function TournamentInfo() {
     if (!tournament) {
         return (
             <>
-                <SubHeader subTitle="" />
-                <div className="tournament-info-container">
-                    <p>Tournament not found.</p>
+                <div className="empty-state-container">
+                    <p className="error-state "
+                    >Tournament not found.</p>
                 </div>
             </>
         );
@@ -130,7 +129,7 @@ export function TournamentInfo() {
 
                                 <div className="tournament-title-row">
                                     <div className="tournament-name-wrapper">
-                                        <h2 className="tournament-name">{tournament?.title || 'Tournament'}</h2>
+                                        <h2 className="tournament-name">{tournament?.title || '-'}</h2>
                                     </div>
                                 </div>
 
@@ -145,7 +144,7 @@ export function TournamentInfo() {
                                     <div className="stat-card">
 
                                         <span className="stat-label">Price</span>
-                                        <strong>{tournament?.prize || 'TBD'}</strong>
+                                        <strong>{tournament?.prize || '-'}</strong>
                                     </div>
 
                                     <div className="stat-card">
@@ -158,8 +157,15 @@ export function TournamentInfo() {
                                         <strong>{tournament?.participatingRegion || 'Global'}</strong>
                                     </div>
                                     <div className="stat-card">
-                                        <span className="stat-label">Place</span>
-                                        <strong>{tournament?.eventPlace || 'TBD'}</strong>
+                                        <span className="stat-label">Game Mode</span>
+                                        <strong>{tournament?.gameMode || '-'}</strong>
+                                    </div>
+
+
+
+                                    <div className="stat-card">
+                                        <span className="stat-label">Tier</span>
+                                        <strong>{tournament?.tier || '-'}</strong>
                                     </div>
                                 </div>
 

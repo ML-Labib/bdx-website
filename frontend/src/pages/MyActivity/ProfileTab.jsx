@@ -1,34 +1,73 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Cropper from "react-easy-crop";
 import { Loader } from "../../components/Loader";
 import { useAuth } from "../../components/useAuth";
 import { uploadAvatarToSupabase } from "../../utils/supabaseClient";
 import { fetchPubgData } from "../../utils/pubgApi";
 import { getCroppedImg } from "../../utils/cropUtils";
+import { getAuthHeaders } from "../../utils/authHeaders";
+
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import "./profileTab.css";
 
 const API_BASE_URL = "/api/profile";
 const DEFAULT_PROFILE_PICTURE =
     "https://ybnzezsvnqdzbszjfuku.supabase.co/storage/v1/object/public/bdx-bucket/defaults/default-profile.png";
 
-export function ProfileTab() {
+export function ProfileTab({ profile, setProfile: setSharedProfile, loading = false }) {
     const { currentUser } = useAuth();
+    const setProfile = setSharedProfile || (() => { });
 
-    // Profile and UI state
-    const [profile, setProfile] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
 
-    // Form State
-    const [formData, setFormData] = useState({
-        displayName: "",
-        ign: "",
-        discordUsername: "",
-        pubgId: "",
-        country: "",
-        picture: "",
+    // Validation schema based on your backend Profile.js model
+    const profileSchema = yup.object({
+        displayName: yup
+            .string()
+            .required("Display name is required")
+            .max(30, "Display name cannot exceed 30 characters"),
+        ign: yup.string().required("In-game name (IGN) is required"),
+        discordUsername: yup
+            .string()
+            .required("Discord username is required")
+            .max(50, "Discord username cannot exceed 50 characters"),
+        country: yup
+            .string()
+            .required("Country is required")
+            .max(30, "Country name cannot exceed 30 characters"),
+        pubgId: yup.string(), // Managed internally via verify button
+        picture: yup.string()
     });
+
+    // React Hook Form setup
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isValid, isDirty },
+        setValue,
+        getValues,
+        watch,
+        reset,
+    } = useForm({
+        resolver: yupResolver(profileSchema),
+        mode: "onChange", // Validates on every keystroke so 'isValid' stays updated
+        defaultValues: {
+            displayName: "",
+            ign: "",
+            discordUsername: "",
+            pubgId: "",
+            country: "",
+            picture: DEFAULT_PROFILE_PICTURE,
+        }
+    });
+
+    // Watch fields for conditional logic
+    const currentIgn = watch("ign");
+    const currentPubgId = watch("pubgId");
 
     // Image & Interactive Cropper State
     const [imageToCrop, setImageToCrop] = useState(null);
@@ -45,36 +84,27 @@ export function ProfileTab() {
 
     const fileInputRef = useRef(null);
 
-    // Fetch user profile on load
+    // Watch for changes in IGN to reset verification status
     useEffect(() => {
-        if (currentUser?.uid) {
-            fetchProfile(currentUser.uid);
-        } else {
-            setLoading(false);
-        }
-    }, [currentUser]);
+        // Only run if the modal is actually open
+        if (!isModalOpen) return;
 
-    const fetchProfile = async (userId) => {
-        try {
-            setLoading(true);
-            const res = await fetch(`${API_BASE_URL}/user/${userId}`);
-            if (res.ok) {
-                const data = await res.json();
-                setProfile(data);
-            } else {
-                setProfile(null);
+        if (isEditMode && currentIgn === profile?.ign) {
+            // User changed IGN back to their original profile IGN
+            setIsIgnVerified(true);
+            if (profile?.pubgId) {
+                setValue("pubgId", profile.pubgId, { shouldValidate: true });
             }
-        } catch (err) {
-            console.error("Failed to fetch profile", err);
-            setProfile(null);
-        } finally {
-            setLoading(false);
+        } else if (currentIgn !== profile?.ign) {
+            // User typed a new IGN that needs re-verification
+            setIsIgnVerified(false);
+            setValue("pubgId", "");
         }
-    };
+    }, [currentIgn, isEditMode, isModalOpen, profile, setValue]);
 
     const handleOpenCreateModal = () => {
         setIsEditMode(false);
-        setFormData({
+        reset({
             displayName: currentUser?.displayName || "",
             ign: "",
             discordUsername: "",
@@ -91,22 +121,24 @@ export function ProfileTab() {
 
     const handleOpenUpdateModal = () => {
         if (!profile) return;
+
         setIsEditMode(true);
-        setFormData({
+        setIsIgnVerified(true); // Mark as verified immediately
+        setErrorMessage("");
+
+        reset({
             displayName: profile.displayName || "",
             ign: profile.ign || "",
             discordUsername: profile.discordUsername || "",
-            pubgId: profile.pubgId || "",
+            pubgId: profile.pubgId || "", // Ensure pubgId is populated from profile
             country: profile.country || "",
             picture: profile.picture || DEFAULT_PROFILE_PICTURE,
         });
+
         setPreviewUrl(profile.picture || DEFAULT_PROFILE_PICTURE);
         setImageToCrop(null);
-        setIsIgnVerified(true);
-        setErrorMessage("");
         setIsModalOpen(true);
     };
-
     // File Picker Handler
     const handleImageFileSelect = (e) => {
         const file = e.target.files[0];
@@ -140,39 +172,23 @@ export function ProfileTab() {
     const checkPubgIdRegistered = async (pubgId) => {
         const res = await fetch(`${API_BASE_URL}/pubg/${encodeURIComponent(pubgId)}`);
 
-        if (res.status === 404) {
-            return null;
-        }
-
-        if (!res.ok) {
-            throw new Error("Failed to check PUBG ID registration.");
-        }
+        if (res.status === 404) return null;
+        if (!res.ok) throw new Error("Failed to check PUBG ID registration.");
 
         return res.json();
     };
 
-    const handleIgnChange = (e) => {
-        const newIgn = e.target.value;
-        setFormData((prev) => ({ ...prev, ign: newIgn }));
-
-        if (isEditMode && newIgn === profile?.ign) {
-            setIsIgnVerified(true);
-        } else {
-            setIsIgnVerified(false);
-        }
-    };
-
     const handleVerifyIgn = async () => {
-        if (!formData.ign.trim()) return;
+        const ignToVerify = getValues("ign");
+        if (!ignToVerify?.trim()) return;
+
         setVerifyingIgn(true);
         setErrorMessage("");
 
         try {
-            const retrievedPubgId = await verifyIgnApi(formData.ign);
+            const retrievedPubgId = await verifyIgnApi(ignToVerify);
             if (isEditMode && retrievedPubgId !== profile?.pubgId) {
-                setErrorMessage(
-                    "PUBG ACCOUNT change forbidden: This IGN resolves to a different PUBG ID."
-                );
+                setErrorMessage("PUBG ACCOUNT change forbidden: This IGN resolves to a different PUBG ID.");
                 setIsIgnVerified(false);
                 return;
             }
@@ -184,8 +200,8 @@ export function ProfileTab() {
                 return;
             }
 
-
-            setFormData((prev) => ({ ...prev, pubgId: retrievedPubgId }));
+            // Update hook form state
+            setValue("pubgId", retrievedPubgId, { shouldValidate: true });
             setIsIgnVerified(true);
         } catch {
             setErrorMessage("Failed to verify IGN. Please check spelling.");
@@ -195,16 +211,21 @@ export function ProfileTab() {
         }
     };
 
-    // Submit Handler (PNG Crop + Supabase Upload + DB Save)
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    // Submit Handler - Note: 'data' contains all the values tracked by react-hook-form
+    const handleCreateProfile = async (data) => {
         if (!isIgnVerified) return;
+        const hasChanges = isDirty || imageToCrop !== null;
 
+        if (isEditMode && !hasChanges) {
+            setIsModalOpen(false); // Just close the modal
+            return;                // Stop execution, no API call made
+        }
         setSubmitting(true);
         setErrorMessage("");
 
         try {
-            let finalPictureUrl = formData.picture || DEFAULT_PROFILE_PICTURE;
+            const headers = await getAuthHeaders(currentUser);
+            let finalPictureUrl = data.picture || DEFAULT_PROFILE_PICTURE;
 
             if (imageToCrop && croppedAreaPixels) {
                 const croppedBlob = await getCroppedImg(imageToCrop, croppedAreaPixels);
@@ -215,24 +236,20 @@ export function ProfileTab() {
             }
 
             const payload = {
-                uid: currentUser.uid,
-                user: currentUser.uid,
-                displayName: formData.displayName,
-                ign: formData.ign,
-                discordUsername: formData.discordUsername,
-                pubgId: formData.pubgId,
-                country: formData.country,
+                displayName: data.displayName,
+                ign: data.ign,
+                discordUsername: data.discordUsername,
+                pubgId: data.pubgId, // Sourced dynamically via setValue during verify
+                country: data.country,
                 picture: finalPictureUrl,
             };
 
-            const url = isEditMode
-                ? `${API_BASE_URL}/user/${currentUser.uid}`
-                : API_BASE_URL;
+            const url = isEditMode ? `${API_BASE_URL}/user` : API_BASE_URL;
             const method = isEditMode ? "PUT" : "POST";
 
             const res = await fetch(url, {
                 method,
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify(payload),
             });
 
@@ -251,18 +268,11 @@ export function ProfileTab() {
         }
     };
 
-    const isFormValid =
-        formData.displayName.trim() !== "" &&
-        formData.ign.trim() !== "" &&
-        formData.discordUsername.trim() !== "" &&
-        formData.country.trim() !== "" &&
-        isIgnVerified;
-
     if (loading) {
         return (
             <div className="profile-container">
                 <div className="loading-state">
-                            <Loader />
+                    <Loader />
                 </div>
             </div>
         );
@@ -303,7 +313,7 @@ export function ProfileTab() {
             {/* Main View Area */}
             {!profile ? (
                 <div className="no-profile-card">
-                    <h3>No Player Profile Found</h3>    
+                    <h3>No Player Profile Found</h3>
                     <button
                         className="edit-profile primary"
                         type="button"
@@ -325,20 +335,19 @@ export function ProfileTab() {
                     <div className="profile-info-body">
                         <div className="profile-header-meta">
                             <div>
-
                                 <h3>{profile.displayName}</h3>
                             </div>
                             <span className="profile-country-chip">{profile.country}</span>
                         </div>
 
                         <div className="profile-stats-grid">
-                            <div className="stat-card">
-                                <span className="stat-label">In-Game Name (IGN)</span>
-                                <strong className="stat-value highlight">{profile.ign}</strong>
+                            <div className="p-stat-card">
+                                <span className="p-stat-label">In-Game Name (IGN)</span>
+                                <strong className="p-stat-value highlight">{profile.ign}</strong>
                             </div>
-                            <div className="stat-card">
-                                <span className="stat-label">Discord</span>
-                                <strong className="stat-value">{profile.discordUsername}</strong>
+                            <div className="p-stat-card">
+                                <span className="p-stat-label">Discord</span>
+                                <strong className="p-stat-value">{profile.discordUsername}</strong>
                             </div>
                         </div>
                     </div>
@@ -362,7 +371,7 @@ export function ProfileTab() {
 
                         {errorMessage && <div className="error-banner">{errorMessage}</div>}
 
-                        <form onSubmit={handleSubmit} className="modal-form">
+                        <form onSubmit={handleSubmit(handleCreateProfile)} className="modal-form">
                             {/* Interactive Cropper Section */}
                             <div className="form-group">
                                 <label className="profile-label">300x300 Square PNG WITH NO BACKGROUND</label>
@@ -433,15 +442,12 @@ export function ProfileTab() {
                             <div className="form-group">
                                 <label className="profile-label">Display Name</label>
                                 <input
+                                    {...register("displayName")}
                                     type="text"
-                                    required
                                     className="modal-input"
                                     placeholder="Your display name"
-                                    value={formData.displayName}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, displayName: e.target.value })
-                                    }
                                 />
+                                {errors.displayName && <span className="form-error">{errors.displayName.message}</span>}
                             </div>
 
                             {/* IGN & Verification */}
@@ -450,18 +456,16 @@ export function ProfileTab() {
                                 <span className="profile-label warning">Note: Once a PUBG ID is verified, the PUBG ID cannot be changed but the IGN can be updated.</span>
                                 <div className="ign-input-group">
                                     <input
+                                        {...register("ign")}
                                         type="text"
-                                        required
                                         className="modal-input"
                                         placeholder="Enter IGN"
-                                        value={formData.ign}
-                                        onChange={handleIgnChange}
                                     />
                                     <button
                                         type="button"
                                         className={`verify-button ${isIgnVerified ? "verified" : ""}`}
                                         disabled={
-                                            verifyingIgn || !formData.ign.trim() || isIgnVerified
+                                            verifyingIgn || !currentIgn?.trim() || isIgnVerified
                                         }
                                         onClick={handleVerifyIgn}
                                     >
@@ -472,16 +476,17 @@ export function ProfileTab() {
                                                 : "Verify IGN"}
                                     </button>
                                 </div>
+                                {errors.ign && <span className="form-error">{errors.ign.message}</span>}
                             </div>
 
-                            {formData.pubgId && (
+                            {currentPubgId && (
                                 <div className="form-group">
                                     <label className="profile-label">PUBG ID (Auto-verified)</label>
                                     <input
                                         type="text"
                                         disabled
                                         className="modal-input disabled"
-                                        value={formData.pubgId}
+                                        value={currentPubgId}
                                     />
                                 </div>
                             )}
@@ -489,35 +494,29 @@ export function ProfileTab() {
                             <div className="form-group">
                                 <label className="profile-label">Discord Username</label>
                                 <input
+                                    {...register("discordUsername")}
                                     type="text"
-                                    required
                                     className="modal-input"
                                     placeholder="username#0000"
-                                    value={formData.discordUsername}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, discordUsername: e.target.value })
-                                    }
                                 />
+                                {errors.discordUsername && <span className="form-error">{errors.discordUsername.message}</span>}
                             </div>
 
                             <div className="form-group">
                                 <label className="profile-label">Country</label>
                                 <input
+                                    {...register("country")}
                                     type="text"
-                                    required
                                     className="modal-input"
                                     placeholder="Country"
-                                    value={formData.country}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, country: e.target.value })
-                                    }
                                 />
+                                {errors.country && <span className="form-error">{errors.country.message}</span>}
                             </div>
 
                             <div className="modal-actions">
                                 <button
                                     type="button"
-                                    className="profile-action-button secondary"
+                                    className="profile-action-button danger"
                                     onClick={() => setIsModalOpen(false)}
                                 >
                                     Cancel
@@ -525,7 +524,8 @@ export function ProfileTab() {
                                 <button
                                     type="submit"
                                     className="edit-profile submit-btn"
-                                    disabled={!isFormValid || submitting}
+                                    // Submit button relies on Yup validation (isValid) and successful API verification
+                                    disabled={!isValid || !isIgnVerified || submitting}
                                 >
                                     {submitting ? "Saving..." : "Save Profile"}
                                 </button>

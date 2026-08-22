@@ -6,7 +6,7 @@ const {
   updateTournament,
   deleteTournament,
   getUpcomingTournaments
-} = require('../controllers/tournaments');
+} = require('../controllers/tournamentsController');
 
 const router = express.Router();
 

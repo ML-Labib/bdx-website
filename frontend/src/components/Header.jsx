@@ -1,19 +1,37 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { useAuth } from "./useAuth.jsx";
-import "./header.css";
+import { getAuthHeaders } from "../utils/authHeaders";
 import bdxLogo from "../assets/BDX_EXTREME.svg";
 import bdxTextLogo from "../assets/bd-extreme-text.svg";
 import bdxTextShortLogo from "../assets/bdx-text.svg";
+import { NotificationPanel } from "./NotificationPanel";
+import "./header.css";
 
 export function Header() {
     const { currentUser, logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [sidebarDropdownOpen, setSidebarDropdownOpen] = useState(false);
-    
+
     const dropdownRef = useRef(null);
     const sidebarDropdownRef = useRef(null);
+    const notificationRef = useRef(null);
+    const sidebarRef = useRef(null);
+
+    const [notificationOpen, setNotificationOpen] = useState(false);
+
+
+    const [hasNotification, setHasNotification] = useState(false);
+
+    const handleNotificationClose = () => {
+        setNotificationOpen(false);
+    };
+
+    const handleNotificationsRead = () => {
+        setHasNotification(false);
+    };
+
 
     const handleLogout = async () => {
         try {
@@ -23,19 +41,19 @@ export function Header() {
             console.error("Logout error:", error);
         }
     };
-
     // Helper to close menus on navigation
     const closeAllMenus = () => {
         setIsOpen(false);
         setDropdownOpen(false);
         setSidebarDropdownOpen(false);
+        setNotificationOpen(false);
     };
 
     // 1. Automatically close mobile sidebar when window resizes to desktop screens
     useEffect(() => {
         if (typeof window === "undefined") return;
         const mq = window.matchMedia('(min-width: 1025px)');
-        
+
         const handleResize = (e) => {
             if (e.matches) setIsOpen(false);
         };
@@ -51,26 +69,95 @@ export function Header() {
 
     // 2. Close dropdowns on outside pointer down
     useEffect(() => {
-        function handleClickOutside(e) {
-            // Desktop dropdown
-            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        const handleClickOutside = (e) => {
+            const target = e.target;
+
+            // Desktop profile dropdown
+            if (
+                dropdownOpen &&
+                dropdownRef.current &&
+                !dropdownRef.current.contains(target)
+            ) {
                 setDropdownOpen(false);
             }
-            // Sidebar dropdown
-            if (sidebarDropdownRef.current && !sidebarDropdownRef.current.contains(e.target)) {
+
+            // Mobile profile dropdown
+            if (
+                sidebarDropdownOpen &&
+                sidebarDropdownRef.current &&
+                !sidebarDropdownRef.current.contains(target)
+            ) {
                 setSidebarDropdownOpen(false);
             }
-        }
+
+            // Notification panel
+            if (
+                notificationOpen &&
+                notificationRef.current &&
+                !notificationRef.current.contains(target)
+            ) {
+                handleNotificationClose();
+            }
+
+            // Mobile sidebar
+            if (
+                isOpen &&
+                sidebarRef.current &&
+                !sidebarRef.current.contains(target)
+            ) {
+                setIsOpen(false);
+                setSidebarDropdownOpen(false);
+            }
+        };
 
         document.addEventListener("pointerdown", handleClickOutside);
-        return () => document.removeEventListener("pointerdown", handleClickOutside);
-    }, []);
 
-    const handleSidebarOverlayClick = (e) => {
-        if (e.target === e.currentTarget) {
-            setIsOpen(false);
+        return () => {
+            document.removeEventListener(
+                "pointerdown",
+                handleClickOutside
+            );
+        };
+    }, [
+        dropdownOpen,
+        sidebarDropdownOpen,
+        notificationOpen,
+        isOpen,
+    ]);
+
+    useEffect(() => {
+        // 1. Define the async function inside the effect
+        const fetchUnreadNotifications = async () => {
+            try {
+                const headers = await getAuthHeaders(currentUser);
+                const response = await fetch("/api/notifications/unread", {
+                    method: "GET",
+                    headers,
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setHasNotification(data.hasUnread);
+                } else {
+                    console.error("Failed to fetch unread notifications");
+                }
+            } catch (error) {
+                console.error("Error fetching unread notifications:", error);
+            }
+        };
+
+        // 2. Only call it if we have a user
+        if (currentUser) {
+            fetchUnreadNotifications();
         }
-    };
+    }, [currentUser]);
+
+
+    // const handleSidebarOverlayClick = (e) => {
+    //     if (e.target === e.currentTarget) {
+    //         setIsOpen(false);
+    //     }
+    // };
 
     return (
         <nav className="header">
@@ -85,18 +172,8 @@ export function Header() {
                         </div>
                     </div>
                 </NavLink>
-
-                {/* Mobile Toggle Button */}
-                {!isOpen ? (
-                    <div className="menu" onClick={() => setIsOpen(true)}>
-                        <span className="material-symbols-outlined">menu</span>
-                    </div>
-                ) : (
-                    <div className="close-menu" onClick={() => setIsOpen(false)}>
-                        <span className="material-symbols-outlined">close</span>
-                    </div>
-                )}
             </div>
+
 
             {/* Desktop Navigation */}
             <div className="right-section">
@@ -106,6 +183,39 @@ export function Header() {
                     <NavLink to="/players" className="s-links"><span className="link-text">PLAYERS</span></NavLink>
                     <NavLink to="/about-us" className="s-links"><span className="link-text">ABOUT US</span></NavLink>
                 </div>
+            </div>
+
+            <div className="header-actions">
+
+                {/* ONE NOTIFICATION */}
+                {currentUser && (
+                    <div className="notification-wrapper" ref={notificationRef}>
+
+                        <button
+                            className={`notification-button ${hasNotification ? "has-notification" : ""
+                                }`}
+                            onClick={() => {
+                                setNotificationOpen((prev) => !prev);
+                            }}
+                            aria-label="Notifications"
+                            aria-expanded={notificationOpen}
+                        >
+                            <span className="material-symbols-outlined">
+                                notifications
+                            </span>
+                        </button>
+
+                        {notificationOpen && (
+                            <NotificationPanel
+                                // notifications={notifications}
+                                onClose={handleNotificationClose}
+                                onRead={handleNotificationsRead}
+
+                            />
+                        )}
+
+                    </div>
+                )}
 
                 {/* Desktop Profile / Login Menu */}
                 <div className="login-box" ref={dropdownRef}>
@@ -126,15 +236,15 @@ export function Header() {
 
                             {dropdownOpen && (
                                 <div className="dropdown">
-                                    <Link 
-                                        to="/my-activity" 
-                                        className="dropdown-item" 
+                                    <Link
+                                        to="/my-activity"
+                                        className="dropdown-item"
                                         onClick={closeAllMenus}
                                     >
                                         My activity
                                     </Link>
-                                    <button 
-                                        className="dropdown-item" 
+                                    <button
+                                        className="dropdown-item"
                                         onClick={handleLogout}
                                     >
                                         Log out
@@ -149,16 +259,29 @@ export function Header() {
                         </NavLink>
                     )}
                 </div>
+
+                {/* Mobile Toggle Button */}
+                <div className="menu" onClick={() => setIsOpen(true)}>
+                    <span className="material-symbols-outlined menu">menu</span>
+                </div>
+
             </div>
 
+
+
             {/* Mobile Sidebar */}
-            <div className={`side-bar ${isOpen ? "open" : ""}`} onClick={handleSidebarOverlayClick}>
-                <div className="side-bar-links">
-                    
+            <div className={`side-bar ${isOpen ? "open" : ""}`}>
+                <div className="close-menu" onClick={() => setIsOpen(false)}>
+                    <span className="material-symbols-outlined">close</span>
+                </div>
+
+                <div className="side-bar-links" ref={sidebarRef}>
+
                     {/* Mobile Profile / Login Container */}
                     <div className="sidebar-login-container" ref={sidebarDropdownRef}>
                         {currentUser ? (
                             <>
+
                                 <div className={`sidebar-profile-btn-wrap ${sidebarDropdownOpen ? "active" : ""}`}>
                                     <button
                                         className={`sidebar-profile-btn ${sidebarDropdownOpen ? "active" : ""}`}
@@ -173,16 +296,16 @@ export function Header() {
                                 </div>
 
                                 <div className={`sidebar-dropdown ${sidebarDropdownOpen ? "open" : ""}`}>
-                                    <Link 
-                                        to="/my-activity" 
-                                        className="sidebar-dropdown-item" 
+                                    <Link
+                                        to="/my-activity"
+                                        className="sidebar-dropdown-item"
                                         onClick={closeAllMenus}
                                     >
                                         My activity
                                     </Link>
 
-                                    <button 
-                                        className="sidebar-dropdown-item" 
+                                    <button
+                                        className="sidebar-dropdown-item"
                                         onClick={handleLogout}
                                     >
                                         Log out

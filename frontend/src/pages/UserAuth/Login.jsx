@@ -1,4 +1,3 @@
-import React from 'react';
 import { signInWithPopup, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { auth, googleProvider } from "./firebase";
@@ -15,9 +14,8 @@ const Login = () => {
     const signInWithGoogle = async () => {
         try {
             await setPersistence(auth, browserLocalPersistence);
-            const result = await signInWithPopup(auth, googleProvider);
+            await signInWithPopup(auth, googleProvider);
             localStorage.setItem(AUTH_LOGIN_TIMESTAMP_KEY, Date.now().toString());
-            console.log("User Info:", result.user);
             navigate(from, { replace: true });
         } catch (error) {
             console.error("Login Error:", error.message);

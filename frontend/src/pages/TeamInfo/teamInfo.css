@@ -1,9 +1,8 @@
-
 .team-info-bar {
     width: 100%;
     height: 50px;
     background: #292929;
-    
+
 }
 
 .team-info-bar-inner {
@@ -25,7 +24,7 @@
     font-size: 0.85rem;
     height: 100%;
     padding: 0 150px 0 16px;
-    
+
 
 }
 
@@ -38,6 +37,51 @@
     transform: translateY(-110px);
     color: #fff;
     background-color: var(--background-color);
+}
+
+.team-info-bar {
+    width: 100%;
+    height: 60px;
+    background: #292929;
+    transform: translateY(-110px);
+    color: #000;
+
+}
+
+.team-info-bar-inner {
+    width: min(1400px, calc(100% - 32px));
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 316px), 1fr));
+    margin: 0 auto;
+    /* Adjust side padding to match your layout */
+}
+
+/* .team-info-bar-inner span {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(310px, 1fr));
+    color: #fff;
+} */
+
+.team-info-bar-inner span {
+    display: flex;
+    align-items: center;
+    background: var(--primary-color);
+    color: var(--text-color);
+    height: 100%;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-align: left;
+    justify-content: left;
+    padding: 0 15px 0 16px;
+}
+
+.team-info-bar-text {
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    padding: 0;
+    text-align: left;
 }
 
 .team-hero {
@@ -79,7 +123,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 16px;
     box-shadow: 0 20px 45px rgba(0, 0, 0, 0.28);
 }
 
@@ -87,6 +131,8 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
+    border-radius: 100%;
+
 }
 
 .team-hero-details {
@@ -125,7 +171,7 @@
 
 .stat-card {
 
-    padding: 18px 20px 18px 0px;
+    padding: 18px 20px 18px 20px;
     min-height: 96px;
 }
 
@@ -143,15 +189,13 @@
 }
 
 .team-section {
-    padding: 32px;
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.12);
+    padding: 32px 0px;
 }
 
 .players-section,
 .coach-section {
     display: flex;
     flex-direction: column;
-    gap: 22px;
 }
 
 .section-header {
@@ -171,26 +215,26 @@
 .team-player-grid {
     display: grid;
     gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    /* grid-template-columns: repeat(auto-fit, minmax(316px, 1fr)); */
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 316px), 1fr));
 }
 
 .coach-section {
-        margin-top: 12px;
-        background-color: var(--background-color);
-        
-
-
+    background-color: var(--background-color);
 }
 
 .coach-card-list {
-    padding: 24px;;
-    background-color: white;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 316px), 1fr));
+    gap: 20px;
 }
 
 .coach-card {
-    display: flex;
     align-items: center;
     color: black;
+    background-color: white;
+    padding: 16px;
+
 
 
 }
@@ -198,12 +242,13 @@
 
 
 .coach-card h3 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     padding-bottom: 4px;
 }
 
 .coach-card p {
-    color: #000000;
+    color: var(--text-faded-color);
+    font-size: 0.9rem;
 }
 
 @media (max-width: 1024px) {
@@ -213,8 +258,8 @@
     }
 
     .team-page-logo {
-    width: 136px;
-    height: 136px;
+        width: 136px;
+        height: 136px;
     }
 
     .team-hero-details {
@@ -223,8 +268,14 @@
 
     .team-summary-stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        text-align: left;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
         column-gap: 100px;
+    }
+
+    .team-info-bar {
+        height: 50px;
     }
 }
 
@@ -233,25 +284,28 @@
         margin: 0;
         width: 100%;
     }
+
+
     .team-hero {
         padding: 16px 0px;
     }
+
     .team-hero-inner {
         width: 100%;
     }
-    .team-section {
-        padding: 24px;
-    }
+
 
     .team-summary-stats {
         grid-template-columns: 1fr;
         width: 100%;
-        padding: 24px;
+        padding: 12px;
         text-align: center;
-        
+        gap:0
+
 
     }
-    .team-name-wrapper{
+
+    .team-name-wrapper {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -272,7 +326,13 @@
     }
 
     .section-header h2 {
-    font-size: 1.25rem;
+        font-size: 1.25rem;
 
-}
+    }
+
+
+    .team-info-bar-inner {
+        grid-template-columns: repeat(2, 50%);
+        margin: 0;
+    }
 }

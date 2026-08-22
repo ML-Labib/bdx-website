@@ -39,11 +39,10 @@
 }
 
 .player-details {
-    /* display: grid;
-    grid-template-columns: repeat(3, 1fr); */
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* display: flex;
     /* justify-content: space-evenly; */
-    gap: 60px;
 
 }
 
@@ -100,9 +99,11 @@
 }
 
 .player-name-wrapper {
-    width: 100%;
-    display: flex;
+    display: inline-flex;
+    align-items: center;
+    flex-grow: 0;
     gap: 16px;
+    position: relative;
 }
 
 .player-team-logo-wrapper {
@@ -132,27 +133,18 @@
     display: inline-block;
 }
 
-.player-name::after {
-    content: "";
-    width: 0%;
-    display: block;
-    position: absolute;
-    height: 4px;
-    background-color: var(--primary-color);
-    transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
-}
-
-.player-title-row:hover .player-name::after {
-    width: 100%;
-}
 
 .player-ign {
     font-size: 2rem;
     margin: 0;
     color: #fff;
+    position: relative;
+    display: inline-block;
 }
 
-.player-ign::after {
+
+
+.player-name-wrapper::after {
     content: "";
     width: 0%;
     display: block;
@@ -164,7 +156,7 @@
     transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
-.player-title-row:hover .player-ign::after {
+.player-name-wrapper:hover::after {
     width: 100%;
 }
 
@@ -176,7 +168,7 @@
 
 .player-summary-stats {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     justify-content: space-between;
 }
 
@@ -214,7 +206,7 @@
     padding: 0 150px 0 16px;
 }
 
-.section-header{
+.section-header {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -232,7 +224,9 @@
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.65);
     letter-spacing: 0.09em;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    margin-top: 10px;
+
 }
 
 .stat-card>strong {
@@ -454,6 +448,10 @@
         text-align: center;
     }
 
+    .player-hero {
+        padding: 0;
+    }
+
     .hero-avatar-block {
         padding: 0;
     }
@@ -466,8 +464,9 @@
     }
 
     .player-details {
-        flex-direction: column;
-        gap: 0;
+        grid-template-columns: 1fr;
+        gap:16px;
+        margin: 16px 0;
     }
 
     .player-data {
@@ -477,6 +476,7 @@
 
     .player-summary-stats {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+
     }
 
     .player-title-row {
@@ -500,9 +500,6 @@
         padding: 0 100px 0 12px;
     }
 
-    .stat-card {
-        padding-bottom: 0;
-    }
 
     .experience-table th:nth-child(1) {
         left: 0;
@@ -626,7 +623,7 @@
     }
 
     .player-hero {
-        padding: 24px 16px;
+        padding: 24px 0;
     }
 
     .player-section {
@@ -663,11 +660,11 @@
         width: calc(100% - 200px - 24px);
         left: 200px;
     }
-
+/* 
     .player-details {
         flex-direction: column;
 
-    }
+    } */
 
     .player-summary-stats {
         flex-direction: column;
@@ -688,6 +685,10 @@
 
     .player-ign {
         font-size: 1.5rem;
+    }
+
+    .player-title-row {
+        margin-bottom: 16px;
     }
 
 }

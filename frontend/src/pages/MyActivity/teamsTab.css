@@ -1,330 +1,267 @@
-.team-wrap {
+/* TeamTab.css - Inherits design tokens from profileTab.css */
+
+.team-subtext {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.team-view-stack {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    min-height: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 60px;
+    gap: 24px;
 }
 
-.team-info {
-    background-image: url("/src/assets/profileBG.jpg");
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100%;
-    max-width: 100%;
-    min-height: 300px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-    flex-grow: 1;
-    align-self: stretch;
-    box-sizing: border-box;
-    margin-top: 64px;
-    gap: clamp(12px, 2vw, 50px);
+.team-logo-frame {
+    aspect-ratio: 1 / 1;
 }
 
-.team-edit-icon {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    background: rgba(0, 0, 0, 0.45);
-    color: #fff;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
+.team-owner-badge {
+    display: inline-block;
+    background: var(--primary-color);
+    font-size: 0.75rem;
+    color: var(--text-color);
+    padding: 2px 8px;
+    border: 1px solid #000000;
+    margin-top: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.team-logo-wrap {
-    position: relative;
-    cursor: pointer;
+/* Owner Controls Bar */
+.team-owner-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    /* grid-template-columns: repeat(3, minmax(140px, 200px)); */
+    justify-content: end;
+
+    gap: 5px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed #000000;
 }
 
-.team-logo-wrap img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
+
+
+.team-owner-controls button:only-child {
+    grid-column: -1;
 }
 
-.logo-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    opacity: 1;
-    pointer-events: none;
-}
-
-.team-details {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.teamNameInput {
-    font-size: 24px;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid #767676;
-    background: rgba(30, 30, 30, 0.8);
-    color: #fff;
-}
-
-.team-edit-actions {
+.team-header-actions {
     display: flex;
     gap: 8px;
-    align-items: center;
+    margin-left: auto;
+
 }
 
+.profile-action-button {
+    background: var(--primary-color);
+    color: var(--text-color);
+    padding: 8px 16px;
+    font-weight: 600;
+    border: 1px solid #000000;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
 
-.team-logo-wrap {
-    background-image: url("/src/assets/teamCardBg.png");
+/* Danger Action Button */
+.profile-action-button.danger {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+.profile-action-button.danger:hover {
+    background: #b91c1c;
+}
+
+/* Roster Section */
+.team-roster-section {
+    /* border: 1px solid #000000; */
+    /* padding: 20px; */
+    background: #ffffff;
+}
+
+/* .roster-header {
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+} */
+
+.invitations-container {
+    width: 100%;
+    margin-bottom: 30px;
+
+}
+
+.invitation-actions {
     display: flex;
-    justify-content: center;
+    gap: 8px;
+    /* margin-top: 8px; */
+}
+
+.roster-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-color);
+    text-transform: uppercase;
+}
+
+.roster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.roster-grid.invitations-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.roster-card {
+    display: flex;
     align-items: center;
-    border-radius: 50cap;
-    width: 200px;
-    height: 200px;
-    margin-right: 36px;
-
+    gap: 12px;
+    background: #1f2937;
+    padding: 10px 14px;
+    border: 1px solid #374151;
 }
 
-.team-logo-wrap img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
+.roster-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
     object-fit: cover;
-
+    border: 1px solid #000000;
 }
 
-.teamName {
-    font-size: 24px;
-    color: white;
-    font-weight: 700;
+.roster-meta {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-.team-container {
-    width: 100%;
-    max-width: 1050px;
-    margin: 0 auto;
-    padding: 16px;
-    box-sizing: border-box;
+.roster-meta strong {
+    color: #ffffff;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
-.team-header {
-    width: 100%;
+.roster-role {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+}
+
+/* Player Search Results */
+.search-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.search-result-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
-}
-
-.team-actions {
-    display: flex;
-    gap: 12px;
-}
-
-.btn {
-    background: #242526;
-    color: white;
-    border: 1px solid #3f3f3f;
-    border-radius: 8px;
+    background: #1f2937;
     padding: 8px 12px;
-    cursor: pointer;
+    border: 1px solid #374151;
 }
 
-.btn:hover {
-    background: #3f3f3f;
-}
-
-.btn.secondary {
-    background: #555;
-}
-
-.btn.danger {
-    background: #b7282f;
-}
-
-.btn.small {
-    padding: 4px 8px;
-    font-size: 0.8rem;
-}
-
-.team-edit-panel,
-.team-create-panel {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 14px;
-    border-radius: 12px;
-    margin-top: 16px;
+.result-user {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.team-edit-panel h3,
-.members-section h2,
-.add-member-form h3 {
-    margin: 0;
-    color: white;
-}
-
-.team-edit-panel label,
-.add-member-form input,
-.team-create-panel input {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    color: #fff;
-}
-
-.team-edit-panel input,
-.add-member-form input,
-.team-create-panel input {
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #aaa;
-    background: #1f1f21;
-    color: #fff;
-}
-
-.edit-buttons,
-.create-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.members-section {
-    margin-top: 24px;
-}
-
-.member-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px;
-    margin-top: 12px;
-}
-
-.member-card-square,
-.add-card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: #1b1c20;
-    border: 1px solid #333;
-    border-radius: 12px;
-    padding: 14px;
-    min-height: 250px;
     align-items: center;
-    justify-content: center;
-    text-align: center;
+    gap: 10px;
 }
 
-.member-card-square {
-    cursor: default;
-}
-
-.add-card {
-    cursor: pointer;
-    justify-content: center;
-    color: #ddd;
-    border: 2px dashed #555;
-}
-
-.add-card .add-icon {
-    font-size: 4rem;
-    line-height: 1;
-}
-
-.member-card-square img,
-.member-avatar-wrap img {
-    width: 100%;
-    height: 140px;
+.result-user img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     object-fit: cover;
-    border-radius: 8px;
 }
 
-.member-summary {
+.result-user strong {
+    color: #ffffff;
+    font-size: 0.85rem;
+}
+
+.result-user span {
+    color: #9ca3af;
+    font-size: 0.75rem;
+    margin-left: 4px;
+}
+
+/* Update roster card for flex layout */
+.roster-card {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    color: #fff;
+    align-items: center;
+    justify-content: space-between;
+    /* Pushes kick button to the right */
+    background: #1f2937;
+    padding: 10px 14px;
+    border: 1px solid #374151;
 }
 
-.member-actions {
+.roster-user-info {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    width: 100%;
-    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
 }
 
-.member-avatar-wrap {
-    position: relative;
-    width: 100%;
-    max-width: 220px;
+/* Kick Button Styling */
+.kick-button {
+    background: transparent;
+    color: #9ca3af;
+    border: none;
     cursor: pointer;
-}
-
-.member-avatar-wrap .logo-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    opacity: 0;
-    transition: opacity 0.2s ease;
+    padding: 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
 }
 
-.member-avatar-wrap:hover .logo-overlay {
-    opacity: 1;
+.kick-button:hover {
+    background: #dc2626;
+    color: #ffffff;
 }
 
-.add-member-form,
-.team-create-panel {
-    margin-top: 16px;
-    display: grid;
-    gap: 8px;
+.material-symbols-outlined {
+    font-size: 1.2rem;
 }
 
-.add-member-form.card-form {
-    background: rgba(8, 6, 9, 0.7);
-    border: 1px solid #444;
-    padding: 14px;
-    border-radius: 12px;
-}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .team-owner-controls {
+        flex-direction: column;
+    }
 
-.add-member-form.card-form input,
-.team-create-panel input,
-.teamNameInput,
-.team-edit-panel input {
-    width: 100%;
-}
+    .roster-grid {
+        grid-template-columns: 1fr;
+    }
 
-.no-team-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 280px;
-    color: #fff;
-    gap: 16px;
+    .team-owner-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .team-owner-controls {
+        padding: 4px;
+        margin-top: 0;
+        border-top: none;
+    }
+
+    .material-symbols-outlined {
+        font-size: 1rem;
+    }
+
 }

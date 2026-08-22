@@ -1,4 +1,4 @@
-import { Component, lazy, Suspense } from "react";
+import { useEffect, useState, Component, lazy, Suspense } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Header } from "./components/Header";
 import { AuthProvider } from "./components/AuthContext";
@@ -10,14 +10,13 @@ import './App.css';
 import { Tournament } from "./pages/Tournament/Tournament";
 const TeamGrid = lazy(() => import("./pages/Teams/TeamGrid").then(m => ({ default: m.TeamGrid })));
 const Players = lazy(() => import("./pages/Players/Players").then(m => ({ default: m.Players })));
-const PlayerGrid = lazy(() => import("./pages/Players/PlayerGrid").then(m => ({ default: m.PlayerGrid })));
 const AboutUs = lazy(() => import("./pages/AboutUs/AboutUs").then(m => ({ default: m.AboutUs })));
 const MyActivity = lazy(() => import("./pages/MyActivity/MyActivity").then(m => ({ default: m.MyActivity })));
 const TeamInfo = lazy(() => import("./pages/TeamInfo/TeamInfo").then(m => ({ default: m.TeamInfo })));
 const PlayerInfo = lazy(() => import("./pages/PlayerInfo/PlayerInfo").then(m => ({ default: m.PlayerInfo })));
 const TournamentInfo = lazy(() => import("./pages/TournamentInfo/TournamentInfo").then(m => ({ default: m.TournamentInfo })));
 const Login = lazy(() => import("./pages/UserAuth/Login")); // Default export
-
+const Admin = lazy(() => import("./pages/Admin/Admin").then(m => ({ default: m.Admin })));
 class ErrorBoundary extends Component {
     constructor(props) {
         super(props);
@@ -59,6 +58,55 @@ function RequireAuth({ children }) {
     return children;
 }
 
+function RequireAdmin({ children }) {
+    const { currentUser, loading } = useAuth();
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [checkingAdmin, setCheckingAdmin] = useState(true);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        if (currentUser) {
+            // getIdTokenResult() fetches custom claims attached to the user's JWT
+            currentUser.getIdTokenResult()
+                .then((idTokenResult) => {
+                    if (isMounted) {
+                        setIsAdmin(!!idTokenResult.claims.admin);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error verifying admin claim:", error);
+                    if (isMounted) setIsAdmin(false);
+                })
+                .finally(() => {
+                    if (isMounted) setCheckingAdmin(false);
+                });
+        } else {
+            setIsAdmin(false);
+            setCheckingAdmin(false);
+        }
+
+        return () => {
+            isMounted = false;
+        };
+    }, [currentUser]);
+
+    if (loading || checkingAdmin) {
+        return <Loader />;
+    }
+
+    if (!currentUser || !isAdmin) {
+        return (
+            <div className="empty-state admin-access-denied">
+                <h1>Access Denied</h1>
+                <p>You do not have permission to access this page.</p>
+            </div>
+        );
+    }
+
+    return children;
+}
+
 function App() {
     return (
         <ErrorBoundary>
@@ -67,16 +115,19 @@ function App() {
                 {/* Wrap Routes in Suspense to show Loader while chunk files download */}
                 <Suspense fallback={<Loader />}>
                     <Routes>
-                        <Route path="/" element={<div>Home {<Loader />}</div>} />
+                        <Route path="/" element={<div>Home</div>} />
                         <Route path="/tournament" element={<Tournament />} />
                         <Route path="/teams" element={<TeamGrid />} />
+                        <Route path="/teams/info/:teamId?" element={<TeamInfo />} />
                         <Route path="/players" element={<Players />} />
                         <Route path="/about-us" element={<AboutUs />} />
                         <Route path="/my-activity" element={<RequireAuth><MyActivity /></RequireAuth>} />
                         <Route path="/login" element={<Login />} />
-                        <Route path="/team-info" element={<TeamInfo />} />
-                        <Route path="/player-info" element={<PlayerInfo />} />
+                        <Route path="/player-info/:pubgId?" element={<PlayerInfo />} />
                         <Route path="/tournament-info/:id?" element={<TournamentInfo />} />
+                        
+                        <Route path="/admin" element={<RequireAuth><RequireAdmin><Admin /></RequireAdmin></RequireAuth>} />
+
                     </Routes>
                 </Suspense>
             </AuthProvider>

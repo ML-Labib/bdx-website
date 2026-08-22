@@ -4,7 +4,8 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     height: 395px;
     width: 100%;
-    cursor: pointer;
+    /* max-width: 310px; */
+
 }
 
 .player-card:hover {
@@ -54,6 +55,7 @@
     align-items: center;
     justify-content: center;
     border: 1px solid rgb(230, 230, 230);
+    cursor: pointer;
 }
 
 .team-logo img {
@@ -75,6 +77,8 @@
     position: relative;
     color: black;
     font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
 
 }
 
@@ -88,6 +92,7 @@
     transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
 
 }
+
 .player-card:hover .player-name::after {
     width: 100%;
 }
@@ -108,7 +113,7 @@
     text-transform: uppercase;
 }
 
-.player-team{
+.player-team {
     font-size: 14px;
     color: var(--text-color);
     font-weight: 700;
@@ -122,4 +127,11 @@
     padding: 6px 0px;
     border-top: 1px solid rgb(230, 230, 230);
     border-bottom: 1px solid rgb(230, 230, 230);
+}
+
+
+@media (max-width: 768px) {
+    .player-card-content {
+        padding: 32px 16px 20px 16px;
+    }
 }

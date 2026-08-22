@@ -21,16 +21,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    height: 188px;
+
+    /* height: 188px; */
+    /* height: 100%; */
+
     border-top: 1px solid rgb(230, 230, 230);
     border-left: 1px solid rgb(230, 230, 230);
     border-right: 1px solid rgb(230, 230, 230);
 }
 
 .team-card-image img {
-    max-width: 144px;
-    height: auto;
+    width: 144px;
+    height: 188px;
+    object-fit: contain;
 
 }
 
@@ -85,8 +88,8 @@
 @media (min-width: 768px) and (max-width: 1023px) {
     .team-card-image img {
         max-width: 112px;
-        height: auto;
-
+        height: 188px;
+        object-fit: contain;
     }
 
     .team-card-content h3 {
@@ -108,6 +111,13 @@
 
     .team-card-content p {
         font-size: 13px;
+
+    }
+
+    .team-card-image img {
+        width: 112px;
+        height: 188px;
+        object-fit: contain;
 
     }
 }

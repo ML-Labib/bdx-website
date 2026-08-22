@@ -11,14 +11,15 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  * Uploads a cropped 300x300 PNG image Blob to Supabase Storage ('bdx-bucket')
  * 
  * @param {Blob} blob - PNG Blob from cropUtils
- * @param {string} userId - User identifier string
+ * @param {string} identifier - User or team identifier string
+ * @param {string} [folder='players'] - Storage folder, e.g. 'players' or 'teams'
  * @returns {Promise<string>} Public URL of saved PNG avatar
  */
-export const uploadAvatarToSupabase = async (blob, userId) => {
+export const uploadAvatarToSupabase = async (blob, identifier, folder = 'players') => {
     if (!blob) throw new Error("No image blob provided for upload.");
 
     // Save with .png extension
-    const fileName = `players/${userId}-${Date.now()}.png`;
+    const fileName = `${folder}/${identifier}-${Date.now()}.png`;
 
     const { data, error: uploadError } = await supabase.storage
         .from('bdx-bucket')

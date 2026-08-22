@@ -30,48 +30,149 @@
     gap: 16px;
     max-width: 1400px;
     width: 100%;
-    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
+.team-filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 32px 40px;
+    background: #ffffff;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.search-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 15px;
+}
+
+.search-wrap select {
+    background: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid black;
+    padding: 8px 12px;
+    border-radius: 4px;
+
+}
+
+.search-group {
+    display: flex;
+    align-items: center;
+    position: relative;
+    border-bottom: 2px solid black;
+    transition: all 0.2s ease-in-out;
+
+}
+
+.material-symbols-outlined {
+    font-size: 24px;
+    border-radius: 50%;
+    padding: 5px;
+    transition: all 0.2s ease-in-out;
+
+}
+
+.search-group input {
+    border: none;
+    background: transparent;
+    padding: 10px 0;
+    font-size: 15px;
+    outline: none;
+    color: var(--text-fade-color);
+}
+
+.search-group:hover {
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.search-group:hover .material-symbols-outlined {
+    background-color: var(--primary-color);
+}
+
+
+.search-group input {
+    min-width: 320px;
+    padding-right: 35px;
+}
+
+.search-icon {
+    position: absolute;
+    right: 8px;
+    font-size: 22px;
+    color: #111;
+    pointer-events: none;
+}
+
+
+
+@media (max-width: 1024px) {
     .player-section-wrap {
-        padding: 40px 28px;
+        padding: 30px 20px;
     }
-
-
 }
 
 
-@media (max-width: 767px) {
-    .team-filters {
-        padding: 24px 0px;
-        align-items: stretch;
+@media (max-width: 768px) {
+    .player-section-wrap {
+        padding: 20px 10px;
     }
 
-    .search-group {
-        justify-content: center;
-        width: 100%;
 
+    .team-filters {
+        gap: 0;
+        padding: 0;
+        flex-wrap: wrap;
+        width: 100%;
     }
 
     .search-wrap {
-        padding: 0 20px;
+        flex-direction: column;
+        padding-bottom: 5px;
     }
+
+
+
+
+    .material-symbols-outlined {
+        font-size: 24px;
+        border-radius: 50%;
+        padding: 5px;
+        transition: all 0.2s ease-in-out;
+
+    }
+
 
     .search-group input {
-        min-width: unset;
-        font-size: 16px;
-        flex-grow: 1;
+        width: min(100%, 320px);
+        padding-right: 10px;
     }
 
-    .player-grid {
-        align-items: stretch;
-        width: 100%;
-        gap: 8px;
+    .search-icon {
+        position: absolute;
+        right: 8px;
+        font-size: 22px;
+        color: #111;
+        pointer-events: none;
     }
 
-    .player-section-wrap {
-        padding: 40px 16px;
+    .search-wrap select {
+        padding: 4px 6px;
+
     }
 
+    .search-group {
+        padding-top: 5px;
+
+    }
+
+    .team-filters{
+        padding: 4px 8px;
+        gap: 4px;
+    }
 }

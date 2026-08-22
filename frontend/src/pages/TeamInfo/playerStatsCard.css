@@ -19,27 +19,30 @@
     background-size: cover;
     background-repeat: no-repeat;
     position: relative;
-    min-height: 220px;
+    max-height: 220px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    margin-top: 8px;
 }
 
 .player-stats-image img {
-    width: auto;
-    max-width: 100%;
     height: 220px;
-    object-fit: cover;
+    object-fit: scale-down;
 }
 
-.player-stats-meta {
-    padding: 24px 22px 12px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+.player-stat-group {
+    padding: 32px;
+}
+
+
+.player-stats-meta{
+    margin-bottom: 20px;
 }
 
 .player-stats-meta h3 {
-    margin: 0 0 10px;
+    margin-bottom: 8px;
     font-size: 1.15rem;
     color: #111;
 }
@@ -47,31 +50,44 @@
 .player-stats-meta p {
     margin: 0;
     color: #6f7280;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .player-stats-body {
     display: grid;
-    gap: 12px;
-    padding: 18px 22px 24px;
 }
 
 .player-stats-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 6px 0px;
     border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.player-stats-row:last-child {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .player-stats-row span {
     color: #858a96;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    font-weight: 700;
 }
 
 .player-stats-row strong {
     color: #111;
     font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+    .player-stat-group {
+    padding: 24px 32px;
+}
+.player-stats-image {
+    max-height: 192px;
+}
+
 }

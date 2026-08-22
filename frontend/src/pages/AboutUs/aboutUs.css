@@ -17,11 +17,14 @@
 
 .supreme-leaders-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
+
+    /* grid-template-columns: repeat(auto-fit, min(100%, 310px)); */
     gap: 32px;
     align-items: start;
-    /* justify-content: center; */
-    /* justify-items: center; */
+    /* place-items: center; */
+    justify-content: center;
+    ;
 }
 
 .leader {

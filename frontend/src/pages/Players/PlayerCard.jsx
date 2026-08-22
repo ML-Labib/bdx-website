@@ -8,8 +8,8 @@ export function PlayerCard({ player }) {
         <div className="player-card">
             <div className="player-card-image">
                 <img
-                    src={ player.playerImage || defaultProfile}
-                    alt={player.name}
+                    src={ player.picture || defaultProfile}
+                    alt={player.displayName}
                     onError={(event) => {
                         event.currentTarget.onerror = null;
                         event.currentTarget.src = defaultProfile;
@@ -19,12 +19,12 @@ export function PlayerCard({ player }) {
 
             <div className="player-card-content">
                 <div className="team-logo">
-                    <img src={player.teamLogo} alt={player.team} />
+                    <img src={player.teamLogo || defaultProfile} alt={player.teamName || "No team"} />
                 </div>
-                <Link to={`/player-info`}>
+                <Link to={`/player-info/${player.pubgId}`}>
                     <h3 className="player-name-wrap">
                         <span className="player-name">
-                            {player.name}
+                            {player.ign}
                         </span>
                     </h3>
                 </Link>
@@ -34,7 +34,7 @@ export function PlayerCard({ player }) {
                             <span>Team</span>
                         </div>
                         <p className="player-team">
-                            {player.team}
+                            {player.teamName || "Free Agent"}
                         </p>
                     </div>
                     <div className="player-nationality-wrap">
@@ -42,7 +42,7 @@ export function PlayerCard({ player }) {
                             <span>Nationality</span>
                         </div>
                         <p className="player-team">
-                            {player.nationality}
+                            {player.country}
                         </p>
                     </div>
 

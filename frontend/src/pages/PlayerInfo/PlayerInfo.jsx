@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import { SubHeader } from "../../components/SubHeader";
 import { Link } from "react-router-dom";
 import "./playerInfo.css";
@@ -139,10 +140,53 @@ const playerExperience = [
 ];
 
 export const PlayerInfo = () => {
+    const { pubgId } = useParams();
     const tableRef = useRef(null);
     const dragState = useRef({ active: false, startX: 0, startScroll: 0 });
     const [sliderValue, setSliderValue] = useState(0);
     const [sliderMax, setSliderMax] = useState(0);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [playerInfo, setPlayerInfo] = useState(null);
+
+    const fetchPlayerInfo = useCallback(async () => {
+        if (!pubgId) return;
+
+        try {
+            setLoading(true);
+            setError(null);
+
+            // Added leading slash so it targets the root /api proxy/server correctly
+            const response = await fetch(`/api/profile/pubg/${pubgId}`);
+
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                const text = await response.text();
+                throw new Error(`Server returned non-JSON response: ${text.slice(0, 80)}...`);
+            }
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch player info");
+            }
+
+            const data = await response.json();
+            setPlayerInfo(data);
+
+        } catch (err) {
+            console.error("Error fetching player info:", err);
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }, [pubgId]);
+
+    useEffect(() => {
+        fetchPlayerInfo();
+    }, [fetchPlayerInfo]);
+
+
+
+
 
     useEffect(() => {
         const updateMax = () => {
@@ -222,9 +266,14 @@ export const PlayerInfo = () => {
         stopDraggingGlobal(event);
     };
 
+    if (loading) {
+        return <div className="loading-state">Loading player information...</div>;
+    }
+    if (error) {
+        return <div className="error-state">Error: {error}</div>;
+    }
     return (
         <>
-            
             <SubHeader subTitle="" />
             <div className="player-info-container">
                 <section className="player-hero">
@@ -235,8 +284,8 @@ export const PlayerInfo = () => {
                             <div className="hero-avatar-block">
                                 <div className="player-avatar">
                                     <img
-                                        src="https://ybnzezsvnqdzbszjfuku.supabase.co/storage/v1/object/sign/bdx-bucket/players/Labib-no-bg.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hMTQ4YmE3Ni05ZTM1LTQ0N2ItYjdlZS0yNmQ5M2Y2NWFlZjEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZHgtYnVja2V0L3BsYXllcnMvTGFiaWItbm8tYmcucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4MzAzNzI2MCwiZXhwIjoyMDk4Mzk3MjYwfQ.d6zF6czgzQ3-tK7FKKmW8-99TpAN2WtJWEviVOHjkhU"
-                                        alt="KerakTMz"
+                                        src={playerInfo?.picture}
+                                        alt={playerInfo?.ign || "Player Avatar"}
                                     />
                                 </div>
                             </div>
@@ -246,11 +295,11 @@ export const PlayerInfo = () => {
                                 <div className="player-title-row">
                                     <div className="player-name-wrapper">
                                         <Link to="/team-info">
-                                        <div className="player-team-logo-wrapper">
-                                        <img src="https://wstatic-prod-boc.krafton.com/common/team/20250317/aZIXMx7n/55.png" alt="" className="player-team-logo" />
-                                        </div>
+                                            <div className="player-team-logo-wrapper">
+                                                <img src="https://wstatic-prod-boc.krafton.com/common/team/20250317/aZIXMx7n/55.png" alt="" className="player-team-logo" />
+                                            </div>
                                         </Link>
-                                        <h2 className="player-ign">SAiNT ViLLAiN</h2>
+                                        <h2 className="player-ign">{playerInfo?.ign || "Player Name"}</h2>
                                     </div>
                                 </div>
 
@@ -259,13 +308,13 @@ export const PlayerInfo = () => {
                                     <div className="stat-card">
                                         <span className="stat-label">Name/Country</span>
 
-                                        <strong >ML Labib / Bangladesh</strong>
+                                        <strong >{playerInfo?.displayName || "-----"} / {playerInfo?.country || "Unknown"}</strong>
 
                                     </div>
                                     <div className="stat-card">
 
                                         <span className="stat-label">Latest Tournament</span>
-                                        <strong>PUBG Americas Series 6</strong>
+                                        <strong>{playerInfo?.latestTournament || "-----"}</strong>
                                     </div>
                                 </div>
 
@@ -273,15 +322,15 @@ export const PlayerInfo = () => {
 
                                     <div className="stat-card">
                                         <span className="stat-label">Avg. Kill</span>
-                                        <strong>0.83</strong>
+                                        <strong>{playerInfo?.avgKills || "-----"}</strong>
                                     </div>
                                     <div className="stat-card">
                                         <span className="stat-label">Avg. Damage</span>
-                                        <strong>178.26</strong>
+                                        <strong>{playerInfo?.avgDamage || "-----"}</strong>
                                     </div>
                                     <div className="stat-card">
                                         <span className="stat-label">Avg. Survival Time</span>
-                                        <strong>20:37</strong>
+                                        <strong>{playerInfo?.avgSurvivalTime || "-----"}</strong>
                                     </div>
                                 </div>
                             </div>

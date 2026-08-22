@@ -151,11 +151,14 @@ export function TournamentTable() {
                                                 <div key={i}>{date}</div>
                                             ))}
                                         </td>
+                                        
 
                                         <td className="td-status">
+                                            <Link to={`/tournament-info/${item._id || item.id}`} state={{ tournament: item, status: status }} className="status-link">
                                             <span className={`status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`}>
                                                 {status}
                                             </span>
+                                            </Link>
                                         </td>
                                     </tr>
                                 );
@@ -195,7 +198,7 @@ export function TournamentTable() {
                         ) : (
                             tournaments.map((item) => {
                                 const title = item.title || item.name || 'Untitled Tournament';
-                                const prize = item.prize || 'TBD';
+                                const prize = item.prize || '-';
                                 const status = getTournamentStatus(item);
                                 const scheduleLines = formatSchedule(item);
 
@@ -217,7 +220,7 @@ export function TournamentTable() {
                                                 <div className="row-details">
                                                     <div className="price-details">
                                                         <span className="label">MODE:</span>
-                                                        <span className="value">{item.gameMode || 'TBD'}</span>
+                                                        <span className="value">{item.gameMode || '-'}</span>
                                                     </div>
                                                     <div className="price-details">
                                                         <span className="label">Prize:</span>
@@ -242,13 +245,19 @@ export function TournamentTable() {
                 </table>
             </div>
 
-            {/* Bottom Loader when fetching additional pages ("More" button click) */}
             {loading && tournaments.length > 0 && (
                 <div className="table-loading-cell">
                     <Loader />
                 </div>
             )}
 
+            {!loading && !hasMore && tournaments.length === 0 && (
+                <div className="emplty-state">
+                    No tournaments to load.
+                </div>
+            )}
+
+            {/* Bottom Loader when fetching additional pages ("More" button click) */}
             {!loading && hasMore && (
                 <div className="show-more">
                     <button className="show-more-btn" onClick={handleShowMore}>

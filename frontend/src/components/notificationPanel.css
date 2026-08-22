@@ -1,0 +1,283 @@
+.notification-panel {
+    position: absolute;
+    top: 60px;
+    right: 0;
+
+    width: min(380px, calc(100vw - 60px));
+    max-height: 520px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--primary-color);
+
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-top: 2px solid black;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+
+    z-index: 1100;
+
+    overflow: hidden;
+
+    animation: notification-open 180ms ease-out;
+}
+
+@keyframes notification-open {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.notification-button {
+    position: relative;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: transparent;
+    color: var(--text-faded-color);
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.notification-button.has-notification {
+    color: #e53935;
+
+    animation: notification-glow 1.5s ease-in-out infinite;
+}
+
+.notification-dot {
+    position: absolute;
+
+    top: 5px;
+    right: 5px;
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background-color: #e53935;
+
+    /* separates dot from the bell/header */
+    border: 2px solid var(--primary-color);
+
+    pointer-events: none;
+}
+
+@keyframes notification-glow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.45);
+    }
+
+    50% {
+        box-shadow: 0 0 0 7px rgba(229, 57, 53, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(229, 57, 53, 0);
+    }
+}
+
+
+/* HEADER */
+
+.notification-header {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 58px;
+    padding: 0 16px;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.notification-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+
+/* CLOSE BUTTON */
+
+.notification-close {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: transparent;
+    color: var(--text-faded-color);
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.notification-close:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    color: var(--text-color);
+}
+
+.notification-close .material-symbols-outlined {
+    font-size: 22px;
+}
+
+
+/* NOTIFICATION LIST */
+
+.notification-list {
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+}
+
+
+/* Individual notification */
+
+.notification-item {
+    position: relative;
+
+    width: 100%;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 12px;
+
+    padding: 14px 16px;
+
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+    background: transparent;
+
+    color: var(--text-color);
+
+    text-align: left;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+
+/* Icon */
+
+.notification-icon {
+    flex: 0 0 36px;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.notification-icon .material-symbols-outlined {
+    font-size: 20px;
+}
+
+
+/* Content */
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-message {
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 500;
+
+    word-break: break-word;
+}
+
+.notification-time {
+    margin-top: 5px;
+
+    font-size: 12px;
+    color: var(--text-faded-color);
+}
+
+
+/* Empty state */
+
+.notification-empty {
+    min-height: 180px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--text-faded-color);
+}
+
+.notification-empty .material-symbols-outlined {
+    font-size: 42px;
+    margin-bottom: 8px;
+}
+
+.notification-empty p {
+    margin: 0;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .notification-panel {
+        top: 55px;
+    }
+}

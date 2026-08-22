@@ -1,9 +1,27 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const TeamMemberSchema = new mongoose.Schema({
-    teamId: {type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true },
-    memberId: {type: mongoose.Schema.Types.ObjectId, ref: 'Profile', required: true },
-    role: {type: String, required: true, default: 'Player', enum: ['Captain', 'Player', 'Substitute']},
-}, {timestamps: true});
+const teamMemberSchema = new mongoose.Schema(
+    {
+        team: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Team",
+            required: true,
+        },
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Profile",
+            required: true,
+            unique: true,
+        },
+        role: {
+            type: String,
+            enum: ["owner", "captain", "player", "manager"],
+            default: "player",
+        },
+    },
+    { timestamps: true }
+);
 
-module.exports = mongoose.model('TeamMember', TeamMemberSchema);
+const TeamMember = mongoose.model("TeamMember", teamMemberSchema);
+
+module.exports = { TeamMember };
