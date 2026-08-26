@@ -210,7 +210,7 @@ export function TeamsTab({ onNavigateToProfile, profile, team, members = [], man
     const processImageUpload = async (teamName) => {
         if (imageToCrop && croppedAreaPixels) {
             const croppedBlob = await getCroppedImg(imageToCrop, croppedAreaPixels);
-            return await uploadAvatarToSupabase(croppedBlob, `team-${teamName}-${Date.now()}`, 'teams');
+            return await uploadAvatarToSupabase(croppedBlob, `${teamName}`, 'teams');
         }
         return DEFAULT_TEAM_LOGO;
     };

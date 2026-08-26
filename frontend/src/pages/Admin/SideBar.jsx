@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import "./sideBar.css";
 
 export function Sidebar() {
@@ -10,7 +11,7 @@ export function Sidebar() {
 
     const navItems = [
         { id: 'tournaments', label: 'Manage Tournaments', icon: "trophy" },
-        { id: 'leaderboards', label: 'Manage Leaderboard', icon: "leaderboard" },
+        { id: 'leaderboards', label: 'Manage Leaderboards', icon: "leaderboard" },
         { id: 'players', label: 'Manage Players', icon: "account_circle" },
         { id: 'teams', label: 'Manage Teams', icon: "groups" },
     ];
@@ -31,16 +32,17 @@ export function Sidebar() {
                 {/* Nav Menu */}
                 <nav className="sidebar-nav">
                     {navItems.map((item) => (
-                        <button
+                        <NavLink
                             key={item.id}
-                            className="nav-item"
-                            title={isCollapsed ? item.label : ''} // Tooltip when collapsed
+                            to={`manage-${item.id}`}
+                            className="nav-item" /* Move the class here! */
+                            title={isCollapsed ? item.label : ''}
                         >
                             <span className="material-symbols-outlined">
                                 {item.icon}
                             </span>
                             {!isCollapsed && <span className="nav-label">{item.label}</span>}
-                        </button>
+                        </NavLink>
                     ))}
                 </nav>
             </aside>

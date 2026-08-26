@@ -1,0 +1,1477 @@
+/* ============================================================
+   TOURNAMENT MANAGEMENT
+============================================================ */
+
+.tm-page {
+    width: 100%;
+    min-height: 100%;
+    color: #ffffff;
+}
+
+.tm-loading {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.tm-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.tm-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-color)
+}
+
+.tm-title-wrap h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.tm-section-icon {
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+
+.tm-primary-button,
+.tm-secondary-button,
+.tm-cancel-button,
+.tm-icon-button {
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.tm-primary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 10px 16px;
+
+    background: #eff923;
+    color: #000000;
+
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    border-radius: 4px;
+}
+
+.tm-primary-button:hover {
+    background: #ffffff;
+}
+
+.tm-primary-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tm-secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 9px 14px;
+    background: #181818;
+    border: 1px solid #333333;
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+.tm-secondary-button:hover {
+    border-color: #eff923;
+    color: #eff923;
+}
+
+.tm-cancel-button {
+    padding: 10px 18px;
+
+    background: #191919;
+    border: 1px solid #333333;
+    color: #ffffff;
+
+    border-radius: 4px;
+
+    font-weight: 600;
+}
+
+.tm-cancel-button:hover {
+    border-color: #666666;
+}
+
+.tm-icon-button {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #171717;
+    color: #aaaaaa;
+
+    border: 1px solid #2c2c2c;
+    border-radius: 4px;
+}
+
+.tm-icon-button:hover {
+    color: #eff923;
+    border-color: #eff923;
+}
+
+/* ============================================================
+   ALERTS
+============================================================ */
+
+.tm-alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 18px;
+    padding: 11px 14px;
+
+    border-radius: 4px;
+
+    font-size: 0.85rem;
+}
+
+.tm-alert-error {
+    background: rgba(220, 38, 38, 0.12);
+    border: 1px solid rgba(220, 38, 38, 0.35);
+    color: #ff7777;
+}
+
+.tm-alert-success {
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #6ee7a0;
+}
+
+/* ============================================================
+   MAIN LAYOUT
+============================================================ */
+
+.tm-layout {
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+
+.tm-sidebar {
+    background: #0d0d0d;
+    border: 1px solid #242424;
+    border-radius: 5px;
+
+    overflow: hidden;
+
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+}
+
+.tm-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 15px;
+
+    border-bottom: 1px solid #242424;
+}
+
+.tm-sidebar-header>div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tm-sidebar-label {
+    color: #777777;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.tm-sidebar-header strong {
+    color: #eff923;
+    font-size: 0.78rem;
+}
+
+.tm-tournament-list {
+    overflow-y: auto;
+    max-height: calc(100vh - 105px);
+}
+
+.tm-tournament-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.tm-tournament-list::-webkit-scrollbar-thumb {
+    background: #333333;
+}
+
+.tm-tournament-item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    padding: 13px 12px;
+
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid #1d1d1d;
+
+    color: #ffffff;
+    text-align: left;
+
+    cursor: pointer;
+
+    position: relative;
+}
+
+.tm-tournament-item:hover {
+    background: #151515;
+}
+
+.tm-tournament-item.selected {
+    background: #171717;
+}
+
+.tm-tournament-item.selected::before {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 3px;
+    background: #eff923;
+}
+
+.tm-list-logo {
+    width: 46px;
+    height: 46px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border-radius: 4px;
+    border: 1px solid #2e2e2e;
+
+    background: #111111;
+}
+
+.tm-list-info {
+    min-width: 0;
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tm-list-info strong {
+    overflow: hidden;
+
+    color: #ffffff;
+    font-size: 0.82rem;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.tm-list-info>span {
+    color: #777777;
+    font-size: 0.7rem;
+}
+
+.tm-list-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.tm-list-meta span {
+    padding: 2px 5px;
+
+    background: #222222;
+    color: #888888;
+
+    border-radius: 2px;
+
+    font-size: 0.59rem;
+}
+
+.tm-tournament-item.selected .tm-list-meta span {
+    color: #bcbcbc;
+}
+
+.tm-list-arrow {
+    color: #444444;
+    font-size: 18px;
+}
+
+.tm-tournament-item.selected .tm-list-arrow {
+    color: #eff923;
+}
+
+/* ============================================================
+   EMPTY SIDEBAR
+============================================================ */
+
+.tm-empty-sidebar {
+    padding: 40px 20px;
+
+    text-align: center;
+}
+
+.tm-empty-sidebar>.material-symbols-outlined {
+    color: #555555;
+    font-size: 35px;
+}
+
+.tm-empty-sidebar p {
+    margin: 10px 0 15px;
+
+    color: #777777;
+    font-size: 0.8rem;
+}
+
+/* ============================================================
+   CONTENT
+============================================================ */
+
+.tm-content {
+    min-width: 0;
+}
+
+.tm-no-selection,
+.tm-empty-state {
+    min-height: 300px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    background: #0d0d0d;
+    border: 1px solid #242424;
+    border-radius: 5px;
+
+    text-align: center;
+}
+
+.tm-no-selection>.material-symbols-outlined,
+.tm-empty-state>.material-symbols-outlined {
+    color: #444444;
+    font-size: 45px;
+}
+
+.tm-no-selection h2,
+.tm-empty-state h3 {
+    margin: 12px 0 5px;
+
+    font-size: 1rem;
+}
+
+.tm-no-selection p,
+.tm-empty-state p {
+    margin: 0;
+
+    color: #777777;
+    font-size: 0.8rem;
+}
+
+/* ============================================================
+   TOURNAMENT HERO
+============================================================ */
+
+.tm-tournament-card {
+    padding: 20px;
+
+    background: #0d0d0d;
+    border: 1px solid #242424;
+    border-radius: 5px;
+
+    margin-bottom: 25px;
+}
+
+.tm-tournament-main {
+    display: flex;
+    gap: 20px;
+}
+
+.tm-tournament-logo {
+    width: 120px;
+    height: 120px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border: 1px solid #333333;
+    border-radius: 5px;
+
+    background: #111111;
+}
+
+.tm-tournament-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.tm-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.tm-tier-badge {
+    display: inline-block;
+
+    margin-bottom: 5px;
+    padding: 3px 7px;
+
+    background: #eff923;
+    color: #000000;
+
+    border-radius: 2px;
+
+    font-size: 0.62rem;
+    font-weight: 800;
+}
+
+.tm-title-row h2 {
+    margin: 0;
+
+    font-size: 1.5rem;
+    line-height: 1.2;
+}
+
+.tm-description {
+    margin: 12px 0 20px;
+
+    max-width: 800px;
+
+    color: #888888;
+
+    font-size: 0.82rem;
+    line-height: 1.6;
+}
+
+.tm-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+
+    padding-top: 15px;
+
+    border-top: 1px solid #222222;
+}
+
+.tm-info-grid>div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tm-info-grid span {
+    color: #666666;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.tm-info-grid strong {
+    color: #dddddd;
+    font-size: 0.76rem;
+}
+
+/* ============================================================
+   SECTION TITLE
+============================================================ */
+
+.tm-section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 14px;
+}
+
+.tm-section-title-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tm-section-title h2 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.tm-section-count {
+    min-width: 25px;
+    height: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #1b1b1b;
+    color: #aaaaaa;
+
+    border-radius: 50%;
+
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+/* ============================================================
+   REGISTRATION STATISTICS
+============================================================ */
+
+.tm-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+
+    margin-bottom: 25px;
+}
+
+.tm-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 13px;
+
+    background: #0d0d0d;
+    border: 1px solid #252525;
+    border-radius: 4px;
+
+    color: #ffffff;
+
+    text-align: left;
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.tm-stat-card:hover {
+    border-color: #444444;
+}
+
+.tm-stat-card.active {
+    border-color: #eff923;
+}
+
+.tm-stat-icon {
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #181818;
+
+    border-radius: 4px;
+}
+
+.tm-stat-icon .material-symbols-outlined {
+    font-size: 19px;
+}
+
+.tm-stat-card>div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tm-stat-card strong {
+    font-size: 1.1rem;
+}
+
+.tm-stat-card span {
+    color: #777777;
+    font-size: 0.65rem;
+}
+
+/* status colors */
+
+.tm-stat-card.pending .tm-stat-icon {
+    color: #eab308;
+}
+
+.tm-stat-card.approved .tm-stat-icon {
+    color: #22c55e;
+}
+
+.tm-stat-card.rejected .tm-stat-icon {
+    color: #ef4444;
+}
+
+.tm-stat-card.withdrawn .tm-stat-icon {
+    color: #a855f7;
+}
+
+/* ============================================================
+   REGISTRATION SECTION
+============================================================ */
+
+.tm-registration-section {
+    background: #0d0d0d;
+    border: 1px solid #242424;
+    border-radius: 5px;
+
+    overflow: hidden;
+}
+
+.tm-registration-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 17px 18px;
+
+    border-bottom: 1px solid #242424;
+}
+
+.tm-registration-header h2 {
+    margin: 0 0 4px;
+
+    font-size: 0.95rem;
+}
+
+.tm-registration-header p {
+    margin: 0;
+
+    color: #666666;
+
+    font-size: 0.7rem;
+}
+
+.tm-registration-count {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #1b1b1b;
+    color: #eff923;
+
+    border-radius: 50%;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.tm-registration-list {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================================
+   REGISTRATION CARD
+============================================================ */
+
+.tm-registration-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 14px 18px;
+
+    border-bottom: 1px solid #1e1e1e;
+}
+
+.tm-registration-card:last-child {
+    border-bottom: 0;
+}
+
+.tm-registration-team {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.tm-registration-logo {
+    width: 48px;
+    height: 48px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    background: #111111;
+    border: 1px solid #2d2d2d;
+    border-radius: 4px;
+}
+
+.tm-registration-team-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.tm-registration-name {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.tm-registration-name strong {
+    font-size: 0.84rem;
+}
+
+.tm-registration-name>span {
+    color: #777777;
+    font-size: 0.7rem;
+}
+
+.tm-registration-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    color: #666666;
+
+    font-size: 0.65rem;
+}
+
+.tm-registration-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tm-registration-meta .material-symbols-outlined {
+    font-size: 14px;
+}
+
+.tm-registration-link {
+    display: inline-flex;
+    gap: 5px;
+    text-decoration: none;
+}
+
+.tm-registration-meta .material-symbols-outlined {
+    color: #666666;
+}
+
+/* ============================================================
+   STATUS BADGES
+============================================================ */
+
+.tournament-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    width: fit-content;
+
+    padding: 4px 7px;
+
+    border-radius: 3px;
+
+    font-size: 0.62rem;
+    font-weight: 700;
+}
+
+.tournament-status .material-symbols-outlined {
+    font-size: 13px;
+}
+
+.tournament-status.pending {
+    background: rgba(234, 179, 8, 0.1);
+    color: #eab308;
+}
+
+.tournament-status.approved {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.tournament-status.rejected {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.tournament-status.withdrawn {
+    background: rgba(168, 85, 247, 0.1);
+    color: #a855f7;
+}
+
+.tm-registration-right {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.tm-registration-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.tm-approve-button,
+.tm-reject-button,
+.tm-small-danger-button,
+.tm-small-approve-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 7px 10px;
+
+    border-radius: 3px;
+
+    font-family: inherit;
+    font-size: 0.68rem;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.tm-reject-button {
+    background: #ef4444;
+    color: #ffffff;
+    border: 1px solid #ef4444;
+}
+
+.tm-approve-button {
+    background: #eff923;
+    color: #000000;
+    border: 2px solid #eff923;
+}
+
+.tm-approve-button:hover {
+    background: #e3e0e0;
+    border-color: var(--primary-color);
+}
+
+.tm-reject-button,
+.tm-small-danger-button {
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid #3a2020;
+}
+
+.tm-reject-button:hover,
+.tm-small-danger-button:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+}
+
+.tm-small-approve-button {
+    background: transparent;
+    color: #22c55e;
+    border: 1px solid #21422b;
+}
+
+.tm-small-approve-button:hover {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: #22c55e;
+}
+
+.tm-approve-button:disabled,
+.tm-reject-button:disabled,
+.tm-small-danger-button:disabled,
+.tm-small-approve-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.tm-rejection-reason {
+    max-width: 180px;
+
+    color: #777777;
+
+    font-size: 0.63rem;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* ============================================================
+   EMPTY / LOADING
+============================================================ */
+
+.tm-small-loader {
+    min-height: 160px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ============================================================
+   MODAL
+============================================================ */
+
+.tm-modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 25px;
+
+    background: rgba(0, 0, 0, 0.78);
+
+    overflow-y: auto;
+}
+
+.tm-modal {
+    width: min(850px, 100%);
+
+    max-height: calc(100vh - 50px);
+
+    background: #0d0d0d;
+
+    border: 1px solid #303030;
+    border-radius: 5px;
+
+    overflow-y: auto;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.tm-modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 20px;
+
+    background: #0d0d0d;
+    border-bottom: 1px solid #242424;
+}
+
+.tm-modal-label {
+    color: #eff923;
+
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.tm-modal-header h2 {
+    margin: 3px 0 0;
+
+    font-size: 1.1rem;
+}
+
+.tm-modal-close {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #171717;
+    color: #aaaaaa;
+
+    border: 1px solid #2a2a2a;
+    border-radius: 4px;
+
+    cursor: pointer;
+}
+
+.tm-modal-close:hover {
+    color: #ffffff;
+    border-color: #555555;
+}
+
+/* ============================================================
+   FORM
+============================================================ */
+
+.tm-form {
+    padding: 20px;
+}
+
+.tm-form-section {
+    padding-bottom: 22px;
+    margin-bottom: 22px;
+
+    border-bottom: 1px solid #202020;
+}
+
+.tm-form-section:last-of-type {
+    border-bottom: 0;
+    margin-bottom: 0;
+}
+
+.tm-form-section .tm-section-title {
+    margin-bottom: 16px;
+}
+
+.tm-form-section .tm-section-title h2 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #aaaaaa;
+}
+
+.tm-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.tm-form-group {
+    min-width: 0;
+}
+
+.tm-form-group.tm-full {
+    grid-column: 1 / -1;
+}
+
+.tm-form-group label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #888888;
+
+    font-size: 0.68rem;
+    font-weight: 600;
+}
+
+.tm-form-group label span {
+    margin-left: 3px;
+    color: #eff923;
+}
+
+.tm-form-group input,
+.tm-form-group textarea,
+.tm-form-group select {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 10px 11px;
+
+    background: #151515;
+    color: #ffffff;
+
+    border: 1px solid #2c2c2c;
+    border-radius: 4px;
+
+    outline: none;
+
+    font-family: inherit;
+    font-size: 0.78rem;
+}
+
+.tm-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.tm-form-group input:focus,
+.tm-form-group textarea:focus,
+.tm-form-group select:focus {
+    border-color: #eff923;
+}
+
+.tm-form-group input::placeholder,
+.tm-form-group textarea::placeholder {
+    color: #555555;
+}
+
+.tm-form-group select {
+    cursor: pointer;
+}
+
+/* ============================================================
+   TOGGLE
+============================================================ */
+
+.tm-toggle {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-top: 16px;
+
+    color: #aaaaaa;
+
+    font-size: 0.75rem;
+
+    cursor: pointer;
+}
+
+.tm-toggle input {
+    display: none;
+}
+
+.tm-toggle-track {
+    width: 34px;
+    height: 19px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 2px;
+
+    box-sizing: border-box;
+
+    background: #282828;
+
+    border-radius: 20px;
+
+    transition: 0.2s ease;
+}
+
+.tm-toggle-track span {
+    width: 15px;
+    height: 15px;
+
+    background: #777777;
+
+    border-radius: 50%;
+
+    transition: 0.2s ease;
+}
+
+.tm-toggle input:checked+.tm-toggle-track {
+    background: #eff923;
+}
+
+.tm-toggle input:checked+.tm-toggle-track span {
+    transform: translateX(15px);
+    background: #000000;
+}
+
+/* ============================================================
+   MODAL ACTIONS
+============================================================ */
+
+.tm-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid #242424;
+}
+
+/* ============================================================
+   TOURNAMENT LOGO UPLOAD
+============================================================ */
+
+.tm-logo-upload {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    padding: 14px;
+
+    background: #151515;
+    border: 1px solid #2c2c2c;
+    border-radius: 4px;
+}
+
+.tm-logo-preview {
+    width: 80px;
+    height: 80px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    background: #0d0d0d;
+
+    border: 1px solid #333333;
+    border-radius: 4px;
+}
+
+.tm-logo-upload-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tm-logo-upload-content strong {
+    font-size: 0.78rem;
+}
+
+.tm-logo-upload-content>span {
+    color: #666666;
+    font-size: 0.65rem;
+}
+
+.tm-upload-button {
+    width: fit-content;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-top: 5px;
+    padding: 7px 10px;
+
+    background: #222222;
+    color: #ffffff;
+
+    border: 1px solid #333333;
+    border-radius: 3px;
+
+    font-size: 0.68rem;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.tm-upload-button:hover {
+    color: #eff923;
+    border-color: #eff923;
+}
+
+.tm-upload-button input {
+    display: none;
+}
+
+/* ============================================================
+   CROP MODAL
+============================================================ */
+
+.tm-crop-modal {
+    width: min(650px, 100%);
+
+    background: #0d0d0d;
+
+    border: 1px solid #303030;
+    border-radius: 5px;
+
+    overflow: hidden;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.tm-crop-container {
+    position: relative;
+
+    width: 100%;
+    height: 430px;
+
+    background: #050505;
+}
+
+.tm-crop-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 15px 20px;
+
+    border-bottom: 1px solid #242424;
+}
+
+.tm-crop-controls .material-symbols-outlined {
+    color: #777777;
+    font-size: 18px;
+}
+
+.tm-crop-controls input[type="range"] {
+    flex: 1;
+
+    accent-color: #eff923;
+
+    cursor: pointer;
+}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 1100px) {
+    .tm-layout {
+        grid-template-columns: 240px minmax(0, 1fr);
+    }
+
+    .tm-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tm-stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 800px) {
+    .tm-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .tm-sidebar {
+        position: static;
+        max-height: 300px;
+    }
+
+    .tm-tournament-list {
+        max-height: 235px;
+    }
+
+    .tm-tournament-item {
+        padding: 10px 12px;
+    }
+
+    .tm-tournament-main {
+        flex-direction: column;
+    }
+
+    .tm-tournament-logo {
+        width: 85px;
+        height: 85px;
+    }
+
+    .tm-title-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tm-title-row .tm-secondary-button {
+        width: fit-content;
+    }
+
+    .tm-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tm-registration-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .tm-registration-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 600px) {
+    .tm-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .tm-header .tm-primary-button {
+        width: 100%;
+    }
+
+    .tm-stat-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .tm-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tm-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tm-form-group.tm-full {
+        grid-column: auto;
+    }
+
+    .tm-modal-overlay {
+        padding: 10px;
+    }
+
+    .tm-modal {
+        max-height: calc(100vh - 20px);
+    }
+
+    .tm-form {
+        padding: 15px;
+    }
+
+    .tm-registration-header {
+        padding: 14px;
+    }
+
+    .tm-registration-card {
+        padding: 13px 14px;
+    }
+
+    .tm-registration-team {
+        width: 100%;
+    }
+
+    .tm-registration-right {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .tm-registration-actions {
+        width: 100%;
+    }
+
+    .tm-registration-actions button {
+        flex: 1;
+        justify-content: center;
+    }
+}

@@ -10,7 +10,7 @@
 
 
 .sidebar {
-    width: 240px;
+    width: 276px;
     /* Full expanded width */
     /* background-color: #1e1e2d; */
     color: var(--text-color);
@@ -66,7 +66,7 @@
 }
 
 .toggle-btn:hover {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Navigation Items */
@@ -91,6 +91,8 @@
     white-space: nowrap;
     transition: background-color 0.2s, color 0.2s;
     border-bottom: 1px solid black;
+    text-decoration: none;
+    text-transform: uppercase;
 }
 
 .nav-item:first-child {
@@ -127,3 +129,17 @@
 }
 
 
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 230px;
+    }
+
+
+    .nav-label {
+        font-size: 0.875rem;
+    }
+
+    .nav-item {
+        padding: 0.6rem 1rem;
+    }
+}

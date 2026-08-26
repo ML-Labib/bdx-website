@@ -148,6 +148,11 @@
     background-color: rgb(34,187,51);
     color: var(--text-color);
 }
+.status-badge.ongoing {
+    background-color: var(--text-color);
+    color: white;
+}
+
 .status-badge.registration-open {
     background-color: var(--primary-color);
     color: var(--text-color);

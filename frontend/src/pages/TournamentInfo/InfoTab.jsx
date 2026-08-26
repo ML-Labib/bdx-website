@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { TeamCard } from "../Teams/TeamCard";
 import { useAuth } from "../../components/useAuth.jsx";
@@ -9,11 +9,11 @@ export function InfoTab({ tournament }) {
     const [showTransactionForm, setShowTransactionForm] = useState(false);
     const [transactionId, setTransactionId] = useState("");
     const [showValidationError, setShowValidationError] = useState(false);
+    const [acceptedRegistration, setAcceptedRegistration] = useState([]);
     const alreadyRegistered = false;
     const registrationStatus = "Registered";
     const hasTeam = true;
     const hasPlayer = 7;
-
     const isRegistrationClosed = () => {
         if (!tournament?.registrationEndDate) return false;
         const today = new Date();
@@ -27,7 +27,7 @@ export function InfoTab({ tournament }) {
         }
 
 
-        
+
         setShowTransactionForm(true);
     };
 
@@ -44,78 +44,30 @@ export function InfoTab({ tournament }) {
         setShowValidationError(false);
     };
 
-    const RegisteredTeamsData = [
-        {
-            id: 1,
-            name: "+55 e-Sports",
-            region: "AMERICAS",
-            slot: "1",
-            logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
-        },
-        {
-            id: 2,
-            name: "010 Esports",
-            region: "EMEA",
-            slot: "2",
-            logo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-ZFORCE-TPNG.webp",
-        },
-        {
-            id: 3,
-            name: "17Gaming",
-            region: "ASIA",
-            slot: "3",
-            logo: "https://bd-extreme.com/wp-content/uploads/2026/02/BDX-VIPER.webp",
-        },
-        {
-            id: 4,
-            name: "4DOGZ",
-            region: "AMERICAS",
-            slot: "4",
-            logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
-        },
-        {
-            id: 5,
-            name: "7Royal",
-            region: "ASIA",
-            slot: "5",
-            logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
-        },
-        {
-            id: 6,
-            name: "Acend",
-            region: "EMEA",
-            slot: "6",
-            logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
-        },
-        {
-            id: 7,
-            name: "AlQadsiah",
-            region: "AMERICAS",
-            slot: "7",
-            logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
-        },
-        {
-            id: 8,
-            name: "Alter Ego",
-            region: "APAC",
-            slot: "8",
-            logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
-        },
-        {
-            id: 9,
-            name: "Anyone's Legend",
-            region: "APAC",
-            slot: "9",
-            logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
-        },
-        {
-            id: 10,
-            name: "Armory Gaming",
-            region: "APAC",
-            slot: "10",
-            logo: "https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png",
-        },
-    ];
+    const fetchRegisteredTeams = async () => {
+        try {
+            const response = await fetch(`/api/tournaments/${tournament._id}/registrations`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch registered teams");
+            }
+            const data = await response.json();
+
+            return data;
+        } catch (error) {
+            console.error("Error fetching registrations:", error);
+            return [];
+        }
+    };
+
+    useEffect(() => {
+        const getRegisteredTeams = async () => {
+            const teams = await fetchRegisteredTeams();
+            setAcceptedRegistration(teams);
+        };
+        getRegisteredTeams();
+    }, [tournament._id]);
+
+
     return (
         <div className="info-tab-container">
             <section className="info-tab-section">
@@ -243,12 +195,12 @@ export function InfoTab({ tournament }) {
                         <path d="M24 0 8.79 16H.095L0 15.899 15.114 0H24Z" fill="#000"></path>
                     </svg>
                     <h2>Registered Teams</h2>
-                    <p>10/16 Teams</p>
+                    <p>{acceptedRegistration.length}/{tournament?.totalTeams} Teams</p>
                 </div>
                 <div className="team-section">
                     <div className="team-grid">
-                        {RegisteredTeamsData.map((team) => (
-                            <TeamCard key={team.id} team={team} className="team-card-info" />
+                        {acceptedRegistration.map((registration) => (
+                            <TeamCard key={registration.teamId._id} team={registration.teamId} className="team-card-info" />
                         ))}
                     </div>
                 </div>

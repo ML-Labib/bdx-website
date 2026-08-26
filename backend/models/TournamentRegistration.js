@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const tournamentRegistrationSchema = new mongoose.Schema({
     tournamentId: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Tournament",
         required: true
     },
 
     teamId: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Team",
         required: true
     },
@@ -24,7 +24,10 @@ const tournamentRegistrationSchema = new mongoose.Schema({
         default: "PENDING"
     },
 
-    rejectionReason: String
+    reason: {
+        type: String,
+        default: null
+    }
 }, {
     timestamps: true
 });
@@ -36,6 +39,5 @@ tournamentRegistrationSchema.index(
 );
 
 
-const TournamentRegistration = mongoose.model("TournamentRegistration", tournamentRegistrationSchema);
+export const TournamentRegistration = mongoose.model("TournamentRegistration", tournamentRegistrationSchema);
 
-module.exports = { TournamentRegistration };

@@ -130,7 +130,11 @@ export function TournamentInfo() {
                                 <div className="tournament-title-row">
                                     <div className="tournament-name-wrapper">
                                         <h2 className="tournament-name">{tournament?.title || '-'}</h2>
+                                        <span className="tier-badge">
+                                            Tier {tournament?.tier || '-'}
+                                        </span>
                                     </div>
+    
                                 </div>
 
                                 <div className="tournament-details-info">
@@ -157,8 +161,8 @@ export function TournamentInfo() {
                                         <strong>{tournament?.participatingRegion || 'Global'}</strong>
                                     </div>
                                     <div className="stat-card">
-                                        <span className="stat-label">Game Mode</span>
-                                        <strong>{tournament?.gameMode || '-'}</strong>
+                                        <span className="stat-label">Mode</span>
+                                        <strong>{tournament?.mode || tournament?.GameMode || '-'}</strong>
                                     </div>
 
 

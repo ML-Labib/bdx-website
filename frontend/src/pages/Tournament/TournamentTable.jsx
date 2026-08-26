@@ -60,7 +60,7 @@ export function TournamentTable() {
         if (item.startDate && item.endDate) {
             const start = new Date(item.startDate).toLocaleDateString();
             const end = new Date(item.endDate).toLocaleDateString();
-            return [`${start} - ${end}`];
+            return [`${start}  ${end}`];
         }
 
         return ['TBD'];
@@ -143,7 +143,7 @@ export function TournamentTable() {
                                             </Link>
                                         </td>
 
-                                        <td className="td-prize">{item.gameMode}</td>
+                                        <td className="td-prize">{item?.gameMode || item?.mode}</td>
                                         <td className="td-prize">{prize}</td>
 
                                         <td className="td-schedule">
@@ -220,7 +220,7 @@ export function TournamentTable() {
                                                 <div className="row-details">
                                                     <div className="price-details">
                                                         <span className="label">MODE:</span>
-                                                        <span className="value">{item.gameMode || '-'}</span>
+                                                        <span className="value">{item.gameMode || item.mode || '-'}</span>
                                                     </div>
                                                     <div className="price-details">
                                                         <span className="label">Prize:</span>

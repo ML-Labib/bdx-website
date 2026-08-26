@@ -17,6 +17,12 @@ const PlayerInfo = lazy(() => import("./pages/PlayerInfo/PlayerInfo").then(m => 
 const TournamentInfo = lazy(() => import("./pages/TournamentInfo/TournamentInfo").then(m => ({ default: m.TournamentInfo })));
 const Login = lazy(() => import("./pages/UserAuth/Login")); // Default export
 const Admin = lazy(() => import("./pages/Admin/Admin").then(m => ({ default: m.Admin })));
+const ManageLeaderboards = lazy(() => import("./pages/Admin/ManageLeaderboards").then(m => ({ default: m.ManageLeaderboards })));
+const ManageTournaments = lazy(() => import("./pages/Admin/ManageTournaments").then(m => ({ default: m.ManageTournaments })));
+const ManagePlayers = lazy(() => import("./pages/Admin/ManagePlayers").then(m => ({ default: m.ManagePlayers })));  
+const ManageTeams = lazy(() => import("./pages/Admin/ManageTeams").then(m => ({ default: m.ManageTeams })));
+
+
 class ErrorBoundary extends Component {
     constructor(props) {
         super(props);
@@ -82,8 +88,12 @@ function RequireAdmin({ children }) {
                     if (isMounted) setCheckingAdmin(false);
                 });
         } else {
-            setIsAdmin(false);
-            setCheckingAdmin(false);
+            Promise.resolve().then(() => {
+                if (isMounted) {
+                    setIsAdmin(false);
+                    setCheckingAdmin(false);
+                }
+            });
         }
 
         return () => {
@@ -125,8 +135,19 @@ function App() {
                         <Route path="/login" element={<Login />} />
                         <Route path="/player-info/:pubgId?" element={<PlayerInfo />} />
                         <Route path="/tournament-info/:id?" element={<TournamentInfo />} />
-                        
-                        <Route path="/admin" element={<RequireAuth><RequireAdmin><Admin /></RequireAdmin></RequireAuth>} />
+
+                        <Route path="/admin" element={
+                            <RequireAuth><RequireAdmin>
+                                <Admin />
+                            </RequireAdmin></RequireAuth>} >
+
+                            <Route index element={<Navigate to="manage-tournaments" replace />} />
+
+                            <Route path="manage-tournaments" element={<ManageTournaments />} />
+                            <Route path="manage-leaderboards" element={<ManageLeaderboards />} />
+                            <Route path="manage-players" element={<ManagePlayers />} />
+                            <Route path="manage-teams" element={<ManageTeams />} />
+                        </Route>
 
                     </Routes>
                 </Suspense>

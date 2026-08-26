@@ -2,6 +2,7 @@
     padding: 0px 32px 32px 32px;
     color: var(--text-color);
 }
+
 .button-container {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -20,10 +21,12 @@
     margin-top: 32px;
     margin-bottom: 32px;
 }
+
 .info-tab-section {
     margin-top: 32px;
     margin-bottom: 32px;
 }
+
 .info-tab-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -43,7 +46,8 @@
     background-color: rgba(255, 255, 255, 1);
 }
 
-.info-tab-card.register-card, .info-tab-card.register-card h4 {
+.info-tab-card.register-card,
+.info-tab-card.register-card h4 {
     background-color: var(--primary-color);
     color: var(--text-color);
     text-align: center;
@@ -114,7 +118,8 @@
     gap: 16px;
     max-width: 1400px;
     width: 100%;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
+
 }
 
 .team-status-message {
@@ -138,14 +143,16 @@
 }
 
 .section-header>p {
-    font-size: 1.25rem;
+    font-size: 1rem;
     color: var(--text-color);
-    /* margin-top: 8px; */
+    margin-top: 8px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 8px;
+    padding: 4px;
     background-color: var(--primary-color);
     border-radius: 4px;
+    font-weight: 700;
     text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.3);
 
 }
 
@@ -169,9 +176,9 @@
     }
 
     .section-header>p {
-    font-size: .9rem;
-    padding: 4px;
+        font-size: .9rem;
+        padding: 4px;
 
-}
+    }
 
 }

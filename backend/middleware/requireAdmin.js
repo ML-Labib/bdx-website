@@ -8,7 +8,6 @@ exports.requireAdmin = (req, res, next) => {
     }
 
     // 2. Check for the admin custom claim
-    // (Adjust this if you used { role: 'admin' } instead of { admin: true })
     if (req.user.admin === true) {
         return next(); // They are an admin, proceed to the controller!
     }
