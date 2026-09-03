@@ -1,19 +1,17 @@
-const { Team } = require("../models/Team");
-const { TeamMember } = require("../models/TeamMembers");
-const { sendNotification } = require("../utils/notificationHelper");
-
-const Profile = require("../models/Profile");
+import { Team } from "../models/Team.js";
+import { TeamMember } from "../models/TeamMembers.js";
+import { sendNotification } from "../utils/notificationHelper.js";
+import { Profile } from "../models/Profile.js";
 
 const getProfileByUid = async (Uid) => {
     if (!Uid) {
         return null;
     }
-
     return Profile.findOne({ user: Uid });
 };
 
 // get All Teams
-exports.getAllTeams = async (req, res) => {
+export const getAllTeams = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 15;
@@ -46,7 +44,7 @@ exports.getAllTeams = async (req, res) => {
 };
 
 //get all team members
-exports.getTeamInfo = async (req, res) => {
+export const getTeamInfo = async (req, res) => {
     try {
         const { teamId } = req.params;
         const team = await Team.findById(teamId);
@@ -64,7 +62,7 @@ exports.getTeamInfo = async (req, res) => {
 };
 
 //get team by name
-exports.getTeamByName = async (req, res) => {
+export const getTeamByName = async (req, res) => {
     try {
         const { name } = req.params;
 
@@ -80,7 +78,7 @@ exports.getTeamByName = async (req, res) => {
 };
 
 // 1. Get Team Details
-exports.getUserTeam = async (req, res) => {
+export const getUserTeam = async (req, res) => {
     try {
         const profile = await getProfileByUid(req.user.uid);
         if (!profile) {
@@ -128,7 +126,7 @@ exports.getUserTeam = async (req, res) => {
 };
 
 // 2. Create Team
-exports.createTeam = async (req, res) => {
+export const createTeam = async (req, res) => {
     try {
         const { name, teamTag, country, logo } = req.body;
         const newTeam = await Team.create({ name, teamTag, country, logo: logo || "", owner: req.profile._id });
@@ -146,7 +144,7 @@ exports.createTeam = async (req, res) => {
 };
 
 // Update Team Logo
-exports.updateTeamLogo = async (req, res) => {
+export const updateTeamLogo = async (req, res) => {
     try {
         const { logo } = req.body;
         req.team.logo = logo;
@@ -164,7 +162,7 @@ exports.updateTeamLogo = async (req, res) => {
 
 
 // 4. Search Teams
-exports.searchTeams = async (req, res) => {
+export const searchTeams = async (req, res) => {
     try {
         const { query } = req.query;
         if (!query) return res.json([]);
@@ -184,7 +182,7 @@ exports.searchTeams = async (req, res) => {
 };
 
 // 5. Add Player
-exports.addTeamMember = async (req, res) => {
+export const addTeamMember = async (req, res) => {
     try {
         const { userId } = req.body;
         const { teamId } = req.params;
@@ -206,7 +204,7 @@ exports.addTeamMember = async (req, res) => {
     }
 };
 
-exports.removeTeamMember = async (req, res) => {
+export const removeTeamMember = async (req, res) => {
     try {
         const { memberId } = req.params;
 
@@ -241,7 +239,7 @@ exports.removeTeamMember = async (req, res) => {
     }
 };
 
-exports.leaveTeam = async (req, res) => {
+export const leaveTeam = async (req, res) => {
     try {
         await TeamMember.findOneAndDelete({ team: req.membership.team._id, user: req.membership.user });
 
@@ -268,7 +266,7 @@ exports.leaveTeam = async (req, res) => {
 };
 
 // Transfer Ownership
-exports.transferOwnership = async (req, res) => {
+export const transferOwnership = async (req, res) => {
     try {
         const { newOwnerId } = req.body;
         if (!newOwnerId) {
@@ -337,7 +335,7 @@ exports.transferOwnership = async (req, res) => {
 };
 
 // Disband Team
-exports.disbandTeam = async (req, res) => {
+export const disbandTeam = async (req, res) => {
     try {
         req.team.disbanded = true;
 
@@ -358,5 +356,21 @@ exports.disbandTeam = async (req, res) => {
             message: "Failed to disband team",
             error: error.message
         });
+    }
+};
+
+// get team member count
+export const getTeamMemberCount = async (req, res) => {
+    try {
+
+        const count = await TeamMember.countDocuments({ 
+            team: req.params.teamId, 
+            role: { $ne: "manager" } 
+        });
+
+        return res.status(200).json({ count });
+    } catch (error) {
+        console.error("Error getting team member count:", error);
+        return res.status(500).json({ error: "Failed to get team member count" });
     }
 };

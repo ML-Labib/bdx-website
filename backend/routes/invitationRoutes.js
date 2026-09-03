@@ -1,57 +1,49 @@
-const express = require("express");
+import express from "express";
+import * as invitationController from "../controllers/invitationController.js";
+import { requireAuth } from "../middleware/auth.js";
+import { requireTeamOwnership } from "../middleware/requireTeamOwnership.js";
+import { requireProfileOwnership } from "../middleware/requireProfileOwnership.js";
 
-const {
-    sendInvitation,
-    getReceivedInvitations,
-    getSentInvitations,
-    acceptInvitation,
-    rejectInvitation,
-    cancelInvitation,
-} = require("../controllers/invitationController");
-
-const { requireAuth } = require("../middleware/auth");
-const { requireTeamOwnership } = require("../middleware/requireTeamOwnership");
-const { requireProfileOwnership } = require("../middleware/requireProfileOwnership");
 const router = express.Router();
 
 router.post("/", requireAuth,
     requireTeamOwnership,
-    sendInvitation
+    invitationController.sendInvitation
 );
 
 router.get(
     "/received",
     requireAuth,
     requireProfileOwnership,
-    getReceivedInvitations
+    invitationController.getReceivedInvitations
 );
 
 router.get(
     "/sent",
     requireAuth,
     requireTeamOwnership,
-    getSentInvitations
+    invitationController.getSentInvitations
 );
 
 router.put(
     "/:invitationId/accept",
     requireAuth,
     requireProfileOwnership,
-    acceptInvitation
+    invitationController.acceptInvitation
 );
 
 router.put(
     "/:invitationId/reject",
     requireAuth,
     requireProfileOwnership,
-    rejectInvitation
+    invitationController.rejectInvitation
 );
 
 router.put(
     "/:invitationId/cancel",
     requireAuth,
     requireTeamOwnership,
-    cancelInvitation
+    invitationController.cancelInvitation
 );
 
-module.exports = router;
+export default router;

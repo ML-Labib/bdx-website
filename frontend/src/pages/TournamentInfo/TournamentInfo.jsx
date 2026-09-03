@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { MatchesTab } from "./MatchesTab";
 import { RankingTab } from "./RankingTab";
 import { StatsTab } from "./StatsTab";
-import { InfoTab } from "./InfoTab";
+import { InfoTab } from "./InfoTab.jsx";
 import { SubHeader } from "../../components/SubHeader";
 import { useLocation, useParams } from "react-router-dom";
 import { Loader } from "../../components/Loader";
+import { formatDate } from "../../utils/formantDateTime";
 import "./tournamentInfo.css";
 
 
@@ -142,7 +143,7 @@ export function TournamentInfo() {
                                     <div className="stat-card">
                                         <span className="stat-label">Schedule</span>
 
-                                        <strong>{tournament?.startDate && tournament?.endDate ? `${new Date(tournament.startDate).toLocaleDateString()} - ${new Date(tournament.endDate).toLocaleDateString()}` : 'TBD'}</strong>
+                                        <strong>{tournament?.startDate && tournament?.endDate ? `${formatDate(tournament.startDate)} - ${formatDate(tournament.endDate)}` : 'TBD'}</strong>
 
                                     </div>
                                     <div className="stat-card">
@@ -168,8 +169,8 @@ export function TournamentInfo() {
 
 
                                     <div className="stat-card">
-                                        <span className="stat-label">Tier</span>
-                                        <strong>{tournament?.tier || '-'}</strong>
+                                        <span className="stat-label">Match Time</span>
+                                        <strong>{tournament?.matchTime || '-'}</strong>
                                     </div>
                                 </div>
 

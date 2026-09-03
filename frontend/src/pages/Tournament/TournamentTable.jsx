@@ -60,10 +60,10 @@ export function TournamentTable() {
         if (item.startDate && item.endDate) {
             const start = new Date(item.startDate).toLocaleDateString();
             const end = new Date(item.endDate).toLocaleDateString();
-            return [`${start}  ${end}`];
+            return [`${start} ${end}`];
         }
 
-        return ['TBD'];
+        return ['-'];
     };
 
     const getTournamentStatus = (item) => {
@@ -73,16 +73,21 @@ export function TournamentTable() {
         const start = item.startDate ? new Date(item.startDate) : null;
         const end = item.endDate ? new Date(item.endDate) : null;
 
-        if (registrationStart && registrationEnd && now >= registrationStart && now <= registrationEnd) {
-            return 'Registration Open';
+        if (end && now > end) {
+            return 'Ended';
         }
 
         if (start && end && now >= start && now <= end) {
             return 'Ongoing';
         }
 
-        if (end && now > end) {
-            return 'Ended';
+        // Between registration closing and tournament match start
+        if (registrationEnd && start && now > registrationEnd && now < start) {
+            return 'In Preparation'; // Or 'Prep Phase'
+        }
+
+        if (registrationStart && registrationEnd && now >= registrationStart && now <= registrationEnd) {
+            return 'Registration Open';
         }
 
         return 'Upcoming';
@@ -123,11 +128,8 @@ export function TournamentTable() {
                             </tr>
                         ) : (
                             tournaments.map((item) => {
-                                const title = item.title;
-                                const prize = item.prize;
                                 const status = getTournamentStatus(item);
                                 const scheduleLines = formatSchedule(item);
-
                                 return (
                                     <tr key={item._id || item.id} className="tr-tournament">
                                         <td className="td-tournament">
@@ -138,26 +140,26 @@ export function TournamentTable() {
                                             >
                                                 <div className="t-info">
                                                     <img src={item.logo || 'https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png'} alt="logo" className="t-logo" />
-                                                    <span className="t-name">{title}</span>
+                                                    <span className="t-name">{item?.title || '-'}</span>
                                                 </div>
                                             </Link>
                                         </td>
 
                                         <td className="td-prize">{item?.gameMode || item?.mode}</td>
-                                        <td className="td-prize">{prize}</td>
+                                        <td className="td-prize">{item?.prize || '-'}</td>
 
                                         <td className="td-schedule">
                                             {scheduleLines.map((date, i) => (
                                                 <div key={i}>{date}</div>
                                             ))}
                                         </td>
-                                        
+
 
                                         <td className="td-status">
                                             <Link to={`/tournament-info/${item._id || item.id}`} state={{ tournament: item, status: status }} className="status-link">
-                                            <span className={`status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`}>
-                                                {status}
-                                            </span>
+                                                <span className={`status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`}>
+                                                    {status}
+                                                </span>
                                             </Link>
                                         </td>
                                     </tr>
@@ -214,14 +216,11 @@ export function TournamentTable() {
                                                 >
                                                     <span className="t-name">{title}</span>
                                                 </Link>
+                                                <span className="mode-badge">{item.gameMode || item.mode || '-'}</span>    
                                                 <span className={`status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`}>
                                                     {status}
                                                 </span>
                                                 <div className="row-details">
-                                                    <div className="price-details">
-                                                        <span className="label">MODE:</span>
-                                                        <span className="value">{item.gameMode || item.mode || '-'}</span>
-                                                    </div>
                                                     <div className="price-details">
                                                         <span className="label">Prize:</span>
                                                         <span className="value">{prize}</span>

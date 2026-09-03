@@ -72,7 +72,7 @@ export const TeamInfo = () => {
                         </div>
                         <div className="team-hero-details">
                             <div className="team-name-wrapper">
-                                <h3 className="team-name">{teamInfo?.name || "No Name"} ({teamInfo?.teamTag || "No Tag"})</h3>
+                                <h3 className="team-name">{teamInfo?.name || "No Name"} [{teamInfo?.teamTag || "No Tag"}]</h3>
                             </div>
 
                             <div className="team-summary-stats">

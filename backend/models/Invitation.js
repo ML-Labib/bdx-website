@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const InvitationSchema = new mongoose.Schema(
     {
@@ -59,6 +59,4 @@ InvitationSchema.index({ receiver: 1, status: 1, createdAt: -1 });
 InvitationSchema.index({ sender: 1, status: 1, createdAt: -1 });
 InvitationSchema.index({ team: 1, status: 1 });
 
-const Invitation = mongoose.model("Invitation", InvitationSchema);
-
-module.exports = { Invitation };
+export const Invitation = mongoose.model("Invitation", InvitationSchema);

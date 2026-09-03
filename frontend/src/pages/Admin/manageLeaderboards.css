@@ -1,0 +1,116 @@
+.tournament-management {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    min-height: calc(100vh - 70px);
+    background: var(--color-background);
+    color: var(--text-color);
+}
+
+.tournament-management-main {
+    min-width: 0;
+    padding: 24px;
+    overflow-x: hidden;
+}
+
+.tm-empty-state {
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+}
+
+.tm-empty-state .material-symbols-outlined {
+    font-size: 52px;
+    opacity: 0.5;
+}
+
+.tm-empty-state h2,
+.tm-empty-state p {
+    margin: 0;
+}
+
+.tm-empty-state p {
+    opacity: 0.65;
+    max-width: 450px;
+}
+
+.tm-error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 20px 0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    color: #dc2626;
+}
+
+.tm-loading {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    opacity: 0.7;
+}
+
+.tm-spin {
+    animation: tm-spin 0.8s linear infinite;
+}
+
+@keyframes tm-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.tm-button {
+    border: none;
+    border-radius: 7px;
+    padding: 9px 14px;
+    cursor: pointer;
+    font-weight: 600;
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease;
+}
+
+.tm-button:hover {
+    transform: translateY(-1px);
+}
+
+.tm-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    transform: none;
+}
+
+.tm-button-primary {
+    background: var(--primary-color);
+    color: var(--text-color);
+}
+
+.tm-button-secondary {
+    background: var(--color-surface-hover);
+    color: var(--text-color);
+    border: 1px solid var(--color-border-light);
+}
+
+.tm-button-danger {
+    background: #dc2626;
+    color: white;
+}
+
+@media (max-width: 900px) {
+    .tournament-management {
+        grid-template-columns: 1fr;
+    }
+
+    .tournament-management-main {
+        padding: 16px;
+    }
+}

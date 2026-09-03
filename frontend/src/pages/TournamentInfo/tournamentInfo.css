@@ -66,9 +66,8 @@
     display: inline-flex;
     text-transform: uppercase;
     /* letter-spacing: 0.14em; */
-    margin-bottom: 5px;
-    padding: 0 8px;
-
+    margin: 6px;
+    padding: 0 6px;
     background: #eff923;
     color: #000000;
     justify-content: center;
@@ -140,7 +139,7 @@
 }
 
 .tournament-name-wrapper {
-    width: 100%;
+    /* width: 100%; */
     display: flex;
     gap: 16px;
 }
@@ -241,6 +240,10 @@
 }
 
 @media (max-width: 1024px) {
+    .tournament-hero {
+        padding: 40px 0px;
+    }
+
     .tournament-hero-inner {
         grid-template-columns: 1fr;
         text-align: center;
@@ -249,7 +252,8 @@
     .tournament-hero-details {
         flex-direction: column;
         justify-content: center;
-        padding: 0 20px;
+
+        padding: 0;
         gap: 0;
     }
 
@@ -336,6 +340,22 @@
 
     .tournament-name {
         font-size: 1.5rem;
+    }
+
+    .tournament-name-wrapper {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .tournament-name-wrapper span {
+        width: 30%;
+        text-align: center;
+    }
+
+    .tier-badge {
+        padding: 4px 0px;
     }
 
 }

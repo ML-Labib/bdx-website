@@ -1,10 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const connectDB = require('./config/db');
-const firebaseAdmin = require('./config/firebase-admin');
-// const { requireAuth } = require('./middleware/auth');
-require('dotenv').config();
-
+import express from "express";
+import cors from "cors";
+import connectDB from './config/db.js';
+import firebaseAdmin from './config/firebase-admin.js';
+import 'dotenv/config';
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -64,20 +62,23 @@ app.use(express.json());
 connectDB();
 
 // Routes
-const tournamentRoutes = require('./routes/tournamentsRoutes');
-app.use('/api/tournaments', tournamentRoutes);
+import leaderboardRoutes from './routes/leaderboardRoutes.js';
+app.use('/api/leaderboard', leaderboardRoutes);
 
-const profileRoutes = require('./routes/pofileRoutes');
+import profileRoutes from './routes/profileRoutes.js';
 app.use('/api/profile', profileRoutes);
 
-const teamRoutes = require('./routes/teamRoutes');
+import tornamentRoutes from './routes/tournamentsRoutes.js';
+app.use('/api/tournaments', tornamentRoutes);
+
+
+import teamRoutes from './routes/teamRoutes.js';
 app.use('/api/teams', teamRoutes);
 
-
-const invitationRoutes = require("./routes/invitationRoutes");
+import invitationRoutes from './routes/invitationRoutes.js';
 app.use("/api/invitations", invitationRoutes);
 
-const notificationRoutes = require("./routes/notificationRoutes");
+import notificationRoutes from './routes/notificationRoutes.js';
 app.use("/api/notifications", notificationRoutes);
 
 // Health check
@@ -96,4 +97,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);
 });
 
-module.exports = app;
+export default app;

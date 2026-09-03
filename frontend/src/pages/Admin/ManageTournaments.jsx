@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Loader } from "../../components/Loader";
 import { useAuth } from "../../components/useAuth";
 import { getAuthHeaders } from "../../utils/authHeaders";
-
+import { RegistrationCard } from "./RegistrationCard";
 import Cropper from "react-easy-crop";
 import { getCroppedImg } from "../../utils/cropUtils";
 import { uploadAvatarToSupabase } from "../../utils/supabaseClient";
 
 import "./manageTournaments.css";
-import { Link } from "react-router";
+
 
 const DEFAULT_TOURNAMENT_LOGO =
     "https://ybnzezsvnqdzbszjfuku.supabase.co/storage/v1/object/public/bdx-bucket/defaults/default-profile.png";
@@ -62,18 +62,6 @@ function formatDate(date) {
         day: "2-digit",
         month: "short",
         year: "numeric",
-    });
-}
-
-function formatDateTime(date) {
-    if (!date) return "—";
-
-    return new Date(date).toLocaleString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
     });
 }
 
@@ -144,6 +132,7 @@ export function ManageTournaments() {
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
     const [isCropOpen, setIsCropOpen] = useState(false);
+
 
     const handleLogoSelect = (e) => {
         const file = e.target.files?.[0];
@@ -358,6 +347,8 @@ export function ManageTournaments() {
         }
     };
 
+
+
     // =========================================================
     // INITIAL LOAD
     // =========================================================
@@ -396,6 +387,8 @@ export function ManageTournaments() {
             tournament._id || tournament.id
         );
     };
+
+
 
     // =========================================================
     // FORM
@@ -564,8 +557,6 @@ export function ManageTournaments() {
         registration,
         newStatus
     ) => {
-        const registrationId =
-            registration._id || registration.id;
 
         let reason = null;
 
@@ -574,7 +565,7 @@ export function ManageTournaments() {
                 "Enter rejection reason:"
             );
 
-            if (reason === null) {
+            if (!reason || reason.trim() === "") {
                 return;
             }
         }
@@ -587,13 +578,14 @@ export function ManageTournaments() {
             const headers = await getAuthHeaders(currentUser);
 
             const res = await fetch(
-                `/api/tournaments/registrations/${registrationId}/status`,
+                `/api/tournaments/registrations/${registration.tournamentId}/${registration._id}/status`,
                 {
                     method: "PUT",
                     headers,
                     body: JSON.stringify({
                         status: newStatus,
                         reason,
+                        title: selectedTournament?.title || "-",
                     }),
                 }
             );
@@ -603,6 +595,7 @@ export function ManageTournaments() {
 
                 throw new Error(
                     error.message ||
+                    error.error ||
                     "Failed to update registration status."
                 );
             }
@@ -616,8 +609,100 @@ export function ManageTournaments() {
                 selectedTournament.id
             );
         } catch (error) {
+            console.error(error.error || "Registration status update failed:", error);
+
+            setErrorMessage(error.error || error.message || "Failed to update registration status.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    // ROSTER LOCK UNLOCK
+    const handleRosterLock = async (registration) => {
+
+        try {
+            setSubmitting(true);
+            setErrorMessage("");
+            setSuccessMessage("");
+
+            const headers = await getAuthHeaders(currentUser);
+            // console.log("Locking roster for registration:", registration);
+            const res = await fetch(
+                `/api/tournaments/${selectedTournament._id}/registrations/${registration._id}/lock-roster`,
+                {
+                    method: "POST",
+                    headers,
+                }
+            );
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(
+                    data.message ||
+                    data.error ||
+                    "Failed to lock roster."
+                );
+            }
+
+            setSuccessMessage(
+                `${registration.teamId.name} roster locked successfully.`
+            );
+
+            await fetchRegistrations(
+                selectedTournament._id
+            );
+
+        } catch (error) {
             console.error(
-                "Registration status update failed:",
+                "Roster lock failed:",
+                error
+            );
+
+            setErrorMessage(error.message);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleRosterUnlock = async (registration) => {
+        try {
+            setSubmitting(true);
+            setErrorMessage("");
+            setSuccessMessage("");
+
+            const headers =
+                await getAuthHeaders(currentUser);
+
+            const res = await fetch(
+                `/api/tournaments/${selectedTournament._id}/registrations/${registration._id}/unlock-roster`,
+                {
+                    method: "DELETE",
+                    headers,
+                }
+            );
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(
+                    data.message ||
+                    data.error ||
+                    "Failed to unlock roster."
+                );
+            }
+
+            setSuccessMessage(
+                "Roster unlocked successfully."
+            );
+
+            await fetchRegistrations(
+                selectedTournament._id
+            );
+
+        } catch (error) {
+            console.error(
+                "Roster unlock failed:",
                 error
             );
 
@@ -1132,18 +1217,12 @@ export function ManageTournaments() {
                                         {currentRegistrations.map(
                                             (registration) => (
                                                 <RegistrationCard
-                                                    key={
-                                                        registration._id
-                                                    }
-                                                    registration={
-                                                        registration
-                                                    }
-                                                    submitting={
-                                                        submitting
-                                                    }
-                                                    onStatusChange={
-                                                        handleRegistrationStatus
-                                                    }
+                                                    key={registration._id || registration.id}
+                                                    registration={registration}
+                                                    submitting={submitting}
+                                                    onStatusChange={handleRegistrationStatus}
+                                                    onRosterLock={handleRosterLock}
+                                                    onRosterUnlock={handleRosterUnlock}
                                                 />
                                             )
                                         )}
@@ -1661,148 +1740,3 @@ function SelectField({
     );
 }
 
-// =============================================================
-// REGISTRATION CARD
-// =============================================================
-
-function RegistrationCard({
-    registration,
-    submitting,
-    onStatusChange,
-}) {
-    const team =
-        registration.teamId;
-
-    return (
-        <div className="tm-registration-card">
-            <div className="tm-registration-team">
-                <Link to={`/teams/info/${team._id}`} className="tm-registration-link">
-                    <img
-                        src={team.logo ||
-                            DEFAULT_TOURNAMENT_LOGO}
-                        alt={`${team.name} logo`}
-                        className="tm-registration-logo"
-                    />
-
-                    <div className="tm-registration-team-info">
-                        <div className="tm-registration-name">
-                            <strong>{team.name}</strong>
-
-                            {team.teamTag && (
-                                <span>
-                                    [{team.teamTag}]
-                                </span>
-                            )}
-                        </div>
-
-
-                        <div className="tm-registration-meta">
-                            {team.country && (
-                                <span>
-                                    <span className="material-symbols-outlined">
-                                        public
-                                    </span>
-                                    {team.country}
-                                </span>
-                            )}
-
-                            <span>
-                                <span className="material-symbols-outlined">
-                                    schedule
-                                </span>
-
-                                Registered{" "}
-                                {formatDateTime(
-                                    registration.createdAt
-                                )}
-                            </span>
-                        </div>
-                    </div>
-                </Link>
-            </div>
-
-            <div className="tm-registration-right">
-                <StatusBadge
-                    status={registration.status}
-                />
-
-                {registration.status ===
-                    "REJECTED" &&
-                    registration.rejectionReason && (
-                        <span className="tm-rejection-reason">
-                            {registration.rejectionReason}
-                        </span>
-                    )}
-
-                {registration.status === "PENDING" && (
-                    <div className="tm-registration-actions">
-                        <button
-                            className="tm-reject-button"
-                            disabled={submitting}
-                            onClick={() =>
-                                onStatusChange(
-                                    registration,
-                                    "REJECTED"
-                                )
-                            }
-                        >
-                            <span className="material-symbols-outlined">
-                                close
-                            </span>
-                            Reject
-                        </button>
-
-                        <button
-                            className="tm-approve-button"
-                            disabled={submitting}
-                            onClick={() =>
-                                onStatusChange(
-                                    registration,
-                                    "APPROVED"
-                                )
-                            }
-                        >
-                            <span className="material-symbols-outlined">
-                                check
-                            </span>
-                            Approve
-                        </button>
-                    </div>
-                )}
-
-                {registration.status ===
-                    "APPROVED" && (
-                        <button
-                            className="tm-small-danger-button"
-                            disabled={submitting}
-                            onClick={() =>
-                                onStatusChange(
-                                    registration,
-                                    "REJECTED"
-                                )
-                            }
-                        >
-                            Reject
-                        </button>
-                    )}
-
-                {registration.status ===
-                    "REJECTED" && (
-                        <button
-                            className="tm-small-approve-button"
-                            disabled={submitting}
-                            onClick={() =>
-                                onStatusChange(
-                                    registration,
-                                    "APPROVED"
-                                )
-                            }
-                        >
-                            Re-approve
-                        </button>
-                    )}
-            </div>
-
-        </div>
-    );
-}

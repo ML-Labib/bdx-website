@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const NotificationSchema = new mongoose.Schema(
     {
@@ -21,8 +21,10 @@ const NotificationSchema = new mongoose.Schema(
                 "team_banned",
                 "player_banned",
                 "player_unbanned",
-                "registration_accepted",
+                "registration_pending",
+                "registration_approved",
                 "registration_rejected",
+                "registration_withdrawn",
             ],
             required: true,
         },
@@ -51,5 +53,4 @@ const NotificationSchema = new mongoose.Schema(
 
 NotificationSchema.index({ userId: 1, isRead: 1 });
 
-const Notification = mongoose.model("Notification", NotificationSchema);
-module.exports = { Notification };
+export const Notification = mongoose.model("Notification", NotificationSchema);

@@ -1,12 +1,13 @@
-const mongoose = require("mongoose");
-const { Invitation } = require("../models/Invitation");
-const Profile = require("../models/Profile");
-const { Team } = require("../models/Team");
-const { TeamMember } = require("../models/TeamMembers");
-const { sendNotification } = require("../utils/notificationHelper");
+import mongoose from "mongoose";
+import { Invitation } from "../models/Invitation.js";
+import { Profile } from "../models/Profile.js";
+import { Team } from "../models/Team.js";
+import { TeamMember } from "../models/TeamMembers.js";
+import { sendNotification } from "../utils/notificationHelper.js";
+
 
 // POST /api/invitations
-exports.sendInvitation = async (req, res) => {
+export const sendInvitation = async (req, res) => {
     try {
         const { receiverId, role = "player" } = req.body;
         const senderProfile = req.profile;
@@ -93,7 +94,7 @@ exports.sendInvitation = async (req, res) => {
 };
 
 // GET /api/invitations/received
-exports.getReceivedInvitations = async (req, res) => {
+export const getReceivedInvitations = async (req, res) => {
     try {
         const profile = req.profile;
         const invitations = await Invitation.find({
@@ -113,7 +114,7 @@ exports.getReceivedInvitations = async (req, res) => {
 };
 
 // GET /api/invitations/sent
-exports.getSentInvitations = async (req, res) => {
+export const getSentInvitations = async (req, res) => {
     try {
         const profile = req.profile;
         const team = req.team;
@@ -135,7 +136,7 @@ exports.getSentInvitations = async (req, res) => {
 };
 
 // PUT /api/invitations/:invitationId/accept
-exports.acceptInvitation = async (req, res) => {
+export const acceptInvitation = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -295,7 +296,7 @@ exports.acceptInvitation = async (req, res) => {
 };
 
 // PUT /api/invitations/:invitationId/reject
-exports.rejectInvitation = async (req, res) => {
+export const rejectInvitation = async (req, res) => {
     try {
         const invitationId = req.params.invitationId || req.body.invitationId;
         const receiverProfile = req.profile;
@@ -341,7 +342,7 @@ exports.rejectInvitation = async (req, res) => {
 };
 
 // PUT /api/invitations/:invitationId/cancel
-exports.cancelInvitation = async (req, res) => {
+export const cancelInvitation = async (req, res) => {
     try {
         const invitationId = req.params.invitationId;
         const senderProfile = req.profile;

@@ -1,7 +1,7 @@
-const Tournament = require('../models/Tournament');
+import { Tournament } from '../models/Tournament.js';
 
 // Get upcoming tournaments
-exports.getUpcomingTournaments = async (req, res) => {
+export const getUpcomingTournaments = async (req, res) => {
 	try {
 		const now = new Date();
 		const tournaments = await Tournament.find({ startDate: { $gte: now } }).sort({ startDate: 1 }).limit(10);
@@ -13,7 +13,7 @@ exports.getUpcomingTournaments = async (req, res) => {
 };
 
 // Get tournaments with pagination
-exports.getTournaments = async (req, res) => {
+export const getTournaments = async (req, res) => {
 	try {
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 10;
@@ -39,7 +39,7 @@ exports.getTournaments = async (req, res) => {
 
 
 // Get one tournament by id
-exports.getTournamentById = async (req, res) => {
+export const getTournamentById = async (req, res) => {
 	try {
 		const tournament = await Tournament.findById(req.params.id);
 
@@ -54,7 +54,7 @@ exports.getTournamentById = async (req, res) => {
 };
 
 // Create tournament
-exports.createTournament = async (req, res) => {
+export const createTournament = async (req, res) => {
 	try {
 		const tournament = new Tournament(req.body);
 		const savedTournament = await tournament.save();
@@ -65,7 +65,7 @@ exports.createTournament = async (req, res) => {
 };
 
 // Update tournament
-exports.updateTournament = async (req, res) => {
+export const updateTournament = async (req, res) => {
 	try {
 		const updatedTournament = await Tournament.findByIdAndUpdate(
 			req.params.id,
@@ -84,7 +84,7 @@ exports.updateTournament = async (req, res) => {
 };
 
 // Delete tournament
-exports.deleteTournament = async (req, res) => {
+export const deleteTournament = async (req, res) => {
 	try {
 		const deletedTournament = await Tournament.findByIdAndDelete(req.params.id);
 

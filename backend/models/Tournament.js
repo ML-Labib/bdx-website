@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const TournamentSchema = new mongoose.Schema(
     {
@@ -22,4 +22,4 @@ const TournamentSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-module.exports = mongoose.model("Tournament", TournamentSchema);
+export const Tournament = mongoose.model("Tournament", TournamentSchema);

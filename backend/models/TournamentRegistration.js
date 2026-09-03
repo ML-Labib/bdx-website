@@ -27,6 +27,21 @@ const tournamentRegistrationSchema = new mongoose.Schema({
     reason: {
         type: String,
         default: null
+    },
+
+    rosterLocked: {
+        type: Boolean,
+        default: false
+    },
+
+    rosterLockedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Profile",
+        default: null
+    },
+    rosterVersion: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true

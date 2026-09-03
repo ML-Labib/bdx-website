@@ -1,0 +1,365 @@
+.experience-table-card {
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.experience-table-wrapper {
+    overflow-x: auto;
+    cursor: grab;
+    background: #f8f8f8;
+    padding: 0;
+    touch-action: pan-x;
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.experience-table-wrapper::-webkit-scrollbar {
+    height: 0;
+    /* Chrome, Safari */
+}
+
+.experience-table-wrapper.dragging,
+.experience-table-wrapper:active {
+    cursor: grabbing;
+    user-select: none;
+}
+
+.experience-table {
+    width: max-content;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    font-size: 1rem;
+}
+
+.experience-table-wrapper thead th {
+    background-color: #0c0c0c;
+    background-image: url("../../assets/subheader/table-header.png");
+    background-attachment: fixed;
+}
+
+.experience-table th {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: #151515;
+    color: #fff;
+    border-right: 1px solid rgba(236, 234, 234, 0.06);
+}
+
+.experience-table th,
+.experience-table td {
+    padding: 18px 16px;
+    white-space: nowrap;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.experience-table td {
+    color: #000000;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.experience-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.55);
+}
+
+/* Sticky Column 1 */
+.experience-table th:nth-child(1),
+.experience-table td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    width: 87px;
+}
+
+.experience-table th:nth-child(1) {
+    color: #fff;
+}
+
+.experience-table td:nth-child(1) {
+    background: #fff;
+    color: #111;
+    font-weight: 700;
+}
+
+/* Sticky Column 2 */
+.experience-table th:nth-child(2),
+.experience-table td:nth-child(2) {
+    position: sticky;
+    left: 87px;
+    width: 496px;
+}
+
+.experience-table th:nth-child(2) {
+    color: #fff;
+}
+
+.experience-table td:nth-child(2) {
+    background: #fff;
+    color: #111;
+    box-shadow: 4px 1px 5px rgba(0, 0, 0, 0.06);
+}
+
+/* Team Cell formatting */
+.team-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.experience-team-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.experience-team-logo img {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+.team-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.team-copy strong {
+    display: block;
+    color: #111;
+    position: relative;
+}
+
+.team-copy strong::after {
+    content: "";
+    width: 0%;
+    display: block;
+    position: absolute;
+    height: 3px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.experience-table tbody tr:hover .team-copy strong::after {
+    width: 100%;
+}
+
+/* Slider Controls */
+.slider-container {
+    margin: 12px;
+    width: 100%;
+}
+
+.scroll-slider {
+    width: 100%;
+    display: block;
+    left: 583px;
+}
+
+.bottom-slider {
+    margin: 12px;
+    padding: 6px 0 0 0;
+    width: calc(100% - 584px - 24px);
+    position: relative;
+    left: 584px;
+}
+
+.table-controls {
+    display: flex;
+}
+
+
+/* Header Cell Layout */
+/* Table Header Cell Reset for Full Height Control */
+.experience-table th {
+    padding: 0 !important;
+    height: 52px;
+    background: #121212;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header-cell-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Header Text Padding */
+.header-title {
+    padding: 0 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+.sortable-header {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.sortable-header:hover {
+    background-color: #1a1a1a;
+}
+
+/* Active Column Header Text Highlight */
+.sortable-header.active-header .header-title {
+    color: #eff923 !important;
+}
+
+/* Full-Height Right-Hand Side Arrow Container Box */
+.sort-arrows-box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 28px;
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.35);
+    flex-shrink: 0;
+}
+
+/* Upper/Lower 50% Arrow Sections */
+.sort-arrow-half {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #666666;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.sort-arrow-half.up {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sortable-header:hover .sort-arrow-half {
+    color: #aaaaaa;
+}
+
+/* Highlight Active Direction Arrow in Yellow */
+.sort-arrow-half.active {
+    color: #eff923 !important;
+    background: rgba(239, 249, 35, 0.1);
+}
+
+/* Highlight Sorted Column Background Cells */
+.experience-table td.sorted-column-cell {
+    background-color: #fdfde1 !important;
+    font-weight: 700;
+}
+
+/* Keep Sticky Columns (Index 0 & 1) Solid White */
+.experience-table td.sorted-column-cell:nth-child(1),
+.experience-table td.sorted-column-cell:nth-child(2) {
+    background-color: #ffffff !important;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .experience-table {
+        font-size: 0.8rem;
+    }
+
+    .experience-table th {
+        letter-spacing: 0.1px;
+    }
+
+    .experience-table th:nth-child(1),
+    .experience-table td:nth-child(1) {
+        left: 0;
+        width: 55px;
+        padding: 0;
+    }
+
+    .experience-table th:nth-child(2),
+    .experience-table td:nth-child(2) {
+        left: 55px;
+        width: 320px;
+    }
+
+    .experience-table td:nth-child(2) {
+        height: auto;
+    }
+
+    .bottom-slider {
+        width: calc(100% - 375px - 24px);
+        left: 375px;
+    }
+}
+
+@media (max-width: 768px) {
+    .experience-table {
+        font-size: 0.7rem;
+    }
+
+    .experience-table th {
+        letter-spacing: -0.1px;
+    }
+
+    .experience-table th:nth-child(1),
+    .experience-table td:nth-child(1) {
+        left: 0;
+        width: 55px;
+        padding: 0;
+    }
+
+    .experience-table th:nth-child(2) {
+        left: 55px;
+        width: 142px;
+        padding: 12px;
+    }
+
+    .experience-table td:nth-child(2) {
+        left: 55px;
+        width: 142px;
+        white-space: normal;
+        overflow-wrap: break-word;
+        text-align: center;
+        padding: 0;
+        height: 112px;
+        border-left: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .team-cell {
+        flex-direction: column;
+        gap: 0;
+        font-size: 0.85rem;
+    }
+
+    .experience-team-logo {
+        width: 32px;
+        height: 32px;
+    }
+
+    .experience-team-logo img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .bottom-slider {
+        width: calc(100% - 200px - 24px);
+        left: 200px;
+    }
+
+    .table-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -9,7 +9,7 @@ import { NotificationPanel } from "./NotificationPanel";
 import "./header.css";
 
 export function Header() {
-    const { currentUser, logout } = useAuth();
+    const { currentUser, profile, logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [sidebarDropdownOpen, setSidebarDropdownOpen] = useState(false);
@@ -227,7 +227,7 @@ export function Header() {
                                     onClick={() => setDropdownOpen((prev) => !prev)}
                                 >
                                     <span className="material-symbols-outlined">account_circle</span>
-                                    <span className="username">{currentUser.displayName || currentUser.email}</span>
+                                    <span className="username">{profile?.displayName ||currentUser.displayName || currentUser.email}</span>
                                     <span className={`material-symbols-outlined arrow ${dropdownOpen ? "open" : ""}`}>
                                         arrow_drop_down
                                     </span>

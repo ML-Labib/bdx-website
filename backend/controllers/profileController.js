@@ -1,7 +1,7 @@
-const Profile = require('../models/Profile');
-const { TeamMember } = require('../models/TeamMembers');
+import { Profile } from "../models/Profile.js";
+import { TeamMember } from "../models/TeamMembers.js";
 
-exports.getAllProfiles = async (req, res) => {
+export const getAllProfiles = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 12;
@@ -91,29 +91,56 @@ exports.getAllProfiles = async (req, res) => {
 };
 
 // Get profile by Firebase user id
-exports.getProfileByUserId = async (req, res) => {
+// exports.getProfileByUserId = async (req, res) => {
+//     try {
+//         // const uid = req.params.userId || req.body.uid || req.query.userId;
+//         const uid = req.user?.uid;
+
+//         if (!uid) {
+//             return res.status(400).json({ message: 'Firebase user ID is required' });
+//         }
+
+//         const profile = await Profile.findOne({ user: uid });
+
+//         if (!profile) {
+//             return res.status(404).json({ message: 'Profile not found' });
+//         }
+
+//         res.json(profile);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
+export const getProfileByUserId = async (req, res) => {
     try {
-        // const uid = req.params.userId || req.body.uid || req.query.userId;
         const uid = req.user?.uid;
 
         if (!uid) {
-            return res.status(400).json({ message: 'Firebase user ID is required' });
+            return res.status(400).json({ message: "Firebase user ID is required" });
         }
 
-        const profile = await Profile.findOne({ user: uid });
+        const profile = await Profile.findOne({ user: uid })
+            .populate({
+                path: "membership",
+                populate: {
+                    path: "team",
+                    select: "name _id logo"
+                }
+            });
 
         if (!profile) {
-            return res.status(404).json({ message: 'Profile not found' });
+            return res.status(404).json({ message: "Profile not found" });
         }
 
-        res.json(profile);
+        return res.json(profile);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
 // Get profile by pubg id
-exports.getProfileByPubgId = async (req, res) => {
+export const getProfileByPubgId = async (req, res) => {
     try {
         const pubgId = req.params.pubgId || req.body.pubgId;
 
@@ -135,7 +162,7 @@ exports.getProfileByPubgId = async (req, res) => {
 
 
 // Create profile
-exports.createProfile = async (req, res) => {
+export const createProfile = async (req, res) => {
     const { displayName, ign, discordUsername, pubgId, picture, country } = req.body;
     const uid = req.user?.uid;
 
@@ -167,7 +194,7 @@ exports.createProfile = async (req, res) => {
 };
 
 // Update profile
-exports.updateProfile = async (req, res) => {
+export const updateProfile = async (req, res) => {
     const { displayName, ign, discordUsername, pubgId, picture, country } = req.body;
     const uid = req.user?.uid;
 
@@ -209,7 +236,7 @@ exports.updateProfile = async (req, res) => {
 };
 
 
-exports.searchPlayers = async (req, res) => {
+export const searchPlayers = async (req, res) => {
     try {
         const { query } = req.query;
 
@@ -226,7 +253,7 @@ exports.searchPlayers = async (req, res) => {
                 { displayName: regex }
             ]
         })
-        .lean();
+            .lean();
 
         const results = await Promise.all(
             players.map(async (player) => {

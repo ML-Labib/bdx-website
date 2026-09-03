@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
-const Profile = require("../models/Profile");
-const { Team } = require("../models/Team");
+import mongoose from "mongoose";
+import { Profile } from "../models/Profile.js";
+import { Team } from "../models/Team.js";
 
-exports.requireTeamOwnership = async (req, res, next) => {
+export const requireTeamOwnership = async (req, res, next) => {
     try {
         // const teamId = req.params.teamId;
 

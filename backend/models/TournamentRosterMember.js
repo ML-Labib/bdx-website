@@ -3,20 +3,20 @@ import mongoose from "mongoose";
 
 const tournamentRosterMemberSchema = new mongoose.Schema({
     tournamentId: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Tournament",
         required: true
     },
 
     teamId: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Team",
         required: true
     },
 
-    playerId: {
-        type: Schema.Types.ObjectId,
-        ref: "Player",
+    profileId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Profile",
         required: true
     },
 
@@ -25,6 +25,22 @@ const tournamentRosterMemberSchema = new mongoose.Schema({
         required: true
     },
 
+    ign: {
+        type: String,
+        required: true
+    },
+
+    rosterVersion: {
+        type: Number,
+        default: 0
+    },
+    rosterLockedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Profile",
+        default: null
+    }
+    
+
 }, {
     timestamps: true
 });
@@ -32,14 +48,15 @@ const tournamentRosterMemberSchema = new mongoose.Schema({
 
 tournamentRosterMemberSchema.index({
     tournamentId: 1,
-    teamId: 1
+    teamId: 1,
+    rosterVersion: 1
 });
 
 tournamentRosterMemberSchema.index({
     tournamentId: 1,
-    pubgId: 1
+    pubgId: 1,
+    rosterVersion: 1
 });
 
-const TournamentRosterMember = mongoose.model("TournamentRosterMember", tournamentRosterMemberSchema);
+export const TournamentRosterMember = mongoose.model("TournamentRosterMember", tournamentRosterMemberSchema);
 
-module.exports = { TournamentRosterMember };

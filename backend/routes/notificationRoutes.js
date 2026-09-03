@@ -1,20 +1,15 @@
-const { requireAuth } = require('../middleware/auth');
-const { requireProfileOwnership } = require('../middleware/requireProfileOwnership');
-const {
-    getUnreadNotifications,
-    markAllNotificationsAsRead,
-    getLatestNotifications,
-    createNotification
-} = require("../controllers/notificationController");
+import { requireAuth } from '../middleware/auth.js';
+import { requireProfileOwnership } from '../middleware/requireProfileOwnership.js';
+import * as notificationController from '../controllers/notificationController.js';
+import express from 'express';
 
-const express = require("express");
 const router = express.Router();
 
 
 // protected routes
-router.get("/unread", requireAuth, requireProfileOwnership, getUnreadNotifications);
-router.put("/markAsread", requireAuth, requireProfileOwnership, markAllNotificationsAsRead);
-router.get("/latest", requireAuth, requireProfileOwnership, getLatestNotifications);
-router.post("/", requireAuth, createNotification);
+router.get("/unread", requireAuth, requireProfileOwnership, notificationController.getUnreadNotifications);
+router.put("/markAsread", requireAuth, requireProfileOwnership, notificationController.markAllNotificationsAsRead);
+router.get("/latest", requireAuth, requireProfileOwnership, notificationController.getLatestNotifications);
+router.post("/", requireAuth, notificationController.createNotification);
 
-module.exports = router;
+export default router;

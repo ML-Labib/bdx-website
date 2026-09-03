@@ -1,7 +1,5 @@
-// utils/notificationHelper.js
-const { Notification } = require("../models/Notification");
-
-exports.sendNotification = async (recipientId, message, type, target = null) => {
+import { Notification } from "../models/Notification.js";
+export const sendNotification = async (recipientId, message, type, target = null) => {
     try {
         await Notification.create({
             userId: recipientId,

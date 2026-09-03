@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Cropper from "react-easy-crop";
 import { Loader } from "../../components/Loader";
 import { useAuth } from "../../components/useAuth";

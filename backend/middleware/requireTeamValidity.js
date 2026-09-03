@@ -1,9 +1,9 @@
-const Profile = require("../models/Profile");
-const { Team } = require("../models/Team");
-const { TeamMember } = require("../models/TeamMembers");
-const { Invitation } = require("../models/Invitation");
+import { Profile } from "../models/Profile.js";
+import { Team } from "../models/Team.js";
+import { TeamMember } from "../models/TeamMembers.js";
+import { Invitation } from "../models/Invitation.js";
 
-exports.requireTeamValidity = async (req, res, next) => {
+export const requireTeamValidity = async (req, res, next) => {
     try {
         const { name, teamTag } = req.body;
         // Get the MongoDB Profile belonging to the authenticated Firebase user

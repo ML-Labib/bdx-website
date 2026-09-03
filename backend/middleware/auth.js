@@ -1,6 +1,5 @@
-const admin = require("../config/firebase-admin");
-
-exports.requireAuth = async (req, res, next) => {
+import admin from "../config/firebase-admin.js";
+export const requireAuth = async (req, res, next) => {
     const authHeader =
         req.headers.authorization ||
         req.headers.Authorization;

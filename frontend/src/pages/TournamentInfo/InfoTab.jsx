@@ -1,76 +1,427 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { TeamCard } from "../Teams/TeamCard";
 import { useAuth } from "../../components/useAuth.jsx";
+import { getAuthHeaders } from "../../utils/authHeaders";
+import { formatDate } from "../../utils/formantDateTime";
 import "./infoTab.css";
 
 export function InfoTab({ tournament }) {
-    const { currentUser } = useAuth();
-    const [showTransactionForm, setShowTransactionForm] = useState(false);
-    const [transactionId, setTransactionId] = useState("");
-    const [showValidationError, setShowValidationError] = useState(false);
+    const { currentUser, profile } = useAuth();
+    const [registration, setRegistration] = useState(null);
+    const [teamMemberCount, setTeamMemberCount] = useState(0);
     const [acceptedRegistration, setAcceptedRegistration] = useState([]);
-    const alreadyRegistered = false;
-    const registrationStatus = "Registered";
-    const hasTeam = true;
-    const hasPlayer = 7;
-    const isRegistrationClosed = () => {
-        if (!tournament?.registrationEndDate) return false;
-        const today = new Date();
-        const deadline = new Date(tournament.registrationEndDate);
-        return today > deadline;
+
+    const [registering, setRegistering] = useState(false);
+    const [withdrawing, setWithdrawing] = useState(false);
+
+    const [registrationError, setRegistrationError] = useState("");
+    const [registrationMessage, setRegistrationMessage] = useState("");
+
+    /*
+     * --------------------------------------------------
+     * TEAM
+     * --------------------------------------------------
+     */
+
+    const userTeam = profile?.membership?.team;
+    const hasTeam = !!userTeam;
+
+    const hasMinimumPlayers = teamMemberCount >= 4;
+
+    /*
+     * --------------------------------------------------
+     * DATE / REGISTRATION STATUS
+     * --------------------------------------------------
+     */
+
+    const now = new Date();
+
+    const registrationStarted =
+        tournament?.registrationStartDate &&
+        now >= new Date(tournament.registrationStartDate);
+
+    const registrationOpen =
+        tournament?.registrationStartDate &&
+        tournament?.registrationEndDate &&
+        now >= new Date(tournament.registrationStartDate) &&
+        now < new Date(tournament.registrationEndDate);
+
+    const tournamentEnded =
+        tournament?.endDate &&
+        now >= new Date(tournament.endDate);
+
+    /*
+     * --------------------------------------------------
+     * FETCH USER TEAM REGISTRATION
+     * --------------------------------------------------
+     */
+
+    const fetchUserTeamRegistration = async () => {
+        if (!currentUser || !tournament?._id || !profile?.membership?.team?._id) {
+            setRegistration(null);
+            return null;
+        }
+
+        try {
+            const headers = await getAuthHeaders(currentUser);
+            const teamId = profile.membership.team._id;
+
+            const response = await fetch(
+                `/api/tournaments/${tournament._id}/team/${teamId}/registration`,
+                { headers }
+            );
+
+            // ✅ Handle 404 explicitly as "Not Registered" instead of throwing an error
+            if (response.status === 404) {
+                setRegistration(null);
+                return null;
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const userRegistration = data;
+
+            setRegistration(userRegistration);
+            return userRegistration;
+
+        } catch (error) {
+            console.error("Error fetching team registration:", error);
+            setRegistration(null);
+            return null;
+        }
     };
 
-    const handleRegisterCardClick = () => {
-        if (!currentUser || alreadyRegistered || !hasTeam || isRegistrationClosed() || hasPlayer < 3) {
+    /*
+     * --------------------------------------------------
+     * FETCH TEAM MEMBER COUNT
+     * --------------------------------------------------
+     */
+
+    const fetchTeamMemberCount = async () => {
+        const teamId =
+            profile?.membership?.team?._id;
+
+        if (!teamId) {
+            setTeamMemberCount(0);
             return;
         }
 
+        const headers = await getAuthHeaders(currentUser);
 
+        try {
+            const response = await fetch(
+                `/api/teams/${teamId}/members/count`,
+                {
+                    headers
+                }
+            );
 
-        setShowTransactionForm(true);
-    };
+            if (!response.ok) {
+                throw new Error(
+                    "Failed to fetch team member count."
+                );
+            }
 
-    const handleTransactionSubmit = (event) => {
-        event.preventDefault();
+            const data = await response.json();
 
-        if (!transactionId.trim()) {
-            setShowValidationError(true);
-            return;
+            setTeamMemberCount(
+                data.count || 0
+            );
+
+        } catch (error) {
+            console.error(
+                "Error fetching team member count:",
+                error
+            );
+
+            setTeamMemberCount(0);
         }
-
-        setTransactionId("");
-        setShowTransactionForm(false);
-        setShowValidationError(false);
     };
+
+    /*
+     * --------------------------------------------------
+     * FETCH ACCEPTED TEAMS
+     * --------------------------------------------------
+     */
 
     const fetchRegisteredTeams = async () => {
+        if (!tournament?._id) {
+            return [];
+        }
+
         try {
-            const response = await fetch(`/api/tournaments/${tournament._id}/registrations`);
+            const response = await fetch(
+                `/api/tournaments/${tournament._id}/registrations`
+            );
+
             if (!response.ok) {
-                throw new Error("Failed to fetch registered teams");
+                throw new Error(
+                    "Failed to fetch registered teams."
+                );
             }
+
             const data = await response.json();
 
             return data;
+
         } catch (error) {
-            console.error("Error fetching registrations:", error);
+            console.error(
+                "Error fetching registrations:",
+                error
+            );
+
             return [];
         }
     };
 
+    /*
+     * --------------------------------------------------
+     * LOAD DATA
+     * --------------------------------------------------
+     */
+
     useEffect(() => {
-        const getRegisteredTeams = async () => {
-            const teams = await fetchRegisteredTeams();
+        if (!tournament?._id) {
+            return;
+        }
+
+        const loadData = async () => {
+            const teams =
+                await fetchRegisteredTeams();
+
             setAcceptedRegistration(teams);
+
+            await fetchUserTeamRegistration();
+
+            if (currentUser) {
+                await fetchTeamMemberCount();
+            } else {
+                setTeamMemberCount(0);
+            }
         };
-        getRegisteredTeams();
-    }, [tournament._id]);
+
+        loadData();
+
+    }, [
+        tournament?._id,
+        currentUser,
+        profile?.membership?.team?._id
+    ]);
+
+    /*
+     * --------------------------------------------------
+     * REGISTER TEAM
+     * --------------------------------------------------
+     */
+
+    const handleRegister = async () => {
+        if (!currentUser || !userTeam) {
+            return;
+        }
+
+        if (!registrationOpen) {
+            setRegistrationError(
+                "Tournament registration is closed."
+            );
+            return;
+        }
+
+        if (!hasMinimumPlayers) {
+            setRegistrationError(
+                "Your team must have at least 4 members."
+            );
+            return;
+        }
+
+        try {
+            setRegistering(true);
+
+            setRegistrationError("");
+            setRegistrationMessage("");
+
+            const headers =
+                await getAuthHeaders(currentUser);
+
+            const response = await fetch(
+                `/api/tournaments/${tournament._id}/register`,
+                {
+                    method: "POST",
+                    headers
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message ||
+                    data.error ||
+                    "Failed to register team."
+                );
+            }
+
+            setRegistrationMessage(
+                "Your team has been registered successfully."
+            );
+
+            await fetchUserTeamRegistration();
+
+            const teams =
+                await fetchRegisteredTeams();
+
+            setAcceptedRegistration(teams);
+
+        } catch (error) {
+            console.error(
+                "Tournament registration failed:",
+                error
+            );
+
+            setRegistrationError(
+                error.message
+            );
+
+        } finally {
+            setRegistering(false);
+        }
+    };
+
+    /*
+     * --------------------------------------------------
+     * WITHDRAW TEAM
+     * --------------------------------------------------
+     */
+
+    const handleWithdraw = async () => {
+        if (!registration?._id) {
+            return;
+        }
+
+        let reason = null;
+        reason = window.prompt(
+            "Please provide a reason for withdrawing your registration (required):"
+        );
+
+        if (!reason || reason.trim() === "") {
+            return;
+        }
+
+
+
+        if (
+            !tournament?.registrationEndDate ||
+            new Date() >=
+            new Date(tournament.registrationEndDate)
+        ) {
+            setRegistrationError(
+                "The withdrawal deadline has passed."
+            );
+            return;
+        }
+
+        try {
+            setWithdrawing(true);
+
+            setRegistrationError("");
+            setRegistrationMessage("");
+
+            const headers =
+                await getAuthHeaders(currentUser);
+
+            const response = await fetch(
+                `/api/tournaments/registrations/${tournament._id}/${registration._id}`,
+                {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify({ reason })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message ||
+                    data.error ||
+                    "Failed to withdraw registration."
+                );
+            }
+
+            setRegistrationMessage(
+                "Your team has been withdrawn from the tournament."
+            );
+
+            await fetchUserTeamRegistration();
+
+            const teams =
+                await fetchRegisteredTeams();
+
+            setAcceptedRegistration(teams);
+
+        } catch (error) {
+            console.error(
+                "Tournament withdrawal failed:",
+                error
+            );
+
+            setRegistrationError(
+                error.message
+            );
+
+        } finally {
+            setWithdrawing(false);
+        }
+    };
+
+    /*
+     * --------------------------------------------------
+     * STATUS DISPLAY
+     * --------------------------------------------------
+     */
+
+    const getStatusLabel = (status) => {
+        switch (status) {
+            case "PENDING":
+                return "Pending";
+
+            case "APPROVED":
+                return "Approved";
+
+            case "REJECTED":
+                return "Rejected";
+
+            case "WITHDRAWN":
+                return "Withdrawn";
+
+            default:
+                return status;
+        }
+    };
+
+    /*
+     * --------------------------------------------------
+     * RENDER
+     * --------------------------------------------------
+     */
+
+    if (!tournament) {
+        return null;
+    }
 
 
     return (
         <div className="info-tab-container">
+
+            {/* ==========================================
+                REGISTRATION / DESCRIPTION
+            ========================================== */}
+
             <section className="info-tab-section">
+
                 <div className="section-header">
                     <svg
                         className="section-icon"
@@ -79,109 +430,382 @@ export function InfoTab({ tournament }) {
                         viewBox="0 0 32 16"
                         xmlns="http://www.w3.org/2000/svg"
                         aria-hidden="true"
-                        focusable="false"
                     >
-                        <path d="M32 0 16.79 16H8.095L8 15.899 23.114 0H32Z" fill="#EFF923" />
-                        <path d="M24 0 8.79 16H.095L0 15.899 15.114 0H24Z" fill="#000"></path>
+                        <path
+                            d="M32 0 16.79 16H8.095L8 15.899 23.114 0H32Z"
+                            fill="#EFF923"
+                        />
+
+                        <path
+                            d="M24 0 8.79 16H.095L0 15.899 15.114 0H24Z"
+                            fill="#000"
+                        />
                     </svg>
-                    <h2>Secure your team's spot</h2>
 
+                    <h2>
+                        Details
+                    </h2>
                 </div>
-                <div className="info-tab-grid">
-                    <div className="info-tab-card">
-                        <h4> Registration Deadline</h4>
-                        <p>{tournament?.registrationStartDate && tournament?.registrationEndDate ? `${new Date(tournament.registrationStartDate).toLocaleDateString()} - ${new Date(tournament.registrationEndDate).toLocaleDateString()}` : 'TBD'}</p>
-                    </div>
-                    <div className="info-tab-card">
-                        <h4>Entry fee</h4>
-                        <p>{tournament?.entryFee || 'TBD'}</p>
-                    </div>
-                    <div className="info-tab-card">
-                        <h4> Match Time</h4>
-                        <p>{tournament?.matchTime || 'TBD'}</p>
-                    </div>
-                    <div className="info-tab-card">
-                        <h4> Game Mode</h4>
-                        <p>{tournament?.gameMode || 'TBD'}</p>
-                    </div>
-                    <div className="info-tab-card">
-                        <h4> Teams</h4>
-                        <p>{tournament?.totalTeams ? `${tournament.totalTeams} Teams` : 'TBD'}</p>
-                    </div>
-                    <div className="info-tab-card">
-                        <h4>Roster Lock</h4>
-                        <p>{tournament?.rosterLocked ? 'Roster locked' : 'Roster open until registration deadline ends'}</p>
-                    </div>
-                    <div className="info-tab-card">
-                        <h4>Rules</h4>
-                        <p>Click here</p>
-                    </div>
-                    <div className="info-tab-card">
-                        <h4>Payment Method</h4>
-                        <p>Send money via Bkash: 01712345678</p>
-                    </div>
 
-                    {!isRegistrationClosed() ? (
-                        <>
-                            <div
-                                className={`info-tab-card register-card ${showTransactionForm ? "active" : ""}`}
-                                onClick={handleRegisterCardClick}
-                                role="button"
-                                tabIndex={0}
-                                onKeyDown={(event) => {
-                                    if (event.key === "Enter" || event.key === " ") {
-                                        event.preventDefault();
-                                        handleRegisterCardClick();
-                                    }
-                                }}
+                <div className="info-tab-content">
+                    <div className="tab-content">
+                        <div className="registration-date">
+                            <h4>
+                                Registration Deadline:
+                            </h4>
+                            <p >
+                                {tournament.registrationStartDate &&
+                                    tournament.registrationEndDate
+                                    ? `${formatDate(
+                                        tournament.registrationStartDate
+                                    )} - ${formatDate(
+                                        tournament.registrationEndDate
+                                    )}`
+                                    : "-"}
+                            </p>
+                        </div>
+                        <div className="description">
+                            <p>
+                                {tournament.description ||
+                                    "No description available."}
+                            </p>
+                        </div>
+
+                        <div className="rules">
+                            <h4>Rules:</h4>
+
+                            <a
+                                href={"https://drive.google.com/file/d/195-OENDUTzclf1vGA-z01UAM_m3nHLrI/view?usp=sharing"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="rules-pdf-link"
                             >
-                                {currentUser ? (
-                                    alreadyRegistered ? (
-                                        <h4>{registrationStatus}</h4>
-                                    ) : (
-                                        <>
-                                            <h4>Register Now</h4>
-                                            {!hasTeam ? (
-                                                <p className="team-status-message">Create or join a team.</p>
-                                            ) : hasPlayer < 4 ? (
-                                                <p className="team-status-message">Minimum 4 players needed in a team.</p>
-                                            ) : null}
-                                        </>
-                                    )
-                                ) : (
-                                    <Link to="/login" className="login-link">
-                                        <h4>Login to register</h4>
-                                    </Link>
-                                )}
+                                RULE SET
+                            </a>
+                        </div>
 
-                                {showTransactionForm ? (
-                                    <form className="register-form" onSubmit={handleTransactionSubmit} onClick={(event) => event.stopPropagation()}>
-                                        <input
-                                            type="text"
-                                            value={transactionId}
-                                            onChange={(event) => {
-                                                setTransactionId(event.target.value);
-                                                if (showValidationError) {
-                                                    setShowValidationError(false);
-                                                }
-                                            }}
-                                            placeholder="Transaction ID"
-                                            className={`transaction-input ${showValidationError ? "input-error" : ""}`}
-                                        />
-                                        {showValidationError ? <p className="validation-error">Transaction ID is required</p> : null}
-                                        <button type="submit" className="register-submit-button">
-                                            Submit
-                                        </button>
-                                    </form>
-                                ) : null}
+                    </div>
+
+                    {/* REGISTRATION */}
+
+                    <div className="registration">
+
+
+                        {/* =================================
+                            NOT LOGGED IN
+                        ================================= */}
+
+                        {!currentUser ? (
+
+                            <div className="registration-login">
+
+                                <h4>
+                                    Ready to compete?
+                                </h4>
+
+                                <Link
+                                    to="/login"
+                                    className="registration-button"
+                                >
+                                    Login to Register
+                                </Link>
+
                             </div>
-                        </>
-                    ) : null}
+
+                        ) : tournamentEnded ? (
+
+                            /* =================================
+                               TOURNAMENT ENDED
+                            ================================= */
+
+                            <div className="registration-closed">
+
+                                <span className="material-symbols-outlined">
+                                    event_busy
+                                </span>
+
+                                <h4>
+                                    Tournament Ended
+                                </h4>
+
+                            </div>
+
+                        ) : registration ? (
+
+                            /* =================================
+                               ALREADY REGISTERED
+                            ================================= */
+
+                            <div className="registration-status">
+
+                                <div className="registration-status-top">
+
+                                    <div>
+                                        <h4>
+                                            Registration Status:
+                                        </h4>
+
+                                        {registration.teamId?.name && (
+                                            <p className="registered-team-name">
+                                                {
+                                                    registration
+                                                        .teamId
+                                                        .name
+                                                }
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <span
+                                        className={`registration-badge ${registration.status.toLowerCase()}`}
+                                    >
+                                        {getStatusLabel(
+                                            registration.status
+                                        )}
+                                    </span>
+
+                                </div>
+
+                                {registration.status ===
+                                    "REJECTED" &&
+                                    registration.reason && (
+                                        <div className="registration-reason">
+                                            <strong>
+                                                Reason:
+                                            </strong>
+
+                                            <p>
+                                                {
+                                                    registration.reason
+                                                }
+                                            </p>
+                                        </div>
+                                    )}
+
+                                {/* WITHDRAW */}
+
+                                {registration.status ==
+                                    "PENDING" &&
+                                    !tournamentEnded &&
+                                    new Date() <
+                                    new Date(
+                                        tournament.registrationEndDate
+                                    ) && (
+
+                                        <button
+                                            type="button"
+                                            className="withdraw-button"
+                                            onClick={
+                                                handleWithdraw
+                                            }
+                                            disabled={
+                                                withdrawing || registration.status === "WITHDRAWN"
+                                            }
+                                        >
+                                            {withdrawing
+                                                ? "Withdrawing..."
+                                                : "Withdraw Registration"}
+                                        </button>
+                                    )}
+
+                                {registration.status !==
+                                    "WITHDRAWN" &&
+                                    new Date() >=
+                                    new Date(
+                                        tournament.registrationEndDate
+                                    ) && (
+
+                                        <p className="withdraw-closed">
+                                            Withdrawal is no longer
+                                            available after the
+                                            registration deadline.
+                                        </p>
+                                    )}
+
+                            </div>
+
+                        ) : !registrationStarted ? (
+
+                            /* =================================
+                               REGISTRATION NOT STARTED
+                            ================================= */
+
+                            <div className="registration-closed">
+
+                                <span className="material-symbols-outlined">
+                                    schedule
+                                </span>
+
+                                <h4>
+                                    Registration hasn't started
+                                </h4>
+
+                                <p>
+                                    Registration opens on{" "}
+                                    <strong>
+                                        {formatDate(
+                                            tournament.registrationStartDate
+                                        )}
+                                    </strong>
+                                </p>
+
+                            </div>
+
+                        ) : !registrationOpen ? (
+
+                            /* =================================
+                               REGISTRATION CLOSED
+                            ================================= */
+
+                            <div className="registration-closed">
+
+                                <span className="material-symbols-outlined">
+                                    lock
+                                </span>
+
+                                <h4>
+                                    Registration Closed
+                                </h4>
+
+                                <p>
+                                    Registration is no longer
+                                    available.
+                                </p>
+
+                            </div>
+
+                        ) : !hasTeam ? (
+
+                            /* =================================
+                               NO TEAM
+                            ================================= */
+
+                            <div className="registration-action">
+
+                                <p className="team-status-warning">
+                                    You need to create or join
+                                    a team before registering.
+                                </p>
+
+                                <Link
+                                    to="/teams"
+                                    className="registration-button"
+                                >
+                                    Create or Join Team
+                                </Link>
+
+                            </div>
+
+                        ) : !hasMinimumPlayers ? (
+
+                            /* =================================
+                               NOT ENOUGH PLAYERS
+                            ================================= */
+
+                            <div className="registration-action">
+
+                                <p className="registered-team-name">
+                                    {userTeam.name}
+                                    <label>
+                                        Members: {teamMemberCount}/4
+                                    </label>
+                                </p>
+
+
+                                <p className="team-status-warning">
+
+                                    Your team needs{" "}
+
+                                    <strong>
+                                        {4 -
+                                            teamMemberCount}
+                                    </strong>{" "}
+
+                                    more{" "}
+
+                                    {4 -
+                                        teamMemberCount ===
+                                        1
+                                        ? "player"
+                                        : "players"}{" "}
+                                    to register.
+
+                                </p>
+
+                                <button
+                                    type="button"
+                                    className="registration-button disabled"
+                                    disabled
+                                >
+                                    Register Now
+                                </button>
+
+                            </div>
+
+                        ) : (
+
+                            /* =================================
+                               READY TO REGISTER
+                            ================================= */
+
+                            <div className="registration-action">
+
+                                <p className="registered-team-name">
+                                    {userTeam.name}
+                                    <label>
+                                        Members: {teamMemberCount}/4
+                                    </label>
+                                </p>
+
+                                <button
+                                    type="button"
+                                    className="registration-button"
+                                    onClick={
+                                        handleRegister
+                                    }
+                                    disabled={
+                                        registering || !!registration
+                                    }
+                                >
+                                    {registering
+                                        ? "Registering..."
+                                        : "Register Now"}
+                                </button>
+
+                            </div>
+                        )}
+
+                        {/* ERROR */}
+
+                        {registrationError && (
+                            <div className="registration-alert error">
+                                {registrationError}
+                            </div>
+                        )}
+
+                        {/* SUCCESS */}
+
+                        {registrationMessage && (
+                            <div className="registration-alert success">
+                                {registrationMessage}
+                            </div>
+                        )}
+
+
+                    </div>
+
                 </div>
             </section>
+
+
+            {/* ==========================================
+                REGISTERED TEAMS
+            ========================================== */}
 
             <section className="tournament-info-section">
+
                 <div className="section-header">
+
                     <svg
                         className="section-icon"
                         width="32"
@@ -189,22 +813,101 @@ export function InfoTab({ tournament }) {
                         viewBox="0 0 32 16"
                         xmlns="http://www.w3.org/2000/svg"
                         aria-hidden="true"
-                        focusable="false"
                     >
-                        <path d="M32 0 16.79 16H8.095L8 15.899 23.114 0H32Z" fill="#EFF923" />
-                        <path d="M24 0 8.79 16H.095L0 15.899 15.114 0H24Z" fill="#000"></path>
+                        <path
+                            d="M32 0 16.79 16H8.095L8 15.899 23.114 0H32Z"
+                            fill="#EFF923"
+                        />
+
+                        <path
+                            d="M24 0 8.79 16H.095L0 15.899 15.114 0H24Z"
+                            fill="#000"
+                        />
                     </svg>
-                    <h2>Registered Teams</h2>
-                    <p>{acceptedRegistration.length}/{tournament?.totalTeams} Teams</p>
-                </div>
-                <div className="team-section">
-                    <div className="team-grid">
-                        {acceptedRegistration.map((registration) => (
-                            <TeamCard key={registration.teamId._id} team={registration.teamId} className="team-card-info" />
-                        ))}
+
+                    <h2>
+                        Approve Teams
+                    </h2>
+
+                    <p>
+                        {acceptedRegistration.length}
+                        /
+                        {tournament.totalTeams}
+                        {" "}Teams
+                    </p>
+
+                    <div className="roster-lock">
+
+                        <label>
+                            Roster
+                        </label>
+
+                        <span
+                            className="material-symbols-outlined"
+                            title={
+                                tournament.rosterLocked
+                                    ? "Roster locked"
+                                    : "Roster unlocked"
+                            }
+                        >
+                            {tournament.rosterLocked
+                                ? "lock"
+                                : "lock_open_right"}
+                        </span>
+
                     </div>
+
                 </div>
+
+                <div className="team-section">
+
+                    {acceptedRegistration.length ===
+                        0 ? (
+
+                        <div className="empty-team-state">
+
+                            <span className="material-symbols-outlined">
+                                groups
+                            </span>
+
+                            <h4>
+                                No teams approved yet
+                            </h4>
+
+                            <p>
+                                Approved teams will
+                                appear here.
+                            </p>
+
+                        </div>
+
+                    ) : (
+
+                        <div className="team-grid">
+
+                            {acceptedRegistration.map(
+                                (registration) => (
+                                    <TeamCard
+                                        key={
+                                            registration
+                                                .teamId
+                                                ._id
+                                        }
+                                        team={
+                                            registration.teamId
+                                        }
+                                        className="team-card-info"
+                                    />
+                                )
+                            )}
+
+                        </div>
+                    )}
+
+                </div>
+
             </section>
+
         </div>
     );
 }

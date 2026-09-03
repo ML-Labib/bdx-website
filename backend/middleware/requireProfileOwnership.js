@@ -1,6 +1,6 @@
-const Profile = require("../models/Profile");
+import { Profile } from "../models/Profile.js";
 
-exports.requireProfileOwnership = async (req, res, next) => {
+export const requireProfileOwnership = async (req, res, next) => {
     try {
         if (!req.user?.uid) {
             return res.status(401).json({

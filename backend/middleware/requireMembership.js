@@ -1,43 +1,32 @@
-const mongoose = require("mongoose");
-const { Team } = require("../models/Team");
-const { TeamMember } = require("../models/TeamMembers");
-
-const Profile = require("../models/Profile");
+import mongoose from "mongoose";
+import { TeamMember } from "../models/TeamMembers.js";
+import { Profile } from "../models/Profile.js";
 
 
-exports.requireMembership = async (req, res, next) => {
+export const requireMembership = async (req, res, next) => {
     try {
-        const teamId = req.params.teamId;
+        const { teamId } = req.params;
 
-        if (!teamId) {
-            return res.status(400).json({
-                message: "Team ID is required"
-            });
+        if (!teamId || !mongoose.Types.ObjectId.isValid(teamId)) {
+            return res.status(400).json({ message: "Invalid or missing team ID" });
         }
 
-        if (!mongoose.Types.ObjectId.isValid(teamId)) {
-            return res.status(400).json({
-                message: "Invalid team ID"
-            });
-        }
-
-        // Get the MongoDB Profile belonging to the
-        // authenticated Firebase user
-        const profile = await Profile.findOne({
-            user: req.user.uid
-        });
+        // 1. Fetch only _id as a plain JS object using .select() and .lean()
+        const profile = await Profile.findOne({ user: req.user.uid })
+            .select("_id ign")
+            .lean();
 
         if (!profile) {
-            return res.status(404).json({
-                message: "Profile not found"
-            });
+            return res.status(404).json({ message: "Profile not found" });
         }
 
-        // Find the team AND verify ownership
+        // 2. Fetch membership as a plain JS object using .lean()
         const membership = await TeamMember.findOne({
             team: teamId,
-            user: profile._id
-        }).populate("team", "name owner");
+            user: profile._id,
+        })
+            .populate("team", "_id name owner")
+            .lean();
 
         if (!membership) {
             return res.status(403).json({
@@ -45,16 +34,12 @@ exports.requireMembership = async (req, res, next) => {
             });
         }
 
-        // Pass the verified team to the controller
         req.membership = membership;
         req.profile = profile;
         next();
 
     } catch (error) {
         console.error("Team membership error:", error);
-
-        return res.status(500).json({
-            message: "Failed to verify team membership"
-        });
+        return res.status(500).json({ message: "Failed to verify team membership" });
     }
 };

@@ -1,5 +1,7 @@
-const mongoose = require('mongoose');
-const dns = require('node:dns');
+
+import mongoose from "mongoose";
+import dns from 'node:dns';
+
 dns.setServers(['8.8.8.8', '1.1.1.1']); // Google & Cloudflare DNS
 
 const connectDB = async () => {
@@ -22,4 +24,4 @@ const connectDB = async () => {
   }
 };
 
-module.exports = connectDB;
+export default connectDB;

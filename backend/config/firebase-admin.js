@@ -1,5 +1,5 @@
-const admin = require("firebase-admin");
-require('dotenv').config();
+import admin from "firebase-admin";
+import 'dotenv/config';
 
 const serviceAccount = {
     projectId: process.env.FIREBASE_PROJECT_ID,
@@ -13,4 +13,4 @@ if (!admin.apps.length) {
     });
 }
 
-module.exports = admin;
+export default admin;

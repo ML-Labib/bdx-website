@@ -1,0 +1,187 @@
+.roster-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.65);
+
+    backdrop-filter: blur(4px);
+}
+
+.roster-modal {
+    width: min(550px, 100%);
+    /* max-height: 85vh; */
+
+    display: flex;
+    flex-direction: column;
+
+    background: #181818;
+
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.roster-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 10px 16px;
+
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.roster-modal-header h2 {
+    margin: 0;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.roster-modal-header p {
+    margin: 5px 0 0;
+
+    font-size: 14px;
+    color: white;
+}
+
+.roster-modal-close {
+    width: 36px;
+    height: 36px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: transparent;
+
+    font-size: 26px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.roster-modal-close:hover {
+    background: var(--primary-color);
+    color: var(--text-color);
+}
+
+.roster-modal-content {
+    padding: 20px 24px;
+
+    overflow-y: auto;
+}
+
+.roster-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+
+    font-size: 14px;
+    color: #666;
+}
+
+.roster-lock-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 6px 10px;
+
+    border-radius: 6px;
+
+    background: #e8f7ed;
+    color: #218838;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.roster-table-wrapper {
+    overflow-x: auto;
+}
+
+.roster-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 14px;
+}
+
+.roster-table th {
+    padding: 11px 12px;
+
+    text-align: left;
+
+    background: var(--primary-color);
+
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.roster-table td {
+    padding: 13px 12px;
+
+    border-top: 1px solid #eeeeee;
+
+    color: white;
+}
+
+.roster-table th:first-child,
+.roster-table td:first-child {
+    width: 45px;
+
+    text-align: center;
+}
+
+.roster-modal-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 180px;
+
+    color: #777;
+}
+
+.roster-modal-error {
+    padding: 14px;
+
+    border-radius: 8px;
+
+    background: #fff0f0;
+    color: #c62828;
+
+    font-size: 14px;
+}
+
+
+@media (max-width: 600px) {
+    .roster-modal-overlay {
+        padding: 12px;
+    }
+
+    .roster-modal {
+        max-height: 90vh;
+    }
+
+    .roster-modal-header,
+    .roster-modal-content,
+    .roster-modal-footer {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .roster-table {
+        min-width: 450px;
+    }
+}
