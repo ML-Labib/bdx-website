@@ -1,0 +1,227 @@
+.leaderboard-sidebar {
+    width: 290px;
+    flex-shrink: 0;
+    background: #0c0c0c;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    overflow: hidden;
+    color: white;
+}
+
+.sidebar-section-title {
+    height: 64px;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.78rem;
+    color: #8b8b8b;
+}
+
+.sidebar-section-title strong {
+    color: #efff00;
+}
+
+.tournament-list {
+    max-height: 470px;
+    overflow-y: auto;
+}
+
+.tournament-item {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 48px 1fr 20px;
+    gap: 10px;
+    align-items: center;
+    padding: 12px;
+    background: transparent;
+    color: white;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+}
+
+.tournament-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.tournament-item.active {
+    background: #181818;
+}
+
+.tournament-item.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #efff00;
+}
+
+.tournament-item-logo {
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.tournament-item-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tournament-item-logo .material-symbols-outlined {
+    color: #efff00;
+}
+
+.tournament-item-info {
+    min-width: 0;
+}
+
+.tournament-item-info strong {
+    display: block;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tournament-item-info small {
+    display: block;
+    color: #777;
+    margin-top: 3px;
+    font-size: 0.72rem;
+}
+
+.tournament-tags {
+    display: flex;
+    gap: 4px;
+    margin-top: 5px;
+}
+
+.tournament-tags span {
+    font-size: 0.6rem;
+    padding: 2px 4px;
+    border-radius: 2px;
+    background: #222;
+    color: #999;
+}
+
+.tournament-arrow {
+    font-size: 18px;
+    color: #555;
+}
+
+.tournament-item.active .tournament-arrow {
+    color: #efff00;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.stage-sidebar-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 18px 10px;
+    color: #777;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.stage-sidebar-heading button {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #333;
+    background: #151515;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stage-sidebar-heading button:hover {
+    color: #efff00;
+    border-color: #efff00;
+}
+
+.stage-sidebar-heading button span {
+    font-size: 18px;
+}
+
+.stage-list {
+    padding-bottom: 10px;
+}
+
+.stage-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    background: transparent;
+    color: #aaa;
+    padding: 11px 18px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.stage-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: white;
+}
+
+.stage-item.active {
+    background: #181818;
+    color: white;
+}
+
+.stage-number {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #252525;
+    border-radius: 4px;
+    font-size: 0.7rem;
+}
+
+.stage-item.active .stage-number {
+    background: #efff00;
+    color: #000;
+}
+
+.stage-name {
+    flex: 1;
+    font-size: 0.85rem;
+}
+
+.stage-item .material-symbols-outlined {
+    font-size: 17px;
+    color: #555;
+}
+
+.stage-item.active .material-symbols-outlined {
+    color: #efff00;
+}
+
+.no-stages,
+.sidebar-loading {
+    padding: 20px;
+    color: #666;
+    font-size: 0.8rem;
+}

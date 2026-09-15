@@ -1,0 +1,72 @@
+.group-tabs-container {
+    margin-top: 18px;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.group-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+}
+
+.group-tab,
+.add-group-tab {
+    min-height: 44px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #666;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.group-tab:hover {
+    color: #111;
+}
+
+.group-tab.active {
+    color: #111;
+    background: white;
+    border-top: 2px solid #111;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+.group-tab-number {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    background: #eee;
+    font-size: 0.7rem;
+}
+
+.group-tab.active .group-tab-number {
+    background: #efff00;
+    color: #000;
+}
+
+.group-tab small {
+    background: #eee;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.65rem;
+}
+
+.add-group-tab {
+    color: #777;
+}
+
+.add-group-tab:hover {
+    color: #111;
+}
+
+.add-group-tab .material-symbols-outlined {
+    font-size: 18px;
+}

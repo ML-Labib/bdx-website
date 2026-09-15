@@ -6,22 +6,34 @@ const getPubgHeaders = () => ({
 });
 
 
+const DEFATULT_POINT_SYSTEM_CONFIG = {
+    1: 10,
+    2: 6,
+    3: 5,
+    4: 4,
+    5: 3,
+    6: 2,
+    7: 1,
+    8: 1
+};
+
+const MAP_NAME = {
+    "Baltic_Main": "Erangel",
+    "Chimera_Main": "Paramo",
+    "Desert_Main": "Miramar",
+    "DihorOtok_Main": "Vikendi",
+    "Heaven_Main": "Haven",
+    "Kiki_Main": "Deston",
+    "Savage_Main": "Sanhok",
+    "Summerland_Main": "Karakin",
+    "Tiger_Main": "Taego",
+    "Neon_Main": "Rondo"
+}
 
 
-
-export const fetchPubgPlayerData = async (playerName, matchIndex = 0) => {
+export const fetchPubgPlayerData = async (playerData, matchIndex = 0) => {
 
     try {
-        const response = await fetch(`https://api.pubg.com/shards/steam/players?filter[playerNames]=${playerName}`, {
-            headers: getPubgHeaders()
-        });
-
-
-        if (!response.ok) {
-
-            return null;
-        }
-        let playerData = await response.json();
         const normalizedData = {
             id: playerData.data[0].id,
             name: playerData.data[0].attributes.name,
@@ -35,21 +47,8 @@ export const fetchPubgPlayerData = async (playerName, matchIndex = 0) => {
     }
 };
 
-export const fetchPubgMatchData = async (matchId) => {
-    try {
-        const response = await fetch(`https://api.pubg.com/shards/steam/matches/${matchId}`, {
-            headers: getPubgHeaders()
-        });
 
-        if (!response.ok) {
-            return res
-        }   } catch (error) {
-        console.error("Error fetching PUBG match data:", error);
-        throw error;
-    }
-};
-
-const normalizePlayerData = (playerData, matchIndex) => {
+export const normalizePlayerData = (playerData, matchIndex) => {
     const normalizedData = {
         id: playerData.data[0].id,
         name: playerData.data[0].attributes.name,
@@ -59,7 +58,7 @@ const normalizePlayerData = (playerData, matchIndex) => {
     return normalizedData;
 };
 
-const normalizeMatchData = (matchData, pointSystemConfig = {}) => {
+export const normalizeMatchData = (matchData) => {
     const participantsMap = new Map();
 
     matchData.included.forEach(item => {
@@ -71,7 +70,7 @@ const normalizeMatchData = (matchData, pointSystemConfig = {}) => {
     const matchInfo = {
         matchId: matchData.data.id,
         gameMode: matchData.data.attributes?.gameMode || "",
-        mapName: matchData.data.attributes?.mapName || "",
+        mapName: MAP_NAME[matchData.data.attributes?.mapName] || "",
     }
 
     const teams = [];
@@ -82,12 +81,12 @@ const normalizeMatchData = (matchData, pointSystemConfig = {}) => {
             const teamId = item.attributes?.stats.teamId;
             const rank = item.attributes?.stats?.rank;
             const wwdc = (item.attributes?.won == "true") ? 1 : 0;
-            const placementPoints = pointSystemConfig[rank] || 0;
+            const placementPoints = DEFATULT_POINT_SYSTEM_CONFIG[rank] || 0;
 
             const rosterParticipants = item.relationships?.participants?.data || [];
             const combineParticipantsStats = {
                 lobbyNumber: teamId,
-                rank: rank,
+                placement: rank,
                 wwdc: wwdc,
                 placementPoints: placementPoints,
                 totalPoints: placementPoints,
@@ -134,9 +133,10 @@ const normalizeMatchData = (matchData, pointSystemConfig = {}) => {
     });
 
     return {
-        matchInfo,
-        teams,
-        players
+        ...matchInfo,
+        pubgMatchId: matchInfo.matchId,
+        teamResults: teams.sort((a, b) => a.placement - b.placement),
+        playerResults: players,
     };
 };
 

@@ -1,828 +1,1005 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../components/useAuth";
 import { getAuthHeaders } from "../../utils/authHeaders";
+import { CreateStageModal } from "./components/CreateStageModal.jsx";
+import { CreateGroupModal } from "./components/CreateGroupModal.jsx";
+import { CreateMatchModal } from "./components/CreateMatchModal.jsx";
+import { StageSidebar } from "./components/StageSidebar.jsx";
+import { GroupTabs } from "./components/GroupTabs.jsx";
+import { ParticipantManagement } from "./components/ParticipantManagement.jsx";
+import { MatchManagement } from "./components/MatchManagement.jsx";
+import { AddTeamModal } from "./components/AddTeamModal.jsx";
+import { MatchPreviewModal } from "./components/MatchPreviewModal.jsx";
 import "./manageLeaderboards.css";
 
-import {
-    fetchTournaments,
-    fetchStages,
-    fetchGroups,
-    fetchParticipants,
-    fetchMatches,
-    createStage,
-    createGroup,
-    addParticipant,
-    createMatch,
-    previewMatchData,
-    saveMatchResults,
-} from "./services/leaderboardApi";
-
-import StageSidebar from "./components/StageSidebar";
-import GroupTabs from "./components/GroupTabs";
-import ParticipantManagement from "./components/ParticipantManagement";
-import MatchManagement from "./components/MatchManagement";
-
-import CreateStageModal from "./components/CreateStageModal";
-import CreateGroupModal from "./components/CreateGroupModal";
-import AddTeamModal from "./components/AddTeamModal";
-import CreateMatchModal from "./components/CreateMatchModal";
-import MatchPreviewModal from "./components/MatchPreviewModal";
-
-import "./ManageLeaderboards.css";
+const API_BASE_URL = "/api";
 
 export const ManageLeaderboards = () => {
-    const { currentUser } = useAuth();
-    const navigate = useNavigate();
+	const { currentUser } = useAuth();
 
-    /* =========================
-       Tournament
-    ========================= */
+	const [tournaments, setTournaments] = useState([]);
+	const [selectedTournament, setSelectedTournament] = useState(null);
 
-    const [tournaments, setTournaments] = useState([]);
-    const [selectedTournament, setSelectedTournament] = useState(null);
+	const [stages, setStages] = useState([]);
+	const [selectedStage, setSelectedStage] = useState(null);
+	const [selectedGroup, setSelectedGroup] = useState(null);
 
-    /* =========================
-       Stages
-    ========================= */
+	const [matches, setMatches] = useState([]);
+	const [stageParticipants, setStageParticipants] = useState([]);
+	const [registeredTeams, setRegisteredTeams] = useState([]);
 
-    const [stages, setStages] = useState([]);
-    const [selectedStage, setSelectedStage] = useState(null);
+	const [loadingTournaments, setLoadingTournaments] = useState(true);
+	const [loadingStages, setLoadingStages] = useState(false);
+	const [loadingGroups, setLoadingGroups] = useState(false);
+	const [loadError, setLoadError] = useState("");
 
-    /* =========================
-       Groups
-    ========================= */
+	const [showStageModal, setShowStageModal] = useState(false);
+	const [editingStage, setEditingStage] = useState(null);
+	const [showGroupModal, setShowGroupModal] = useState(false);
+	const [showMatchModal, setShowMatchModal] = useState(false);
+	const [showAddTeamModal, setShowAddTeamModal] = useState(false);
+	const [showPreviewModal, setShowPreviewModal] = useState(false);
 
-    const [groups, setGroups] = useState([]);
-    const [selectedGroup, setSelectedGroup] = useState(null);
+	const [selectedMatch, setSelectedMatch] = useState(null);
+	const [previewData, setPreviewData] = useState(null);
+	const [previewLoading, setPreviewLoading] = useState(false);
+	const [previewError, setPreviewError] = useState("");
+	const [isSaving, setIsSaving] = useState(false);
+	const selectedContext = selectedGroup || (
+		selectedStage && !selectedStage.hasGroups
+			? { _id: null, name: selectedStage.name, participants: stageParticipants }
+			: null
+	);
 
-    /* =========================
-       Participants / Matches
-    ========================= */
+	/*
+	 * ---------------------------------------------------------
+	 * LOAD TOURNAMENTS
+	 * ---------------------------------------------------------
+	 */
 
-    const [participants, setParticipants] = useState([]);
-    const [matches, setMatches] = useState([]);
+	useEffect(() => {
+		const loadTournaments = async () => {
+			try {
+				setLoadingTournaments(true);
 
-    /* =========================
-       UI
-    ========================= */
+				const headers = await getAuthHeaders(currentUser);
 
-    const [activeSection, setActiveSection] = useState("participants");
+				const res = await fetch(`${API_BASE_URL}/tournaments`, {
+					headers,
+				});
 
-    const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
+				if (!res.ok) {
+					throw new Error("Failed to load tournaments");
+				}
 
-    /* =========================
-       Modals
-    ========================= */
+				const data = await res.json();
 
-    const [showStageModal, setShowStageModal] = useState(false);
-    const [showGroupModal, setShowGroupModal] = useState(false);
-    const [showAddTeamModal, setShowAddTeamModal] = useState(false);
-    const [showMatchModal, setShowMatchModal] = useState(false);
-    const [showPreviewModal, setShowPreviewModal] = useState(false);
+				const tournamentList = Array.isArray(data)
+					? data
+					: data.tournaments || [];
 
-    const [selectedMatch, setSelectedMatch] = useState(null);
-    const [previewData, setPreviewData] = useState(null);
-    const [previewLoading, setPreviewLoading] = useState(false);
-    const [savingResults, setSavingResults] = useState(false);
+				setTournaments(tournamentList);
 
-    /* =========================================================
-       LOAD TOURNAMENTS
-    ========================================================= */
+				if (tournamentList.length > 0) {
+					setSelectedTournament(tournamentList[0]);
+				}
+			} catch (error) {
+				console.error(error);
 
-    useEffect(() => {
-        loadTournaments();
-    }, []);
+				setLoadError(error.message);
+			} finally {
+				setLoadingTournaments(false);
+			}
+		};
 
-    const loadTournaments = async () => {
-        try {
-            setLoading(true);
+		if (currentUser) {
+			loadTournaments();
+		}
+	}, [currentUser]);
 
-            const headers = await getAuthHeaders(currentUser);
+	useEffect(() => {
+		if (!selectedTournament?._id) {
+			setStages([]);
+			setSelectedStage(null);
+			setSelectedGroup(null);
+			return;
+		}
 
-            const data = await fetchTournaments(headers);
+		let cancelled = false;
 
-            setTournaments(data);
+		const loadStages = async () => {
+			try {
+				setLoadingStages(true);
+				setLoadError("");
+				setSelectedStage(null);
+				setSelectedGroup(null);
 
-            if (data.length > 0) {
-                setSelectedTournament(data[0]);
-            }
-        } catch (error) {
-            setErrorMessage(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+				const headers = await getAuthHeaders(currentUser);
+				const res = await fetch(
+					`${API_BASE_URL}/leaderboard/tournament/${selectedTournament._id}/stages`,
+					{ headers }
+				);
 
-    /* =========================================================
-       TOURNAMENT CHANGE
-    ========================================================= */
+				if (!res.ok) throw new Error("Failed to load stages");
 
-    useEffect(() => {
-        if (!selectedTournament?._id) return;
+				const data = await res.json();
+				const tournamentStages = (Array.isArray(data) ? data : data.stages || [])
+					.sort((first, second) => first.order - second.order)
+					.map((stage) => ({ ...stage, groups: [] }));
 
-        loadStages();
-    }, [selectedTournament?._id]);
+				if (cancelled) return;
+				setStages(tournamentStages);
+				setSelectedStage(tournamentStages[0] || null);
+			} catch (error) {
+				console.error(error);
+				if (cancelled) return;
+				setStages([]);
+				setLoadError(error.message);
+			} finally {
+				setLoadingStages(false);
+			}
+		};
 
-    const loadStages = async () => {
-        try {
-            setLoading(true);
-            clearMessages();
+		loadStages();
 
-            const headers = await getAuthHeaders(currentUser);
+		return () => {
+			cancelled = true;
+		};
+	}, [currentUser, selectedTournament]);
 
-            const data = await fetchStages(
-                selectedTournament._id,
-                headers
-            );
+	useEffect(() => {
+		if (!selectedTournament?._id || !selectedStage?._id || !selectedStage.hasGroups) {
+			setSelectedGroup(null);
+			return;
+		}
 
-            setStages(data);
+		let cancelled = false;
 
-            if (data.length > 0) {
-                setSelectedStage(data[0]);
-            } else {
-                setSelectedStage(null);
-            }
-        } catch (error) {
-            setErrorMessage(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+		const loadGroups = async () => {
+			try {
+				setLoadingGroups(true);
+				const headers = await getAuthHeaders(currentUser);
+				const res = await fetch(
+					`/api/leaderboard/tournament/${selectedTournament._id}/stage/${selectedStage._id}/groups`,
+					{ headers }
+				);
 
-    /* =========================================================
-       STAGE CHANGE
-    ========================================================= */
+				if (!res.ok) throw new Error("Failed to load groups");
 
-    useEffect(() => {
-        if (!selectedStage?._id) {
-            setGroups([]);
-            setSelectedGroup(null);
-            return;
-        }
+				const data = await res.json();
+				const groups = (Array.isArray(data) ? data : data.groups || [])
+					.sort((first, second) => first.order - second.order)
+					.map((group) => ({ ...group, participants: group.participants || [] }));
 
-        loadGroups();
-    }, [selectedStage?._id]);
+				if (cancelled) return;
+				setStages((previousStages) => previousStages.map((stage) =>
+					stage._id === selectedStage._id ? { ...stage, groups } : stage
+				));
+				setSelectedStage((previousStage) =>
+					previousStage?._id === selectedStage._id
+						? { ...previousStage, groups }
+						: previousStage
+				);
+				setSelectedGroup(groups[0] || null);
+			} catch (error) {
+				console.error(error);
+				if (cancelled) return;
+				setSelectedGroup(null);
+				setLoadError(error.message);
+			} finally {
+				setLoadingGroups(false);
+			}
+		};
 
-    const loadGroups = async () => {
-        try {
-            const headers = await getAuthHeaders(currentUser);
+		loadGroups();
 
-            const data = await fetchGroups(
-                selectedTournament._id,
-                selectedStage._id,
-                headers
-            );
+		return () => {
+			cancelled = true;
+		};
+	}, [currentUser, selectedTournament, selectedStage?._id, selectedStage?.hasGroups]);
 
-            setGroups(data);
+	useEffect(() => {
+		if (!selectedTournament?._id) return;
 
-            if (data.length > 0) {
-                setSelectedGroup(data[0]);
-            } else {
-                setSelectedGroup(null);
-            }
-        } catch (error) {
-            setErrorMessage(error.message);
-        }
-    };
+		const loadRegisteredTeams = async () => {
+			try {
+				const headers = await getAuthHeaders(currentUser);
+				const response = await fetch(`${API_BASE_URL}/tournaments/${selectedTournament._id}/registrations`, { headers });
+				if (!response.ok) throw new Error("Failed to load registered teams");
+				const registrations = await response.json();
+				setRegisteredTeams(registrations.map((registration) => registration.teamId).filter(Boolean));
+			} catch (error) {
+				setLoadError(error.message);
+			}
+		};
 
-    /* =========================================================
-       GROUP CHANGE
-    ========================================================= */
+		loadRegisteredTeams();
+	}, [currentUser, selectedTournament?._id]);
 
-    useEffect(() => {
-        if (!selectedStage?._id) return;
+	useEffect(() => {
+		if (!selectedTournament?._id || !selectedStage?._id) {
+			setMatches([]);
+			setStageParticipants([]);
+			return;
+		}
 
-        loadParticipants();
-        loadMatches();
-    }, [
-        selectedStage?._id,
-        selectedGroup?._id,
-    ]);
+		const loadStageData = async () => {
+			try {
+				const headers = await getAuthHeaders(currentUser);
+				const query = new URLSearchParams({
+					tournamentId: selectedTournament._id,
+					stageId: selectedStage._id,
+					groupId: selectedGroup?._id || "",
+				});
+				if (selectedGroup?._id) query.set("groupId", selectedGroup._id);
 
-    const loadParticipants = async () => {
-        try {
-            const headers = await getAuthHeaders(currentUser);
+				const [matchesResponse, participantsResponse] = await Promise.all([
+					fetch(`${API_BASE_URL}/leaderboard/matches?${query}`, { headers }),
+					fetch(`${API_BASE_URL}/leaderboard/tournament/${selectedTournament._id}/stage/${selectedStage._id}/participants`, { headers }),
+				]);
+				if (!matchesResponse.ok) throw new Error("Failed to load matches");
+				if (!participantsResponse.ok) throw new Error("Failed to load participants");
+				setMatches(await matchesResponse.json());
+				setStageParticipants(await participantsResponse.json());
+			} catch (error) {
+				setLoadError(error.message);
+			}
+		};
 
-            const data = await fetchParticipants({
-                tournamentId: selectedTournament._id,
-                stageId: selectedStage._id,
-                groupId: selectedGroup?._id || null,
-                headers,
-            });
+		loadStageData();
+	}, [currentUser, selectedTournament?._id, selectedStage?._id, selectedGroup?._id]);
 
-            setParticipants(data);
-        } catch (error) {
-            setErrorMessage(error.message);
-        }
-    };
+	/*
+	 * ---------------------------------------------------------
+	 * SELECT TOURNAMENT
+	 * ---------------------------------------------------------
+	 */
 
-    const loadMatches = async () => {
-        try {
-            const headers = await getAuthHeaders(currentUser);
+	const handleTournamentSelect = (tournament) => {
+		setSelectedTournament(tournament);
+	};
 
-            const data = await fetchMatches({
-                tournamentId: selectedTournament._id,
-                stageId: selectedStage._id,
-                groupId: selectedGroup?._id || null,
-                headers,
-            });
+	/*
+	 * ---------------------------------------------------------
+	 * STAGE
+	 * ---------------------------------------------------------
+	 */
 
-            setMatches(data);
-        } catch (error) {
-            setErrorMessage(error.message);
-        }
-    };
+	const handleStageSelect = (stage) => {
+		setSelectedStage(stage);
+		setSelectedGroup(stage.hasGroups ? stage.groups?.[0] || null : null);
+	};
 
-    /* =========================================================
-       CREATE STAGE
-    ========================================================= */
+	/*
+	 * ---------------------------------------------------------
+	 * GROUP
+	 * ---------------------------------------------------------
+	 */
 
-    const handleCreateStage = async (stageData) => {
-        try {
-            const headers = await getAuthHeaders(currentUser);
+	const handleGroupSelect = (group) => {
+		setSelectedGroup(group);
+	};
 
-            const newStage = await createStage(
-                selectedTournament._id,
-                stageData,
-                headers
-            );
+	const handleAddTeam = async ({ teamId, lobbySlot }) => {
+		try {
+			const headers = await getAuthHeaders(currentUser);
+			const response = await fetch(`${API_BASE_URL}/leaderboard/participants`, {
+				method: "POST",
+				headers,
+				body: JSON.stringify({
+					tournamentId: selectedTournament._id,
+					stageId: selectedStage._id,
+					groupId: selectedGroup?._id || null,
+					teamId,
+					lobbyNumber: lobbySlot,
+				}),
+			});
 
-            setStages((prev) => [...prev, newStage]);
-            setSelectedStage(newStage);
+			if (!response.ok) throw new Error("Failed to add team");
+			const participant = await response.json();
 
+			if (selectedGroup) {
+				// 1. Update active group state
+				const updatedGroup = {
+					...selectedGroup,
+					participants: [...(selectedGroup.participants || []), participant],
+				};
+				setSelectedGroup(updatedGroup);
+
+				// 2. Sync active group back into stages & selectedStage
+				setStages((prevStages) =>
+					prevStages.map((stage) => {
+						if (stage._id !== selectedStage._id) return stage;
+						const updatedGroups = (stage.groups || []).map((group) =>
+							group._id === selectedGroup._id ? updatedGroup : group
+						);
+						return { ...stage, groups: updatedGroups };
+					})
+				);
+
+				setSelectedStage((prevStage) => ({
+					...prevStage,
+					groups: (prevStage.groups || []).map((group) =>
+						group._id === selectedGroup._id ? updatedGroup : group
+					),
+				}));
+			} else {
+				// 3. Update stage-level participants when stage has no groups
+				setStageParticipants((prev) => [...prev, participant]);
+			}
+
+			setShowAddTeamModal(false);
+		} catch (error) {
+			console.error(error);
+			setLoadError(error.message);
+		}
+	};
+
+	/*
+	 * ---------------------------------------------------------
+	 * MATCH PREVIEW
+	 * ---------------------------------------------------------
+	 */
+
+	const handlePreviewMatch = async (match, lookup) => {
+		setSelectedMatch({ ...match, hostIgn: lookup.hostIgn });
+		setPreviewData(null);
+		setPreviewError("");
+		setPreviewLoading(true);
+		setShowPreviewModal(true);
+		try {
+			const headers = await getAuthHeaders(currentUser);
+			const response = await fetch(`${API_BASE_URL}/leaderboard/match/preview/${lookup.hostIgn}/${lookup.index ?? 0}`, {
+				method: "GET",
+				headers,
+			});
+			const data = await response.json();
+			if (!response.ok) throw new Error(data.message || "Failed to load PUBG match data");
+			setPreviewData(data);
+		} catch (error) {
+			setPreviewError(error.message);
+		} finally {
+			setPreviewLoading(false);
+		}
+	};
+
+	/*
+	 * ---------------------------------------------------------
+	 * SAVE MATCH DATA
+	 * ---------------------------------------------------------
+	 */
+
+	const handleSaveMatchData = async (data) => {
+		try {
+			setIsSaving(true);
+		const headers = await getAuthHeaders(currentUser);
+		const response = await fetch(`${API_BASE_URL}/leaderboard/match/save`, {
+			method: "POST",
+			headers,
+			body: JSON.stringify({
+				matchId: selectedMatch._id,
+				tournamentId: selectedTournament._id,
+				stageId: selectedStage._id,
+				groupId: selectedGroup?._id || null,
+				pubgMatchId: data.pubgMatchId,
+				mapName: data.mapName,
+				gameMode: data.gameMode,
+				teamResults: data.teamResults,
+				playerResults: data.playerResults,
+				hostIgn: selectedMatch.hostIgn,
+				status: "COMPLETED",
+			}),
+		});
+		if (!response.ok){
+			setPreviewError((await response.json()).message || "Failed to save match data");
+			throw new Error((await response.json()).message || "Failed to save match data");
+		}
+		
+		setMatches((previous) => previous.map((match) => match._id === selectedMatch._id ? { ...match, status: "COMPLETED", matchId: data.pubgMatchId } : match));
+		setShowPreviewModal(false);
+		setIsSaving(false);
+	} catch (error) {
+		console.error(error);
+		setPreviewError(error.message);
+		setIsSaving(false);
+	}
+	};
+
+	/*
+	 * ---------------------------------------------------------
+	 * CREATE STAGE
+	 * ---------------------------------------------------------
+	 */
+
+	const handleCreateStage = async ({ name, order, hasGroups }) => {
+		const headers = await getAuthHeaders(currentUser);
+		const res = await fetch(
+			editingStage
+				? `${API_BASE_URL}/leaderboard/stages/${editingStage._id}`
+				: `${API_BASE_URL}/leaderboard/stages`,
+			{
+				method: editingStage ? "PUT" : "POST",
+				headers,
+				body: JSON.stringify({
+					tournamentId: selectedTournament._id,
+					name,
+					order,
+					hasGroups,
+				}),
+			});
+
+		if (!res.ok) throw new Error(editingStage ? "Failed to update stage" : "Failed to create stage");
+
+		const newStage = { ...(await res.json()), groups: [] };
+		setStages((previousStages) => editingStage
+			? previousStages.map((stage) => stage._id === newStage._id ? { ...stage, ...newStage } : stage)
+			: [...previousStages, newStage]);
+		setSelectedStage(newStage);
+		setSelectedGroup(null);
+		setShowStageModal(false);
+		setEditingStage(null);
+	};
+
+	/*
+	 * ---------------------------------------------------------
+	 * CREATE GROUP
+	 * ---------------------------------------------------------
+	 */
+
+	const handleCreateGroup = async ({ name, order }) => {
+		if (!selectedTournament || !selectedStage) return;
+
+		const headers = await getAuthHeaders(currentUser);
+		const res = await fetch(`${API_BASE_URL}/leaderboard/groups`, {
+			method: "POST",
+			headers,
+			body: JSON.stringify({
+				tournamentId: selectedTournament._id,
+				stageId: selectedStage._id,
+				name,
+				order,
+			}),
+		});
+
+		if (!res.ok) throw new Error("Failed to create group");
+
+		const newGroup = { ...(await res.json()), participants: [] };
+		const groups = [...(selectedStage.groups || []), newGroup];
+		setStages((previousStages) => previousStages.map((stage) =>
+			stage._id === selectedStage._id ? { ...stage, groups } : stage
+		));
+		setSelectedStage((previousStage) => ({ ...previousStage, groups }));
+		setSelectedGroup(newGroup);
+		setShowGroupModal(false);
+	};
+
+	if (loadingTournaments) {
+		return (
+			<div className="leaderboard-page">
+				<div className="leaderboard-loading">
+					Loading tournaments...
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div className="leaderboard-page">
+
+			{/* =====================================================
+          PAGE HEADER
+      ===================================================== */}
+
+			<div className="leaderboard-page-header">
+				<div>
+					<div className="leaderboard-title-row">
+						<span className="leaderboard-title-mark" />
+						<h1>Leaderboard Management</h1>
+					</div>
+
+					<p>
+						Manage stages, groups, participants and match results.
+					</p>
+				</div>
+			</div>
+
+
+			{/* =====================================================
+          PAGE BODY
+      ===================================================== */}
+
+			<div className="leaderboard-layout">
+
+				<StageSidebar
+					tournaments={tournaments}
+					selectedTournament={selectedTournament}
+					onTournamentChange={handleTournamentSelect}
+					stages={stages}
+					selectedStage={selectedStage}
+					onStageChange={handleStageSelect}
+					onCreateStage={() => setShowStageModal(true)}
+					onEditStage={(stage) => {
+						setEditingStage(stage);
+						setShowStageModal(true);
+					}}
+					loading={loadingStages}
+				/>
+
+
+				{/* ===================================================
+            MAIN CONTENT
+        =================================================== */}
+
+				<main className="leaderboard-main">
+
+					{loadError && (
+						<div className="leaderboard-error" role="alert">
+							{loadError}
+						</div>
+					)}
+
+					{selectedTournament && loadingStages ? (
+						<div className="leaderboard-loading">
+							Loading stages...
+						</div>
+					) : selectedTournament && selectedStage && loadingGroups ? (
+						<div className="leaderboard-loading">
+							Loading groups...
+						</div>
+					) : !selectedTournament ? (
+
+						<div className="leaderboard-empty-state">
+							<div className="empty-icon">
+								◈
+							</div>
+
+							<h2>
+								Select a Tournament
+							</h2>
+
+							<p>
+								Select a tournament from the left panel
+								to start managing its leaderboard.
+							</p>
+						</div>
+
+					) : !selectedStage ? (
+
+						<div className="leaderboard-empty-state">
+
+							<div className="empty-icon">
+								◈
+							</div>
+
+							<h2>
+								No Stage Created
+							</h2>
+
+							<p>
+								Create a stage before adding groups
+								and participants.
+							</p>
+
+							<button
+								className="primary-button"
+								onClick={() =>
+									setShowStageModal(true)
+								}
+							>
+								+ Create Stage
+							</button>
+
+						</div>
+
+					) : (
+
+						<>
+							{/* =============================================
+                  TOURNAMENT HEADER
+              ============================================= */}
+
+							<section className="selected-tournament-card">
+
+								<div className="selected-tournament-left">
+
+									<img
+										src={
+											selectedTournament.logo ||
+											"/default-tournament.png"
+										}
+										alt=""
+									/>
+
+									<div>
+
+										<span className="tier-badge">
+											TIER {selectedTournament.tier}
+										</span>
+
+										<h2>
+											{selectedTournament.title}
+										</h2>
+
+										<p>
+											{selectedTournament.format}
+											{" · "}
+											{selectedTournament.mode}
+										</p>
+
+									</div>
+
+								</div>
+
+							</section>
+
+
+							{/* =============================================
+                  STAGE HEADER
+              ============================================= */}
+
+							<section className="stage-header-card">
+
+								<div>
+
+									<span className="section-label">
+										CURRENT STAGE
+									</span>
+
+									<h2>
+										{selectedStage.name}
+									</h2>
+
+								</div>
+
+								<div className="stage-actions">
+
+									<button
+										className="secondary-button"
+										onClick={() =>
+											setShowGroupModal(true)
+										}
+									>
+										+ Add Group
+									</button>
+
+								</div>
+
+							</section>
+
+
+							{/* =============================================
+                  GROUPS
+              ============================================= */}
+
+							{selectedStage.hasGroups && (
+
+								<section className="groups-section">
+
+									<div className="section-heading">
+
+										<div>
+											<h2>
+												Groups
+											</h2>
+
+											<p>
+												Select a group to manage its
+												participants and matches.
+											</p>
+										</div>
+
+									</div>
+
+
+									<GroupTabs
+										groups={selectedStage.groups || []}
+										selectedGroup={selectedGroup}
+										onGroupChange={handleGroupSelect}
+										onCreateGroup={() => setShowGroupModal(true)}
+									/>
+
+								</section>
+							)}
+
+
+							{/* =============================================
+                  PARTICIPANTS
+              ============================================= */}
+
+							{selectedContext && (
+								<ParticipantManagement
+									participants={selectedContext.participants || []}
+									selectedGroup={selectedContext}
+									onAddTeam={() => setShowAddTeamModal(true)}
+								/>
+							)}
+
+
+							{/* =============================================
+                  MATCHES
+              ============================================= */}
+
+							{selectedContext && (
+								<MatchManagement
+									matches={matches}
+									selectedGroup={selectedContext}
+									onCreateMatch={() => setShowMatchModal(true)}
+									onPreviewMatch={handlePreviewMatch}
+								/>
+							)}
+
+						</>
+					)}
+
+				</main>
+
+			</div>
+
+
+			{/* =====================================================
+          MODALS
+      ===================================================== */}
+
+			{/* {showStageModal && (
+        <CreateStageModal
+          onClose={() => {
             setShowStageModal(false);
-            showSuccess("Stage created successfully.");
-        } catch (error) {
-            setErrorMessage(error.message);
-        }
-    };
-
-    /* =========================================================
-       CREATE GROUP
-    ========================================================= */
-
-    const handleCreateGroup = async (groupData) => {
-        try {
-            const headers = await getAuthHeaders(currentUser);
-
-            const newGroup = await createGroup(
-                selectedTournament._id,
-                selectedStage._id,
-                groupData,
-                headers
-            );
-
-            setGroups((prev) => [...prev, newGroup]);
-            setSelectedGroup(newGroup);
-
-            setShowGroupModal(false);
-            showSuccess("Group created successfully.");
-        } catch (error) {
-            setErrorMessage(error.message);
-        }
-    };
-
-    /* =========================================================
-       ADD TEAM
-    ========================================================= */
-
-    const handleAddTeam = async (teamData) => {
-        try {
-            const headers = await getAuthHeaders(currentUser);
-
-            await addParticipant(
-                {
-                    tournamentId: selectedTournament._id,
-                    stageId: selectedStage._id,
-                    groupId: selectedGroup?._id || null,
-                    ...teamData,
-                },
-                headers
-            );
-
-            await loadParticipants();
-
-            setShowAddTeamModal(false);
-
-            showSuccess("Team added to the group.");
-        } catch (error) {
-            setErrorMessage(error.message);
-        }
-    };
-
-    /* =========================================================
-       CREATE MATCH
-    ========================================================= */
-
-    const handleCreateMatch = async (matchData) => {
-        try {
-            const headers = await getAuthHeaders(currentUser);
-
-            await createMatch(
-                {
-                    tournamentId: selectedTournament._id,
-                    stageId: selectedStage._id,
-                    groupId: selectedGroup?._id || null,
-                    ...matchData,
-                },
-                headers
-            );
-
-            await loadMatches();
-
-            setShowMatchModal(false);
-
-            showSuccess("Match scheduled successfully.");
-        } catch (error) {
-            setErrorMessage(error.message);
-        }
-    };
-
-    /* =========================================================
-       PREVIEW MATCH DATA
-    ========================================================= */
-
-    const handlePreviewMatch = async (match) => {
-        try {
-            setSelectedMatch(match);
-            setPreviewData(null);
-            setShowPreviewModal(true);
-            setPreviewLoading(true);
-
-            const headers = await getAuthHeaders(currentUser);
-
-            const data = await previewMatchData(
-                match._id,
-                headers
-            );
-
-            setPreviewData(data);
-        } catch (error) {
-            setErrorMessage(error.message);
-            setShowPreviewModal(false);
-        } finally {
-            setPreviewLoading(false);
-        }
-    };
-
-    /* =========================================================
-       SAVE MATCH RESULTS
-    ========================================================= */
-
-    const handleSaveMatchResults = async (data) => {
-        try {
-            setSavingResults(true);
-
-            const headers = await getAuthHeaders(currentUser);
-
-            await saveMatchResults(
-                selectedMatch._id,
-                data,
-                headers
-            );
-
-            setShowPreviewModal(false);
-
-            await loadMatches();
-
-            showSuccess("Match results saved successfully.");
-        } catch (error) {
-            setErrorMessage(error.message);
-        } finally {
-            setSavingResults(false);
-        }
-    };
-
-    /* =========================================================
-       HELPERS
-    ========================================================= */
-
-    const clearMessages = () => {
-        setErrorMessage("");
-        setSuccessMessage("");
-    };
-
-    const showSuccess = (message) => {
-        setErrorMessage("");
-        setSuccessMessage(message);
-
-        setTimeout(() => {
-            setSuccessMessage("");
-        }, 3000);
-    };
-
-    return (
-        <div className="manage-leaderboards">
-
-            {/* ============================================
-                PAGE HEADER
-            ============================================ */}
-
-            <div className="leaderboard-page-header">
-
-                <div className="leaderboard-title">
-                    <span className="title-mark"></span>
-
-                    <div>
-                        <h1>Leaderboard Management</h1>
-                        <p>
-                            Manage stages, groups, participants and match results.
-                        </p>
-                    </div>
-                </div>
-
-                <button
-                    className="back-tournament-button"
-                    onClick={() =>
-                        navigate("/admin/tournaments")
-                    }
-                >
-                    <span className="material-symbols-outlined">
-                        arrow_back
-                    </span>
-
-                    Tournament Management
-                </button>
-            </div>
-
-            {/* ============================================
-                MESSAGES
-            ============================================ */}
-
-            {errorMessage && (
-                <div className="management-message error">
-                    <span className="material-symbols-outlined">
-                        error
-                    </span>
-
-                    {errorMessage}
-
-                    <button onClick={() => setErrorMessage("")}>
-                        ×
-                    </button>
-                </div>
-            )}
-
-            {successMessage && (
-                <div className="management-message success">
-                    <span className="material-symbols-outlined">
-                        check_circle
-                    </span>
-
-                    {successMessage}
-                </div>
-            )}
-
-            {/* ============================================
-                MAIN LAYOUT
-            ============================================ */}
-
-            <div className="leaderboard-layout">
-
-                {/* ========================================
-                    TOURNAMENT / STAGE SIDEBAR
-                ======================================== */}
-
-                <StageSidebar
-                    tournaments={tournaments}
-                    selectedTournament={selectedTournament}
-                    onTournamentChange={setSelectedTournament}
-                    stages={stages}
-                    selectedStage={selectedStage}
-                    onStageChange={setSelectedStage}
-                    onCreateStage={() => {
-                        clearMessages();
-                        setShowStageModal(true);
-                    }}
-                    loading={loading}
-                />
-
-                {/* ========================================
-                    CONTENT
-                ======================================== */}
-
-                <main className="leaderboard-content">
-
-                    {!selectedTournament ? (
-                        <div className="empty-management">
-                            <span className="material-symbols-outlined">
-                                emoji_events
-                            </span>
-
-                            <h2>No Tournament Selected</h2>
-
-                            <p>
-                                Select a tournament to start managing
-                                its leaderboard.
-                            </p>
-                        </div>
-                    ) : !selectedStage ? (
-                        <div className="empty-management">
-                            <span className="material-symbols-outlined">
-                                account_tree
-                            </span>
-
-                            <h2>No Stage Created</h2>
-
-                            <p>
-                                Create a stage before adding groups
-                                and participants.
-                            </p>
-
-                            <button
-                                className="primary-button"
-                                onClick={() =>
-                                    setShowStageModal(true)
-                                }
-                            >
-                                <span className="material-symbols-outlined">
-                                    add
-                                </span>
-
-                                Create Stage
-                            </button>
-                        </div>
-                    ) : (
-                        <>
-                            {/* =================================
-                                TOURNAMENT HEADER
-                            ================================= */}
-
-                            <section className="competition-header">
-
-                                <div className="competition-logo">
-                                    {selectedTournament.logo ? (
-                                        <img
-                                            src={selectedTournament.logo}
-                                            alt=""
-                                        />
-                                    ) : (
-                                        <span className="material-symbols-outlined">
-                                            emoji_events
-                                        </span>
-                                    )}
-                                </div>
-
-                                <div className="competition-header-info">
-
-                                    <div className="competition-badge">
-                                        TIER {selectedTournament.tier}
-                                    </div>
-
-                                    <h2>
-                                        {selectedTournament.title}
-                                    </h2>
-
-                                    <p>
-                                        Competition & Leaderboard
-                                        Management
-                                    </p>
-
-                                </div>
-
-                            </section>
-
-                            {/* =================================
-                                STAGE HEADER
-                            ================================= */}
-
-                            <section className="stage-management-header">
-
-                                <div>
-                                    <span className="small-label">
-                                        CURRENT STAGE
-                                    </span>
-
-                                    <h2>
-                                        {selectedStage.name}
-                                    </h2>
-                                </div>
-
-                                <div className="stage-header-actions">
-
-                                    <button
-                                        className="secondary-button"
-                                        onClick={() =>
-                                            setShowGroupModal(true)
-                                        }
-                                    >
-                                        <span className="material-symbols-outlined">
-                                            create_new_folder
-                                        </span>
-
-                                        Create Group
-                                    </button>
-
-                                    <button
-                                        className="primary-button"
-                                        onClick={() =>
-                                            setShowAddTeamModal(true)
-                                        }
-                                        disabled={
-                                            !selectedGroup
-                                        }
-                                    >
-                                        <span className="material-symbols-outlined">
-                                            group_add
-                                        </span>
-
-                                        Add Team
-                                    </button>
-
-                                </div>
-
-                            </section>
-
-                            {/* =================================
-                                GROUP TABS
-                            ================================= */}
-
-                            <GroupTabs
-                                groups={groups}
-                                selectedGroup={selectedGroup}
-                                onGroupChange={setSelectedGroup}
-                                onCreateGroup={() =>
-                                    setShowGroupModal(true)
-                                }
-                            />
-
-                            {/* =================================
-                                SECTION TABS
-                            ================================= */}
-
-                            {selectedGroup && (
-                                <div className="management-tabs">
-
-                                    <button
-                                        className={
-                                            activeSection ===
-                                            "participants"
-                                                ? "active"
-                                                : ""
-                                        }
-                                        onClick={() =>
-                                            setActiveSection(
-                                                "participants"
-                                            )
-                                        }
-                                    >
-                                        <span className="material-symbols-outlined">
-                                            groups
-                                        </span>
-
-                                        Participants
-
-                                        <span className="tab-count">
-                                            {participants.length}
-                                        </span>
-                                    </button>
-
-                                    <button
-                                        className={
-                                            activeSection ===
-                                            "matches"
-                                                ? "active"
-                                                : ""
-                                        }
-                                        onClick={() =>
-                                            setActiveSection(
-                                                "matches"
-                                            )
-                                        }
-                                    >
-                                        <span className="material-symbols-outlined">
-                                            sports_esports
-                                        </span>
-
-                                        Matches
-
-                                        <span className="tab-count">
-                                            {matches.length}
-                                        </span>
-                                    </button>
-
-                                </div>
-                            )}
-
-                            {/* =================================
-                                CONTENT
-                            ================================= */}
-
-                            {!selectedGroup ? (
-                                <div className="no-group-state">
-
-                                    <span className="material-symbols-outlined">
-                                        folder_open
-                                    </span>
-
-                                    <h3>No Group Selected</h3>
-
-                                    <p>
-                                        Create a group and assign
-                                        registered teams to it.
-                                    </p>
-
-                                </div>
-                            ) : activeSection ===
-                              "participants" ? (
-
-                                <ParticipantManagement
-                                    participants={participants}
-                                    selectedGroup={selectedGroup}
-                                    onAddTeam={() =>
-                                        setShowAddTeamModal(true)
-                                    }
-                                />
-
-                            ) : (
-
-                                <MatchManagement
-                                    matches={matches}
-                                    selectedGroup={selectedGroup}
-                                    onCreateMatch={() =>
-                                        setShowMatchModal(true)
-                                    }
-                                    onPreviewMatch={
-                                        handlePreviewMatch
-                                    }
-                                />
-
-                            )}
-
-                        </>
-                    )}
-
-                </main>
-
-            </div>
-
-            {/* ============================================
-                MODALS
-            ============================================ */}
-
-            {showStageModal && (
-                <CreateStageModal
-                    onClose={() =>
-                        setShowStageModal(false)
-                    }
-                    onSubmit={handleCreateStage}
-                    stageCount={stages.length}
-                />
-            )}
-
-            {showGroupModal && (
-                <CreateGroupModal
-                    onClose={() =>
-                        setShowGroupModal(false)
-                    }
-                    onSubmit={handleCreateGroup}
-                    groupCount={groups.length}
-                />
-            )}
-
-            {showAddTeamModal && (
-                <AddTeamModal
-                    tournamentId={
-                        selectedTournament?._id
-                    }
-                    stageId={selectedStage?._id}
-                    groupId={selectedGroup?._id}
-                    participants={participants}
-                    onClose={() =>
-                        setShowAddTeamModal(false)
-                    }
-                    onSubmit={handleAddTeam}
-                />
-            )}
-
-            {showMatchModal && (
-                <CreateMatchModal
-                    selectedGroup={selectedGroup}
-                    existingMatches={matches}
-                    onClose={() =>
-                        setShowMatchModal(false)
-                    }
-                    onSubmit={handleCreateMatch}
-                />
-            )}
-
-            {showPreviewModal && (
-                <MatchPreviewModal
-                    match={selectedMatch}
-                    data={previewData}
-                    loading={previewLoading}
-                    saving={savingResults}
-                    onClose={() =>
-                        setShowPreviewModal(false)
-                    }
-                    onSave={handleSaveMatchResults}
-                />
-            )}
-
-        </div>
-    );
-};
+            setEditingStage(null);
+          }}
+          onCreate={handleCreateStage}
+        />
+      )} */}
+
+			{showStageModal && (
+				<CreateStageModal
+					onClose={() => setShowStageModal(false)}
+					onSubmit={handleCreateStage}
+					stageCount={stages.length}
+					stage={editingStage}
+				/>
+			)}
+
+			{showGroupModal && (
+				<CreateGroupModal
+					onClose={() => setShowGroupModal(false)}
+					onSubmit={handleCreateGroup}
+					groupCount={selectedStage?.groups?.length || 0}
+				/>
+			)}
+
+			{showMatchModal && (
+				<CreateMatchModal
+					stage={selectedStage}
+					group={selectedContext}
+					onClose={() => setShowMatchModal(false)}
+					onSubmit={async (matchData) => {
+						const headers = await getAuthHeaders(currentUser);
+						const response = await fetch(`${API_BASE_URL}/leaderboard/match/create`, {
+							method: "POST",
+							headers,
+							body: JSON.stringify({
+								tournamentId: selectedTournament._id,
+								stageId: selectedStage._id,
+								groupId: selectedGroup?._id || null,
+								...matchData,
+							}),
+						});
+						if (!response.ok) throw new Error((await response.json()).message || "Failed to create match");
+						const createdMatch = await response.json();
+						setMatches((previous) => [...previous, createdMatch]);
+						setShowMatchModal(false);
+					}}
+					existingMatches={matches}
+				/>
+			)}
+
+			{showAddTeamModal && selectedContext && (
+				<AddTeamModal
+					participants={selectedContext.participants || []}
+					teams={registeredTeams}
+					onClose={() => setShowAddTeamModal(false)}
+					onSubmit={handleAddTeam}
+				/>
+			)}
+
+
+			{showPreviewModal && (
+				<MatchPreviewModal
+					match={selectedMatch}
+					data={previewData}
+					loading={previewLoading}
+					error={previewError}
+					saving={isSaving}
+					onClose={() => setShowPreviewModal(false)}
+					onSave={handleSaveMatchData}
+				/>
+			)}
+
+		</div>
+	);
+}
+
+
+
+/* =============================================================
+   CREATE GROUP MODAL
+============================================================= */
+
+// function CreateGroupModal({
+//   onClose,
+//   onCreate,
+//   stage,
+// }) {
+
+//   const [name, setName] = useState("");
+
+//   return (
+//     <div className="leaderboard-modal-overlay">
+
+//       <div className="leaderboard-modal">
+
+//         <div className="modal-header">
+
+//           <h2>
+//             Create Group
+//           </h2>
+
+//           <button onClick={onClose}>
+//             ×
+//           </button>
 
+//         </div>
+
+//         <div className="modal-body">
+
+//           <p className="modal-description">
+//             Add a group to{" "}
+//             <strong>
+//               {stage?.name}
+//             </strong>
+//           </p>
+
+//           <label>
+//             Group Name
+//           </label>
+
+//           <input
+//             value={name}
+//             onChange={(e) =>
+//               setName(e.target.value)
+//             }
+//             placeholder="e.g. Group A"
+//           />
+
+//         </div>
+
+//         <div className="modal-footer">
+
+//           <button
+//             className="secondary-button"
+//             onClick={onClose}
+//           >
+//             Cancel
+//           </button>
+
+//           <button
+//             className="primary-button"
+//             disabled={!name.trim()}
+//             onClick={() =>
+//               onCreate(name.trim())
+//             }
+//           >
+//             Create Group
+//           </button>
+
+//         </div>
+
+//       </div>
+
+//     </div>
+//   );
+// }
+
+
+/* =============================================================
+   SCHEDULE MATCH MODAL
+============================================================= */
+
+// function ScheduleMatchModal({
+//   stage,
+//   group,
+//   onClose,
+//   onSubmit,
+//   mockMatches,
+// }) {
+
+//   const [date, setDate] = useState("");
+//   const [time, setTime] = useState("");
+
+//   return (
+//     <div className="leaderboard-modal-overlay">
+
+//       <div className="leaderboard-modal">
+
+//         <div className="modal-header">
+
+//           <h2>
+//             Schedule Match
+//           </h2>
+
+//           <button onClick={onClose}>
+//             ×
+//           </button>
+
+//         </div>
+
+//         <div className="modal-body">
+
+//           <div className="modal-context">
+
+//             <span>
+//               {stage?.name}
+//             </span>
+
+//             {group && (
+//               <>
+//                 <span>•</span>
+//                 <span>
+//                   {group.name}
+//                 </span>
+//               </>
+//             )}
+
+//           </div>
+
+
+//           <label>
+//             Match Date
+//           </label>
+
+//           <input
+//             type="date"
+//             value={date}
+//             onChange={(e) =>
+//               setDate(e.target.value)
+//             }
+//           />
+
+
+//           <label>
+//             Match Time
+//           </label>
+
+//           <input
+//             type="time"
+//             value={time}
+//             onChange={(e) =>
+//               setTime(e.target.value)
+//             }
+//           />
+
+//         </div>
+
+//         <div className="modal-footer">
+
+//           <button
+//             className="secondary-button"
+//             onClick={onClose}
+//           >
+//             Cancel
+//           </button>
+
+//           <button
+//             className="primary-button"
+//             disabled={!date || !time}
+//           >
+//             Schedule Match
+//           </button>
+
+//         </div>
+
+//       </div>
+
+//     </div>
+//   );
+// }

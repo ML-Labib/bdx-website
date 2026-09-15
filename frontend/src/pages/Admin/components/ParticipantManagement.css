@@ -1,0 +1,215 @@
+.participant-management {
+    margin-top: 20px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.section-toolbar {
+    min-height: 78px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+}
+
+.section-toolbar h3 {
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.section-toolbar p {
+    margin: 5px 0 0;
+    color: #777;
+    font-size: 0.78rem;
+}
+
+.primary-button,
+.secondary-button {
+    min-height: 38px;
+    padding: 0 14px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.primary-button {
+    background: #efff00;
+    color: #000;
+    border: 1px solid #d9e600;
+}
+
+.primary-button:hover {
+    background: #e4f400;
+}
+
+.primary-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.secondary-button {
+    background: #111;
+    color: white;
+    border: 1px solid #333;
+}
+
+.secondary-button:hover {
+    border-color: #efff00;
+}
+
+.primary-button .material-symbols-outlined,
+.secondary-button .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.participant-table-wrapper {
+    overflow-x: auto;
+}
+
+.participant-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.participant-table th {
+    padding: 12px 16px;
+    background: #f6f6f6;
+    color: #777;
+    text-align: left;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+}
+
+.participant-table td {
+    padding: 12px 16px;
+    border-top: 1px solid #eee;
+    font-size: 0.84rem;
+}
+
+.lobby-number {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111;
+    color: #efff00;
+    border-radius: 4px;
+    font-weight: 800;
+}
+
+.team-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.team-logo {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.team-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.team-logo .material-symbols-outlined {
+    color: #777;
+    font-size: 20px;
+}
+
+.team-tag {
+    padding: 4px 6px;
+    background: #eee;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.locked-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #22833b;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.locked-status .material-symbols-outlined {
+    font-size: 16px;
+}
+
+.participant-status {
+    padding: 4px 7px;
+    border-radius: 3px;
+    background: #eee;
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+
+.participant-status.active {
+    background: #eaffd7;
+    color: #227a00;
+}
+
+.participant-status.eliminated {
+    background: #ffe2e2;
+    color: #a30000;
+}
+
+.table-icon-button {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.table-icon-button:hover {
+    background: #f3f3f3;
+}
+
+.table-icon-button .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.empty-table-state {
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+}
+
+.empty-table-state > .material-symbols-outlined {
+    font-size: 48px;
+    color: #bbb;
+}
+
+.empty-table-state h3 {
+    margin: 12px 0 5px;
+}
+
+.empty-table-state p {
+    color: #888;
+    font-size: 0.85rem;
+    margin: 0 0 18px;
+}

@@ -2,6 +2,7 @@ import express from "express";
 
 import * as leaderboardController from "../controllers/leaderboardController.js";
 import * as matchController from "../controllers/matchController.js";
+import * as competitionParticipantController from "../controllers/competitionParticipantController.js";
 
 import { requireAuth } from "../middleware/auth.js";
 import { requireAdmin } from "../middleware/requireAdmin.js";
@@ -19,10 +20,18 @@ router.get("/tournament/:tournamentId/stage/:stageId/groups", requireAuth, leade
 router.post("/groups", requireAuth, requireAdmin, leaderboardController.createGroup);
 router.put("/groups/:groupId", requireAuth, requireAdmin, leaderboardController.updateGroup);
 router.delete("/groups/:groupId", requireAuth, requireAdmin, leaderboardController.deleteGroup);
+// router.post("/matches", requireAuth, requireAdmin, leaderboardController.createMatch);
 
+// Competition Participants routes
+router.get("/tournament/:tournamentId/stage/:stageId/participants", requireAuth, requireAdmin, competitionParticipantController.getCompetitionParticipantsByTournament);
+router.post("/participants", requireAuth, requireAdmin, competitionParticipantController.addCompetitionParticipant);
+// router.put("/participants/:participantId", requireAuth, requireAdmin, competitionParticipantController.updateCompetitionParticipant);
+router.delete("/participants/:participantId", requireAuth, requireAdmin, competitionParticipantController.removeCompetitionParticipant);
 
 //Match routes
-router.get("/match/player-data", requireAuth, matchController.getPlayerDataByName);
-
+router.get("/matches", requireAuth, matchController.getMatches);
+router.get("/match/preview/:hostIgn/:index", requireAuth, requireAdmin, matchController.getMatchPreview);
+router.post("/match/save", requireAuth, requireAdmin, matchController.saveMatchData);
+router.post("/match/create", requireAuth, requireAdmin, matchController.createMatch);
 
 export default router;

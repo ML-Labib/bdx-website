@@ -1,0 +1,148 @@
+.match-management {
+    margin-top: 20px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.match-list {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.match-card {
+    min-height: 78px;
+    display: grid;
+    grid-template-columns: 75px minmax(200px, 1fr) 110px auto;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fafafa;
+}
+
+.match-card:hover {
+    border-color: #aaa;
+    background: white;
+}
+
+.match-number {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 52px;
+    background: #111;
+    color: white;
+    border-radius: 4px;
+}
+
+.match-number span {
+    color: #888;
+    font-size: 0.55rem;
+    font-weight: 700;
+}
+
+.match-number strong {
+    color: #efff00;
+    font-size: 1.25rem;
+}
+
+.match-info h4 {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.match-meta {
+    margin-top: 7px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    color: #777;
+    font-size: 0.72rem;
+}
+
+.match-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.match-meta .material-symbols-outlined {
+    font-size: 15px;
+}
+
+.match-status {
+    padding: 5px 8px;
+    border-radius: 3px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    background: #eee;
+}
+
+.match-status.scheduled {
+    color: #725c00;
+    background: #fff5bd;
+}
+
+.match-status.completed {
+    color: #167227;
+    background: #dff8df;
+}
+
+.match-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.match-action-button {
+    min-height: 36px;
+    padding: 0 11px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    color: #222;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.match-action-button:hover {
+    border-color: #111;
+}
+
+.match-action-button.primary {
+    background: #111;
+    color: white;
+    border-color: #111;
+}
+
+.match-action-button.primary:hover {
+    color: #efff00;
+}
+
+.match-action-button .material-symbols-outlined {
+    font-size: 17px;
+}
+
+@media (max-width: 900px) {
+    .match-card {
+        grid-template-columns: 65px 1fr;
+    }
+
+    .match-status {
+        width: fit-content;
+    }
+
+    .match-actions {
+        justify-content: flex-start;
+    }
+}

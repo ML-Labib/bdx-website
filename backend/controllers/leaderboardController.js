@@ -4,6 +4,7 @@ import { PlayerMatchResult } from "../models/leaderboard/PlayerMatchResult.js";
 import { Stage } from "../models/leaderboard/Stage.js";
 import { Group } from "../models/leaderboard/Group.js";
 import { CompetitionParticipant } from "../models/leaderboard/CompetitionParticipant.js";
+import { Match } from "../models/leaderboard/Match.js";
 
 import 'dotenv/config';
 
@@ -18,7 +19,7 @@ export const getStagesByTournamentId = async (req, res) => {
     try { 
         const { tournamentId } = req.params;
 
-        const stages = await Stage.find({ tournamentId });
+        const stages = await Stage.find({ tournamentId }).sort({ order: 1 });
 
         res.json(stages);
     } catch (error) {
@@ -29,14 +30,14 @@ export const getStagesByTournamentId = async (req, res) => {
 // create stage
 export const createStage = async (req, res) => {
     try {
-        const { tournamentId, name, order, hasGroup } = req.body;
+        const { tournamentId, name, order, hasGroups } = req.body;
 
         const tournament = await Tournament.findById(tournamentId);
         if (!tournament) {
             return res.status(404).json({ message: "Tournament not found" });
         }
 
-        const stage = new Stage({ tournamentId, name, order, hasGroup });
+        const stage = new Stage({ tournamentId, name, order, hasGroups });
         await stage.save();
         res.status(201).json(stage);
 
@@ -50,9 +51,9 @@ export const createStage = async (req, res) => {
 export const updateStage = async (req, res) => {
     try {
         const { stageId } = req.params;
-        const { name, order, hasGroup } = req.body;
+        const { name, order, hasGroups } = req.body;
 
-        const stage = await Stage.findByIdAndUpdate(stageId, { name, order, hasGroup }, { new: true });
+        const stage = await Stage.findByIdAndUpdate(stageId, { name, order, hasGroups }, { new: true });
         if (!stage) {
             return res.status(404).json({ message: "Stage not found" });
         }
@@ -151,13 +152,52 @@ export const deleteGroup = async (req, res) => {
 
 
 // create match
-export const createMatch = async (req, res) => {
-    try {
-        const { tournamentId, stageId, groupId, matchNumber, scheduledAt } = req.body;
-        const match = new Match({ tournamentId, stageId, groupId, matchNumber, scheduledAt });
-        await match.save();
-        res.status(201).json(match);
-    } catch (error) {
-        res.status(400).json({ message: error.message || error.error });
-    }
-};
+// export const createMatch = async (req, res) => {
+//     try {
+//         const {
+//             tournamentId,
+//             stageId,
+//             groupId,
+//             matchNumber,
+//             globalMatchNumber,
+//             mapName,
+//             gameMode,
+//             scheduledAt,
+//         } = req.body;
+//         const stage = await Stage.findOne({ _id: stageId, tournamentId });
+//         if (!stage) {
+//             return res.status(404).json({ message: "Stage not found" });
+//         }
+//         if (stage.hasGroups && !groupId) {
+//             return res.status(400).json({ message: "Group ID is required for this stage" });
+//         }
+//         if (!stage.hasGroups && groupId) {
+//             return res.status(400).json({ message: "Group ID is not allowed for this stage" });
+//         }
+//         const match = new Match({
+//             tournamentId,
+//             stageId,
+//             groupId: groupId || null,
+//             matchNumber,
+//             globalMatchNumber,
+//             mapName,
+//             gameMode,
+//             scheduledAt: scheduledAt || null,
+//         });
+//         await match.save();
+//         res.status(201).json(match);
+//     } catch (error) {
+//         res.status(400).json({ message: error.message || error.error });
+//     }
+// };
+
+// export const getMatches = async (req, res) => {
+//     try {
+//         const { tournamentId, stageId, groupId } = req.query;
+//         const filter = { tournamentId, stageId, groupId: groupId || null };
+//         const matches = await Match.find(filter).sort({ globalMatchNumber: 1, matchNumber: 1 });
+//         res.json(matches);
+//     } catch (error) {
+//         res.status(400).json({ message: error.message || error.error });
+//     }
+// };

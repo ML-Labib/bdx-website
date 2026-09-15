@@ -28,7 +28,7 @@ const TeamMatchResultSchema = new mongoose.Schema({
     teamId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Team",
-        required: true
+        default: null
     },
 
     lobbyNumber: {
@@ -56,7 +56,7 @@ const TeamMatchResultSchema = new mongoose.Schema({
 
 TeamMatchResultSchema.index({
     matchId: 1,
-    teamId: 1
+    lobbyNumber: 1
 }, {
     unique: true
 });

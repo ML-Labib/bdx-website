@@ -17,7 +17,7 @@ const PlayerInfo = lazy(() => import("./pages/PlayerInfo/PlayerInfo").then(m => 
 const TournamentInfo = lazy(() => import("./pages/TournamentInfo/TournamentInfo").then(m => ({ default: m.TournamentInfo })));
 const Login = lazy(() => import("./pages/UserAuth/Login")); // Default export
 const Admin = lazy(() => import("./pages/Admin/Admin").then(m => ({ default: m.Admin })));
-const ManageLeaderboards = lazy(() => import("./pages/Admin/leaderboardManagement/ManageLeaderboards.jsx").then(m => ({ default: m.ManageLeaderboards })));
+const ManageLeaderboards = lazy(() => import("./pages/Admin/ManageLeaderboards.jsx").then(m => ({ default: m.ManageLeaderboards })));
 const ManageTournaments = lazy(() => import("./pages/Admin/ManageTournaments").then(m => ({ default: m.ManageTournaments })));
 const ManagePlayers = lazy(() => import("./pages/Admin/ManagePlayers").then(m => ({ default: m.ManagePlayers })));  
 const ManageTeams = lazy(() => import("./pages/Admin/ManageTeams").then(m => ({ default: m.ManageTeams })));
