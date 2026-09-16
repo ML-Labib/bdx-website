@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { MatchesTab } from "./MatchesTab";
-import { RankingTab } from "./RankingTab";
-import { StatsTab } from "./StatsTab";
+import { MatchesTab } from "./MatchesTab.jsx";
+import { RankingTab } from "./RankingTab.jsx";
+import { StatsTab } from "./StatsTab.jsx";
 import { InfoTab } from "./InfoTab.jsx";
-import { SubHeader } from "../../components/SubHeader";
+import { SubHeader } from "../../components/SubHeader.jsx";
 import { useLocation, useParams } from "react-router-dom";
-import { Loader } from "../../components/Loader";
+import { Loader } from "../../components/Loader.jsx";
 import { formatDate } from "../../utils/formantDateTime";
 import "./tournamentInfo.css";
 
@@ -17,6 +17,7 @@ export function TournamentInfo() {
     const [tournament, setTournament] = useState(location.state?.tournament || null);
     const [status, setStatus] = useState(location.state?.status || "Upcoming");
     const [loading, setLoading] = useState(Boolean(id) && !location.state?.tournament);
+    const [stages, setStages] = useState([]);
     const [activeTab, _setActiveTab] = useState("Info");
 
     const getTournamentStatus = (item) => {
@@ -79,6 +80,41 @@ export function TournamentInfo() {
 
         fetchTournament();
     }, [id, location.state?.tournament, location.state?.status]);
+
+    useEffect(() => {
+        const tournamentId = tournament?._id || tournament?.id || id;
+        if (!tournamentId) {
+            setStages([]);
+            return;
+        }
+
+        let cancelled = false;
+
+        const fetchStages = async () => {
+            try {
+                const response = await fetch(`/api/leaderboard/tournament/${tournamentId}/stages-and-groups`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch tournament stages");
+                }
+
+                const data = await response.json();
+                if (!cancelled) {
+                    setStages(Array.isArray(data) ? data : []);
+                }
+            } catch (error) {
+                console.error("Failed to fetch tournament stages:", error);
+                if (!cancelled) {
+                    setStages([]);
+                }
+            }
+        };
+
+        fetchStages();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [id, tournament?._id, tournament?.id]);
 
 
     const tabs = [
@@ -194,7 +230,14 @@ export function TournamentInfo() {
                     </div>
                 </div>
                 <div className="tournament-tab-content">
-                    {ActiveComponent && <ActiveComponent tournament={tournament} status={status} />}
+                    {ActiveComponent && (
+                        <ActiveComponent
+                            tournament={tournament}
+                            status={status}
+                            tournamentId={tournament?._id || tournament?.id || id}
+                            stages={stages}
+                        />
+                    )}
                 </div>
             </div>
         </>

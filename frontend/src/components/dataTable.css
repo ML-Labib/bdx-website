@@ -4,13 +4,15 @@
 }
 
 .experience-table-wrapper {
+    --rank-width: 87px;
+    --team-width: 496px;
+
     overflow-x: auto;
     cursor: grab;
     background: #f8f8f8;
     padding: 0;
     touch-action: pan-x;
     scrollbar-width: none;
-    /* Firefox */
 }
 
 .experience-table-wrapper::-webkit-scrollbar {
@@ -26,6 +28,7 @@
 
 .experience-table {
     width: max-content;
+    min-width: 100%;
     border-collapse: separate;
     border-spacing: 0;
     background: #fff;
@@ -69,12 +72,14 @@
 .experience-table td:nth-child(1) {
     position: sticky;
     left: 0;
-    width: 87px;
+    width: var(--rank-width);
+    min-width: var(--rank-width);
+    max-width: var(--rank-width);
+    box-sizing: border-box;
+    z-index: 3;
 }
 
-.experience-table th:nth-child(1) {
-    color: #fff;
-}
+
 
 .experience-table td:nth-child(1) {
     background: #fff;
@@ -86,8 +91,12 @@
 .experience-table th:nth-child(2),
 .experience-table td:nth-child(2) {
     position: sticky;
-    left: 87px;
-    width: 496px;
+    left: var(--rank-width);
+    width: var(--team-width);
+    min-width: var(--team-width);
+    max-width: var(--team-width);
+    box-sizing: border-box;
+    z-index: 2;
 }
 
 .experience-table th:nth-child(2) {
@@ -273,6 +282,11 @@
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
+    .experience-table-wrapper {
+        --rank-width: 55px;
+        --team-width: 320px;
+    }
+
     .experience-table {
         font-size: 0.8rem;
     }
@@ -305,7 +319,8 @@
 }
 
 @media (max-width: 768px) {
-    .experience-table {
+    
+    /* .experience-table {
         font-size: 0.7rem;
     }
 
@@ -361,5 +376,39 @@
     .table-controls {
         flex-direction: column;
         align-items: flex-start;
+    } */
+
+        .experience-table-wrapper {
+        --rank-width: 55px;
+        --team-width: 142px;
+    }
+
+    .experience-table td:nth-child(2) {
+        white-space: normal;
+        overflow-wrap: break-word;
+        text-align: center;
+        padding: 0;
+        height: 112px;
+        border-left: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .team-cell {
+        flex-direction: column;
+        gap: 0;
+        font-size: 0.85rem;
+    }
+
+    .experience-team-logo {
+        width: 32px;
+        height: 32px;
+    }
+
+    .experience-team-logo img {
+        width: 24px;
+        height: 24px;
+    }
+        .bottom-slider {
+        width: calc(100% - 200px - 24px);
+        left: 200px;
     }
 }

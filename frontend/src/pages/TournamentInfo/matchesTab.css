@@ -1,0 +1,245 @@
+.matches-tab-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 0;
+    color: #000;
+}
+
+/* Dropdown Header Styling */
+.matches-filter-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.filter-select {
+    padding: 8px 16px;
+    font-weight: 700;
+    border: none;
+    border-bottom: 2px solid #000;
+    background: transparent;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 14px;
+    outline: none;
+}
+
+.refresh-btn {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.refresh-btn:hover {
+    background: #e0e0e0;
+}
+
+/* Day Section */
+.day-group {
+    margin-bottom: 35px;
+}
+
+.day-header {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.yellow-accent {
+    color: #e6ff00;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+/* Match Card */
+.match-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e2e2e2;
+    margin-bottom: 8px;
+    height: 60px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.match-card-left {
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    gap: 15px;
+}
+
+.expand-arrow {
+    font-size: 20px;
+    color: #666;
+    font-weight: bold;
+}
+
+.match-title {
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+.match-card-right {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.team-logos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+}
+
+.team-logo-img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+/* Map Slanted Banner */
+.map-banner {
+    position: relative;
+    width: 220px;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.map-name {
+    position: relative;
+    color: #fff;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 1px;
+    z-index: 1;
+}
+
+.matches-loading, .no-matches {
+    text-align: center;
+    padding: 40px;
+    font-weight: 600;
+    color: #666;
+}
+/* --- Expandable Match Card Wrapper --- */
+.match-card-wrapper {
+    background: #ffffff;
+    border: 1px solid #e2e2e2;
+    margin-bottom: 8px;
+    border-radius: 2px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.match-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Expanded State: Yellow Header styling */
+.match-card-wrapper.expanded .match-card-left {
+    background-color: #e6ff00; /* Neon yellow */
+    height: 100%;
+    min-width: 80px;
+    justify-content: center;
+}
+
+.match-card-wrapper.expanded .match-card-header {
+    border-bottom: 2px solid #000; /* Black divider before table */
+}
+
+/* Icons & Left Side */
+.match-card-left {
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    gap: 15px;
+    transition: background-color 0.2s;
+}
+
+.expand-icon {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    transition: transform 0.2s;
+}
+
+.expand-icon.down {
+    transform: rotate(90deg); /* Points down when expanded */
+}
+
+/* --- Table Specific Styles --- */
+.match-card-content {
+    background: #fff;
+}
+
+.rank-cell {
+    font-weight: 800;
+    color: #000;
+}
+
+.team-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+}
+
+.team-cell img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid #eee;
+}
+
+/* --- Close Bar --- */
+.close-bar {
+    background-color: #e6ff00;
+    color: #000;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    font-size: 13px;
+    text-transform: uppercase;
+    transition: background-color 0.2s;
+    user-select: none;
+}
+
+.close-bar:hover {
+    background-color: #d4ec00;
+}
