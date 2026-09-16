@@ -306,3 +306,378 @@ export const getMatches = async (req, res) => {
         res.status(400).json({ message: error.message || error.error });
     }
 };
+
+
+// export const getPublicMatches = async (req, res) => {
+//     try {
+//         const { tournamentId, stageId } = req.params;
+
+//         const { groupId } = req.query;
+//         if (!tournamentId || !stageId) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "tournamentId and stageId are required query parameters",
+//             });
+//         }
+
+//         const tournament = await Tournament.findById(tournamentId);
+//         if (!tournament) {
+//             return res.status(404).json({ message: "Tournament not found" });
+//         }
+
+//         const stage = await Stage.findById(stageId);
+//         if (!stage) {
+//             return res.status(404).json({ message: "Stage not found" });
+//         }
+
+//         if (stage.hasGroups && !groupId) {
+//             return res.status(400).json({
+//                 message: "Group ID is required for stages with groups",
+//             });
+//         }
+
+//         const filter = {};
+//         if (tournamentId) filter.tournamentId = tournamentId;
+//         if (stageId) filter.stageId = stageId;
+//         if (groupId) filter.groupId = groupId;
+
+//         // 1. Fetch matches from database
+//         const matches = await Match.find(filter)
+//             .populate({
+//                 path: "teamResults",
+//                 populate: {
+//                     path: "teamId",
+//                     select: "name logo"
+//                 },
+//                 options: { sort: { placement: 1 } }
+//             })
+//             .sort({ scheduledAt: 1, matchNumber: 1 });
+
+//         // 2. Group matches by ISO date string (YYYY-MM-DD)
+//         const groupedMatches = matches.reduce((acc, match) => {
+//             let dateKey = "Unscheduled";
+
+//             if (match.scheduledAt) {
+//                 const parsedDate = new Date(match.scheduledAt);
+//                 if (!isNaN(parsedDate.getTime())) {
+//                     dateKey = parsedDate.toISOString().split("T")[0];
+//                 }
+//             }
+
+//             if (!acc[dateKey]) {
+//                 acc[dateKey] = [];
+//             }
+//             acc[dateKey].push(match);
+//             return acc;
+//         }, {});
+
+//         // 3. Convert to array and explicitly sort Dates (Oldest -> Newest)
+//         const formattedData = Object.keys(groupedMatches)
+//             .sort((a, b) => new Date(a) - new Date(b)) // Day 1 before Day 2
+//             .map(date => {
+//                 // Explicitly sort matches inside each day (Match 1 -> Match 2)
+//                 const sortedMatches = groupedMatches[date].sort(
+//                     (a, b) => a.matchNumber - b.matchNumber
+//                 );
+
+//                 return {
+//                     date,
+//                     matches: sortedMatches
+//                 };
+//             });
+
+//         return res.status(200).json({
+//             formattedMatches: formattedData
+//         });
+
+//     } catch (error) {
+//         console.error("Error fetching public matches:", error);
+//         return res.status(500).json({
+//             message: error.message || "Failed to fetch matches",
+//         });
+//     }
+// };
+
+export const getPublicMatches = async (req, res) => {
+    try {
+        const { tournamentId, stageId } = req.params;
+        const { groupId, timezone } = req.query; // Optional user timezone, e.g., 'Asia/Dhaka'
+
+        if (!tournamentId || !stageId) {
+            return res.status(400).json({
+                success: false,
+                message: "tournamentId and stageId are required route parameters",
+            });
+        }
+
+        const [tournament, stage] = await Promise.all([
+            Tournament.findById(tournamentId),
+            Stage.findById(stageId)
+        ]);
+
+        if (!tournament) return res.status(404).json({ message: "Tournament not found" });
+        if (!stage) return res.status(404).json({ message: "Stage not found" });
+
+        if (stage.hasGroups && !groupId) {
+            return res.status(400).json({
+                message: "Group ID is required for stages with groups",
+            });
+        }
+
+        const filter = { tournamentId, stageId };
+        if (groupId) filter.groupId = groupId;
+
+        // Fetch matches sorted by date and match number
+        const matches = await Match.find(filter)
+            .populate({
+                path: "teamResults",
+                populate: { path: "teamId", select: "name logo" },
+                options: { sort: { placement: 1 } }
+            })
+            .sort({ scheduledAt: 1, matchNumber: 1 });
+
+        // Helper to get formatted date string (YYYY-MM-DD) based on local time or timezone
+        const formatDateKey = (dateObj) => {
+            if (timezone) {
+                // Use requested timezone if passed in query string
+                return new Intl.DateTimeFormat("en-CA", { timeZone: timezone }).format(dateObj);
+            }
+            // Use local system date string (YYYY-MM-DD)
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+            const day = String(dateObj.getDate()).padStart(2, "0");
+            return `${year}-${month}-${day}`;
+        };
+
+        // Group matches by date
+        const groupedMatches = matches.reduce((acc, match) => {
+            let dateKey = "Unscheduled";
+
+            if (match.scheduledAt) {
+                const parsedDate = new Date(match.scheduledAt);
+                if (!isNaN(parsedDate.getTime())) {
+                    dateKey = formatDateKey(parsedDate);
+                }
+            }
+
+            if (!acc[dateKey]) acc[dateKey] = [];
+            acc[dateKey].push(match);
+            return acc;
+        }, {});
+
+        // Safely sort dates with "Unscheduled" pushed to the end
+        const formattedData = Object.keys(groupedMatches)
+            .sort((a, b) => {
+                if (a === "Unscheduled") return 1;
+                if (b === "Unscheduled") return -1;
+                return new Date(a) - new Date(b);
+            })
+            .map(date => ({
+                date,
+                matches: groupedMatches[date].sort((a, b) => a.matchNumber - b.matchNumber)
+            }));
+
+        return res.status(200).json({
+            formattedMatches: formattedData
+        });
+
+    } catch (error) {
+        console.error("Error fetching public matches:", error);
+        return res.status(500).json({
+            message: error.message || "Failed to fetch matches",
+        });
+    }
+};
+
+
+//get ranking
+export const getRanking = async (req, res) => {
+    try {
+        const { tournamentId, stageId } = req.params;
+        // Accept groupId from query params (standard for GET requests) or body
+        const groupId = req.query.groupId || req.body.groupId;
+
+        if (!tournamentId || !stageId) {
+            return res.status(400).json({
+                message: "tournamentId and stageId are required route parameters",
+            });
+        }
+
+        const tournament = await Tournament.findById(tournamentId);
+        if (!tournament) {
+            return res.status(404).json({
+                message: "Tournament not found",
+            });
+        }
+
+        const stage = await Stage.findById(stageId);
+        if (!stage) {
+            return res.status(404).json({
+                message: "Stage not found",
+            });
+        }
+
+        if (stage.hasGroups && !groupId) {
+            return res.status(400).json({
+                message: "Group ID is required for stages with groups",
+            });
+        }
+
+        // 1. Construct the match filter (Convert strings to ObjectIds for aggregation)
+        const matchFilter = {
+            tournamentId: new mongoose.Types.ObjectId(tournamentId),
+            stageId: new mongoose.Types.ObjectId(stageId),
+            teamId: { $ne: null } // Ensure team exists
+        };
+
+        if (groupId) {
+            matchFilter.groupId = new mongoose.Types.ObjectId(groupId);
+        }
+
+        // 2. Execute Aggregation Pipeline
+        const rankings = await TeamMatchResult.aggregate([
+            // Step 1: Filter results by tournament, stage, and group
+            { $match: matchFilter },
+
+            // Step 2: Group by teamId and sum all required metrics
+            {
+                $group: {
+                    _id: "$teamId",
+                    totalPoints: { $sum: "$totalPoints" },
+                    placementPoints: { $sum: "$placementPoints" },
+                    kills: { $sum: "$kills" },
+                    wwdc: { $sum: "$wwdc" },
+                    matchesPlayed: { $sum: 1 } // Extra helpful metric
+                }
+            },
+
+            // Step 3: Sort by totalPoints (Primary), then tie-breakers (WWDC -> Placement -> Kills)
+            {
+                $sort: {
+                    totalPoints: -1,
+                    wwdc: -1,
+                    placementPoints: -1,
+                    kills: -1
+                }
+            },
+
+            // Step 4: Populate Team information
+            {
+                $lookup: {
+                    from: "teams", // Name of the Team collection in MongoDB
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "team"
+                }
+            },
+
+            // Step 5: Unwind the team array resulting from lookup
+            { $unwind: "$team" },
+
+            // Step 6: Project/Format the exact output required
+            {
+                $project: {
+                    _id: 0,
+                    team: {
+                        _id: "$team._id",
+                        name: "$team.name",
+                        logo: "$team.logo"
+                    },
+                    totalPoints: 1,
+                    placementPoints: 1,
+                    kills: 1,
+                    wwdc: 1,
+                    matchesPlayed: 1
+                }
+            }
+        ]);
+
+        // 3. Assign 1-based ranks
+        const formattedRankings = rankings.map((item, index) => ({
+            rank: index + 1,
+            ...item
+        }));
+
+        return res.status(200).json({
+            success: true,
+            data: formattedRankings
+        });
+
+    } catch (error) {
+        console.error("Error fetching ranking:", error);
+        return res.status(500).json({
+            message: error.message || "Failed to fetch ranking",
+        });
+    }
+};
+// export const getPublicMatches = async (req, res) => {
+//     try {
+//         const { tournamentId, stageId } = req.params;
+//         const { groupId } = req.body; // Optional: groupId can be provided in the request body for stages with groups
+//         if (!tournamentId || !stageId) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "tournamentId and stageId are required query parameters",
+//             });
+//         }
+
+//         const tournament = await Tournament.findById(tournamentId);
+//         if (!tournament) {
+//             return res.status(404).json({
+//                 message: "Tournament not found",
+//             });
+//         }
+
+//         const stage = await Stage.findById(stageId);
+//         if (!stage) {
+//             return res.status(404).json({
+//                 message: "Stage not found",
+//             });
+//         }
+
+//         if (stage.hasGroups && !groupId) {
+//             return res.status(400).json({
+//                 message: "Group ID is required for stages with groups",
+//             });
+//         }
+
+
+//         // If the stage has groups, ensure groupId is provided
+//         // 1. Build the filter object based on provided query parameters
+//         const filter = {};
+//         if (tournamentId) filter.tournamentId = tournamentId;
+//         if (stageId) filter.stageId = stageId;
+//         if (groupId) filter.groupId = groupId;
+
+//         // 2. Query matches and populate the virtual field
+//         const matches = await Match.find(filter)
+//             .populate({
+//                 path: "teamResults",
+//                 // Optional but recommended: Populate the team details (name, logo, etc.)
+//                 // so your frontend doesn't just get an unreadable teamId string
+//                 populate: {
+//                     path: "teamId",
+//                     select: "name logo" // Replace with actual fields from your Team schema
+//                 },
+//                 // Sort team results by placement or total points
+//                 options: { sort: { placement: 1 } } 
+//             })
+//             // Sort matches chronologically or by match number
+//             .sort({ matchNumber: 1 }); 
+
+//         // 3. Return the payload
+//         return res.status(200).json({
+//             success: true,
+//             count: matches.length,
+//             data: matches
+//         });
+
+//     } catch (error) {
+//         console.error("Error fetching public matches:", error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Failed to fetch matches",
+//             error: error.message
+//         });
+//     }
+// };

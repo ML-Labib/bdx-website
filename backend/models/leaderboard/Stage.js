@@ -22,8 +22,25 @@ const StageSchema = new mongoose.Schema({
         default: false
     },
 
-
+    
 });
+
+StageSchema.virtual("groups", {
+    ref: "Group",
+    localField: "_id",
+    foreignField: "stageId",
+    justOne: false
+});
+
+// Make virtuals appear in JSON responses
+StageSchema.set("toJSON", {
+    virtuals: true
+});
+
+StageSchema.set("toObject", {
+    virtuals: true
+});
+
 StageSchema.index({
     tournamentId: 1,
     order: 1

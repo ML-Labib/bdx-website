@@ -15,6 +15,9 @@ router.post("/stages", requireAuth, requireAdmin, leaderboardController.createSt
 router.put("/stages/:stageId", requireAuth, requireAdmin, leaderboardController.updateStage);
 router.delete("/stages/:stageId", requireAuth, requireAdmin, leaderboardController.deleteStage);
 
+//public stages and groups routes
+router.get("/tournament/:tournamentId/stages-and-groups", leaderboardController.getStagesAndGroupsByTournamentId);
+
 // Groups routes
 router.get("/tournament/:tournamentId/stage/:stageId/groups", requireAuth, leaderboardController.getGroups);
 router.post("/groups", requireAuth, requireAdmin, leaderboardController.createGroup);
@@ -33,5 +36,12 @@ router.get("/matches", requireAuth, matchController.getMatches);
 router.get("/match/preview/:hostIgn/:index", requireAuth, requireAdmin, matchController.getMatchPreview);
 router.post("/match/save", requireAuth, requireAdmin, matchController.saveMatchData);
 router.post("/match/create", requireAuth, requireAdmin, matchController.createMatch);
+
+//match public routes
+router.get("/matches/:tournamentId/:stageId/", matchController.getPublicMatches);
+router.get("/matches/ranking/:tournamentId/:stageId/", matchController.getRanking);
+
+
+
 
 export default router;

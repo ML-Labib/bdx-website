@@ -95,4 +95,16 @@ MatchSchema.index(
     }
 );
 
+// Define the virtual relationship
+MatchSchema.virtual("teamResults", {
+    ref: "TeamMatchResult", // The model to populate
+    localField: "_id",      // The field in the Match model
+    foreignField: "matchId",// The field in the TeamMatchResult model
+    justOne: false          // Set to false because one match has many team results
+});
+
+// Include virtuals in JSON responses
+MatchSchema.set("toJSON", { virtuals: true });
+MatchSchema.set("toObject", { virtuals: true });
+
 export const Match = mongoose.model("Match", MatchSchema);
