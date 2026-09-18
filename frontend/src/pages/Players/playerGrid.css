@@ -19,12 +19,6 @@
     padding: 64px 40px;
 } */
 
-.player-section {
-    /* width: 100%;
-    display: flex;
-    justify-content: center; */
-    margin-top: var(--space-lg);
-}
 
 .player-grid {
     display: grid;
@@ -112,17 +106,17 @@
 
 
 @media (max-width: 1024px) {
-    .team-section {
+    /* .team-section {
         margin-top: var(--space-md);
         padding: 0 var(--space-md);
-    }
+    } */
 }
 
 
 @media (max-width: 768px) {
-    /* .player-section-wrap {
-        padding: 20px 10px;
-    } */
+.player-grid {
+    gap: var(--space-md);
+}
 
     /* 
     .team-filters {

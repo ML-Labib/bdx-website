@@ -1,73 +1,66 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PlayerCard } from "./PlayerCard";
-import { SubHeader } from "../../components/SubHeader"
+import { SubHeader } from "../../components/SubHeader";
 import { Loader } from '../../components/Loader';
-import './playerGrid.css'
+import './playerGrid.css';
 
 const ITEMS_PER_PAGE = 12;
 
 export function PlayerGrid() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [teamFilter, setTeamFilter] = useState("all"); // 'all', 'has_team', 'no_team'
+    const [teamFilter, setTeamFilter] = useState("all");
     const [players, setPlayers] = useState([]);
+    const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const isFetchingRef = useRef(false);
-    const currentPageRef = useRef(1); // Track current page safely without triggering re-renders
-    const abortControllerRef = useRef(null); // Used to cancel stale requests
+    const abortControllerRef = useRef(null);
 
-    const fetchPlayers = useCallback(async (pageToFetch = 1, currentSearch = "", currentFilter = "all") => {
-        if (isFetchingRef.current) return;
-
-        // Cancel any ongoing previous request
+    const fetchPlayers = useCallback(async (pageToFetch, search, filter) => {
+        // Cancel ongoing previous request if any
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
         }
         abortControllerRef.current = new AbortController();
 
-        isFetchingRef.current = true;
         setLoading(true);
         setError(null);
 
         try {
-            let url = `/api/profile?page=${pageToFetch}&limit=${ITEMS_PER_PAGE}`;
-            if (currentSearch) url += `&search=${encodeURIComponent(currentSearch)}`;
-            if (currentFilter !== "all") url += `&filter=${currentFilter}`;
+            const params = new URLSearchParams({
+                page: pageToFetch,
+                limit: ITEMS_PER_PAGE,
+            });
 
-            const response = await fetch(url, { signal: abortControllerRef.current.signal });
+            if (search) params.append("search", search);
+            if (filter !== "all") params.append("filter", filter);
+
+            const response = await fetch(`/api/profile?${params.toString()}`, {
+                signal: abortControllerRef.current.signal,
+            });
 
             if (!response.ok) throw new Error(`Request failed with status ${response.status}`);
 
             const data = await response.json();
+            const fetchedProfiles = data.profiles || [];
 
-            setPlayers((prev) => {
-                if (pageToFetch === 1) return data.profiles || [];
-                return [...prev, ...(data.profiles || [])];
-            });
-
-            // Update page ref and hasMore flag based on backend response
-            currentPageRef.current = pageToFetch;
+            setPlayers((prev) => (pageToFetch === 1 ? fetchedProfiles : [...prev, ...fetchedProfiles]));
             setHasMore(pageToFetch < (data.totalPages || 1));
+            setPage(pageToFetch);
 
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                // Request was intentionally cancelled, ignore error
-                return;
-            }
-            console.error('Failed to fetch players:', error);
+        } catch (err) {
+            if (err.name === 'AbortError') return; // Request was aborted, ignore
+            console.error('Failed to fetch players:', err);
             setError('Unable to load players right now. Please try again later.');
         } finally {
             setLoading(false);
-            isFetchingRef.current = false;
         }
     }, []);
 
-    // Effect for handling Search and Filter changes (with Debounce)
+    // Handle Search and Filter changes (Debounced)
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
-            currentPageRef.current = 1; // Reset page reference on new search/filter
             fetchPlayers(1, searchTerm, teamFilter);
         }, 500);
 
@@ -75,17 +68,16 @@ export function PlayerGrid() {
     }, [searchTerm, teamFilter, fetchPlayers]);
 
     const handleShowMore = () => {
-        if (!hasMore || isFetchingRef.current) return;
-        const nextPage = currentPageRef.current + 1;
-        fetchPlayers(nextPage, searchTerm, teamFilter);
+        if (!hasMore || loading) return;
+        fetchPlayers(page + 1, searchTerm, teamFilter);
     };
 
     return (
         <>
-        <SubHeader subTitle="PLAYERS" />
+            <SubHeader subTitle="PLAYERS" />
+            
             <div className="search-filters">
                 <div className="search-wrap">
-
                     {/* Search Input */}
                     <div className="search-group">
                         <input
@@ -97,44 +89,34 @@ export function PlayerGrid() {
                         <span className="material-symbols-outlined">search</span>
                     </div>
 
-                    {/* Team Status Filter */}
+                    {/* Team Filter Dropdown */}
                     <select
                         value={teamFilter}
                         onChange={(e) => setTeamFilter(e.target.value)}
                     >
-                        <option id="all" value="all">All Players</option>
-                        <option id="has_team" value="has_team">In a Team</option>
-                        <option id="no_team" value="no_team">Free Agents</option>
+                        <option value="all">All Players</option>
+                        <option value="has_team">In a Team</option>
+                        <option value="no_team">Free Agents</option>
                     </select>
-
                 </div>
             </div>
-            <div className="page">
 
+            <div className="page">
                 <div className="page-content">
-                    <div className="player-section">
+                    <div className="page-section">
                         {error && <p style={{ color: 'red' }}>{error}</p>}
 
-                        {(players.length === 0 && !loading) ? (
+                        {players.length === 0 && !loading ? (
                             <div className="empty-state">
                                 <p>No player found.</p>
                             </div>
-                        ) :
-                            (
-                                <div className="player-grid">
-                                    {players.map((player) => (
-                                        <PlayerCard key={player._id} player={player} />
-                                    ))}
-                                </div>
-                            )}
-
-                        {/*                     
-
-                    {players.length === 0 && !loading && (
-                        <div className="empty-state">
-                            <p>No player found.</p>
-                        </div>
-                    )} */}
+                        ) : (
+                            <div className="player-grid">
+                                {players.map((player) => (
+                                    <PlayerCard key={player._id} player={player} />
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {!loading && hasMore && (
@@ -155,5 +137,4 @@ export function PlayerGrid() {
             </div>
         </>
     );
-
 }

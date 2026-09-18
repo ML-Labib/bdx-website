@@ -3,16 +3,13 @@ import { TeamMember } from "../models/TeamMembers.js";
 
 export const getAllProfiles = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 12;
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 12;
         const skip = (page - 1) * limit;
+        const { filter, search } = req.query;
+        const query = { banned: false };
 
-        const filter = req.query.filter;
-        const search = req.query.search;
-
-        const query = { banned: false }; // Exclude banned profiles by default
-
-        // Search
+        // Search filter
         if (search) {
             query.$or = [
                 { ign: { $regex: search, $options: "i" } },
@@ -22,22 +19,12 @@ export const getAllProfiles = async (req, res) => {
         }
 
         // Team filter
-        if (filter === "has_team") {
-            const teamMembers = await TeamMember
-                .find()
-                .distinct("user");
-
-            query._id = { $in: teamMembers };
+        if (filter === "has_team" || filter === "no_team") {
+            const teamMembers = await TeamMember.find().distinct("user");
+            query._id = filter === "has_team" ? { $in: teamMembers } : { $nin: teamMembers };
         }
 
-        if (filter === "no_team") {
-            const teamMembers = await TeamMember
-                .find()
-                .distinct("user");
-
-            query._id = { $nin: teamMembers };
-        }
-
+        // Execute queries in parallel
         const [profiles, total] = await Promise.all([
             Profile.find(query)
                 .sort({ createdAt: -1 })
@@ -49,40 +36,19 @@ export const getAllProfiles = async (req, res) => {
                         path: "team",
                         select: "name logo country"
                     }
-                }),
+                })
+                .lean(), // Returns plain JS objects -> much faster execution
 
             Profile.countDocuments(query)
         ]);
 
-        const formattedProfiles = profiles.map((profile) => {
-            const membership = profile.membership;
-            const team = membership?.team;
-
-            return {
-                ...profile.toObject(),
-
-                team: team
-                    ? {
-                        _id: team._id,
-                        name: team.name,
-                        logo: team.logo,
-                        country: team.country
-                    }
-                    : null,
-
-                teamName: team?.name || null,
-                teamLogo: team?.logo || null
-            };
-        });
-
         res.status(200).json({
-            profiles: formattedProfiles,
+            profiles,
             totalPages: Math.ceil(total / limit)
         });
 
     } catch (error) {
         console.error("Error in getAllProfiles:", error);
-
         res.status(500).json({
             message: "Failed to fetch profiles",
             error: error.message
@@ -148,7 +114,13 @@ export const getProfileByPubgId = async (req, res) => {
             return res.status(400).json({ message: 'PUBG ID is required' });
         }
 
-        const profile = await Profile.findOne({ pubgId: pubgId });
+        const profile = await Profile.findOne({ pubgId: pubgId }).populate({
+            path: "membership",
+            populate: {
+                path: "team",
+                select: "name _id logo"
+            }
+        });
 
         if (!profile) {
             return res.status(404).json({ message: 'Profile not found' });

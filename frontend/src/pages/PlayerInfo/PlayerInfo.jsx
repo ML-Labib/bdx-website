@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { DataTable } from '../../components/DataTable'; // adjust import path as needed
 import { SubHeader } from '../../components/SubHeader'; // adjust import path as needed
+import { PageHeader } from '../../components/PageHeader'; // adjust import path as needed
 import './playerInfo.css'; // adjust import path as needed
 
 
@@ -132,12 +133,12 @@ export const PlayerInfo = () => {
     return (
         <>
             <SubHeader subTitle="" />
-            <div className="player-info-container">
-                <section className="player-hero">
-                    <div className="player-hero-inner">
-                        <div className="player-hero-details">
-                            <div className="hero-avatar-block">
-                                <div className="player-avatar">
+            <div className="page-info-container">
+                <section className="page-info-hero">
+                    <div className="hero-inner">
+                        <div className="hero-details">
+                            <div className="hero-avatar">
+                                <div className="avatar player">
                                     <img
                                         src={playerInfo?.picture}
                                         alt={playerInfo?.ign || "Player Avatar"}
@@ -145,56 +146,83 @@ export const PlayerInfo = () => {
                                 </div>
                             </div>
 
-                            <div className="player-data">
-                                <div className="player-title-row">
-                                    <div className="player-name-wrapper">
-                                        <Link to="/team-info">
-                                            <div className="player-team-logo-wrapper">
-                                                <img src="https://wstatic-prod-boc.krafton.com/common/team/20250317/aZIXMx7n/55.png" alt="" className="player-team-logo" />
-                                            </div>
-                                        </Link>
-                                        <h2 className="player-ign">{playerInfo?.ign || "Player Name"}</h2>
+                            <div className="hero-data">
+                                <div className="hero-title-row">
+                                    <div className="hero-title">
+                                        {playerInfo?.membership?.team?.logo && (
+                                            <Link to={`/teams/info/${playerInfo?.membership?.team?._id}`}>
+                                                <div className="hero-team-logo-wrapper">
+                                                    <img src={playerInfo?.membership?.team?.logo} alt="Team Logo" className="hero-team-logo-small" />
+                                                </div>
+                                            </Link>
+                                        )}
+                                        <h2 className="hero-title-value">{playerInfo?.ign || "Player Name"}</h2>
                                     </div>
                                 </div>
 
-                                <div className="player-details">
-                                    <div className="stat-card">
-                                        <span className="stat-label">Name/Country</span>
-                                        <strong>{playerInfo?.displayName || "-----"} / {playerInfo?.country || "Unknown"}</strong>
-                                    </div>
-                                    <div className="stat-card">
+                                <ul className="stats-grid">
+                                    <li className="stat-card">
+                                        <span className="stat-label">Name / Country</span>
+                                        <strong className="stat-value">
+                                            {playerInfo?.displayName || "-----"} / {playerInfo?.country || "Unknown"}
+                                        </strong>
+                                    </li>
+
+                                    {
+                                        playerInfo?.membership?.role && (
+                                            <li className="stat-card">
+                                                <span className="stat-label">Team Role</span>
+                                                <strong className="stat-value  role">
+                                                    {playerInfo?.membership?.role || "-----"}
+                                                </strong>
+                                            </li>
+                                        )
+                                    }
+
+                                    <li className="stat-card">
                                         <span className="stat-label">Latest Tournament</span>
-                                        <strong>{playerInfo?.latestTournament || "-----"}</strong>
-                                    </div>
-                                </div>
+                                        <strong className="stat-value">
+                                            {playerInfo?.latestTournament || "-----"}
+                                        </strong>
+                                    </li>
 
-                                <div className="player-summary-stats">
-                                    <div className="stat-card">
-                                        <span className="stat-label">Avg. Kill</span>
-                                        <strong>{playerInfo?.avgKills || "-----"}</strong>
-                                    </div>
-                                    <div className="stat-card">
+                                    <li className="stat-card">
+                                        <span className="stat-label">Avg. Kills</span>
+                                        <strong className="stat-value">
+                                            {playerInfo?.avgKills || "-----"}
+                                        </strong>
+                                    </li>
+
+                                    <li className="stat-card">
                                         <span className="stat-label">Avg. Damage</span>
-                                        <strong>{playerInfo?.avgDamage || "-----"}</strong>
-                                    </div>
-                                    <div className="stat-card">
+                                        <strong className="stat-value">
+                                            {playerInfo?.avgDamage || "-----"}
+                                        </strong>
+                                    </li>
+
+                                    <li className="stat-card">
                                         <span className="stat-label">Avg. Survival Time</span>
-                                        <strong>{playerInfo?.avgSurvivalTime || "-----"}</strong>
-                                    </div>
-                                </div>
+                                        <strong className="stat-value">
+                                            {playerInfo?.avgSurvivalTime || "-----"}
+                                        </strong>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <div className="player-info-bar">
-                    <div className="player-info-bar-inner">
-                        <span className="player-info-bar-text">PLAYER INFO</span>
+                <div className="info-bar">
+                    <div className="info-bar-value">
+                        <label>PLAYER INFO</label>
                     </div>
                 </div>
 
-                <section className="player-section experience-section">
-                    <div className="section-header">
+                {/* <section className="player-section experience-section"> */}
+                <section className="page-section-small">
+
+                    <PageHeader title="Experiences" />
+                    {/* <div className="page-header">
                         <svg className="section-icon" width="32" height="16" viewBox="0 0 32 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
                             <path d="M32 0 16.79 16H8.095L8 15.899 23.114 0H32Z" fill="#EFF923" />
                             <path d="M24 0 8.79 16H.095L0 15.899 15.114 0H24Z" fill="#000" />
@@ -205,15 +233,12 @@ export const PlayerInfo = () => {
                     {/* Reusable Data Table */}
 
                     {playerExperience.length === 0 ? (
-                        <div className="empty-team-state">
+                        <div className="empty-state">
 
                             <span className="material-symbols-outlined">
                                 history
                             </span>
 
-                            <h4>
-                                No tournaments
-                            </h4>
 
                             <p>
                                 Played tournaments will be displayed here once the player has participated in any official matches.

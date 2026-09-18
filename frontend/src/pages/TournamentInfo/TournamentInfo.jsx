@@ -152,71 +152,80 @@ export function TournamentInfo() {
     return (
         <>
             <SubHeader subTitle="" />
-            <div className="tournament-info-container">
-                <section className="tournament-hero">
-                    <div className="tournament-hero-inner">
-
-                        <div className="tournament-hero-details">
-
-                            <div className="tournament-logo-block">
-                                <div className="tournament-page-logo">
-                                    <img src={tournament?.logo || defaulteamtLogo} alt="Team Logo" className="hero-team-logo" />
+            <div className="page-info-container">
+                <section className="page-info-hero">
+                    <div className="hero-inner">
+                        <div className="hero-details">
+                            <div className="hero-avatar">
+                                <div className="avatar player">
+                                    <img
+                                        src={tournament?.logo || defaulteamtLogo}
+                                        alt="logo"
+                                    />
                                 </div>
                             </div>
 
-                            <div className="tournament-data">
-
-                                <div className="tournament-title-row">
-                                    <div className="tournament-name-wrapper">
-                                        <h2 className="tournament-name">{tournament?.title || '-'}</h2>
-                                        <span className="tier-badge">
+                            <div className="hero-data">
+                                <div className="hero-title-row">
+                                    <div className="hero-title">
+                                        <h2 className="hero-title-value">{tournament?.title || "Player Name"}</h2>
+                                        <span className={`status-badge upcoming info`}>
                                             Tier {tournament?.tier || '-'}
                                         </span>
                                     </div>
-    
                                 </div>
 
-                                <div className="tournament-details-info">
-
-                                    <div className="stat-card">
+                                <ul className="stats-grid">
+                                    <li className="stat-card">
                                         <span className="stat-label">Schedule</span>
+                                        <strong className="stat-value">
+                                            {tournament?.startDate && tournament?.endDate ? `${formatDate(tournament.startDate)} - ${formatDate(tournament.endDate)}` : '-'}
+                                        </strong>
+                                    </li>
 
-                                        <strong>{tournament?.startDate && tournament?.endDate ? `${formatDate(tournament.startDate)} - ${formatDate(tournament.endDate)}` : 'TBD'}</strong>
+                                    <li className="stat-card">
+                                        <span className="stat-label">Prize</span>
+                                        <strong className="stat-value">
+                                            {tournament?.prize || '-'}
+                                        </strong>
+                                    </li>
 
-                                    </div>
-                                    <div className="stat-card">
 
-                                        <span className="stat-label">Price</span>
-                                        <strong>{tournament?.prize || '-'}</strong>
-                                    </div>
+                                    <li className="stat-card">
+                                        <span className={`stat-label`}>
+                                            Status
+                                        </span>
+                                        <strong className={`stat-value ${status.toLowerCase() === "ended" ? "ended" : ""}`}>
+                                            {status}
+                                        </strong>
+                                    </li>
 
-                                    <div className="stat-card">
-
-                                        <span className="stat-label">Status</span>
-                                        <strong>{status}</strong>
-                                    </div>
-                                    <div className="stat-card">
+                                    <li className="stat-card">
                                         <span className="stat-label">Participating Region</span>
-                                        <strong>{tournament?.participatingRegion || 'Global'}</strong>
-                                    </div>
-                                    <div className="stat-card">
+                                        <strong className="stat-value">
+                                            {tournament?.participatingRegion || '-'}
+                                        </strong>
+                                    </li>
+
+                                    <li className="stat-card">
                                         <span className="stat-label">Mode</span>
-                                        <strong>{tournament?.mode || tournament?.GameMode || '-'}</strong>
-                                    </div>
+                                        <strong className="stat-value">
+                                            {tournament?.mode || tournament?.GameMode || '-'}
+                                        </strong>
+                                    </li>
 
-
-
-                                    <div className="stat-card">
+                                    <li className="stat-card">
                                         <span className="stat-label">Match Time</span>
-                                        <strong>{tournament?.matchTime || '-'}</strong>
-                                    </div>
-                                </div>
-
-
+                                        <strong className="stat-value">
+                                            {tournament?.matchTime || '-'}
+                                        </strong>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </section>
+
 
                 <div className="tournament-info-bar">
                     <div className="tournament-tabs-header">

@@ -1,123 +1,104 @@
-.matches-tab-container {
+/* .matches-tab-container {
     width: 100%;
     max-width: 1100px;
     margin: 0 auto;
     padding: 20px 0;
-    color: #000;
-}
+    color: var(--color-text);
+} */
 
-/* Dropdown Header Styling */
-.matches-filter-bar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.filter-select {
-    padding: 8px 16px;
-    font-weight: 700;
-    border: none;
-    border-bottom: 2px solid #000;
-    background: transparent;
-    cursor: pointer;
-    text-transform: uppercase;
-    font-size: 14px;
-    outline: none;
-}
-
-.refresh-btn {
-    background: #f4f4f4;
-    border: 1px solid #ccc;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-}
-
-.refresh-btn:hover {
-    background: #e0e0e0;
-}
-
-/* Day Section */
 .day-group {
-    margin-bottom: 35px;
+    margin-bottom: var(--space-lg);
 }
 
-.day-header {
-    font-size: 18px;
-    font-weight: 800;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.yellow-accent {
-    color: #e6ff00;
-    font-size: 22px;
-    font-weight: 900;
-}
-
-/* Match Card */
+/* Match Card Structure */
 .match-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #ffffff;
-    border: 1px solid #e2e2e2;
-    margin-bottom: 8px;
-    height: 60px;
-    border-radius: 2px;
+    background: var(--color-surface);
+    border: var(--border-light);
+    margin-bottom: var(--space-sm);
+    /* border-radius: 2px; */
     overflow: hidden;
+    transition: all 0.2s ease;
 }
 
-.match-card-left {
+.match-card:hover {
+    border: var(--border-primary);
+    background: var(--color-surface-hover);
+}
+
+.match-card-header {
     display: flex;
     align-items: center;
-    padding-left: 15px;
-    gap: 15px;
+    height: 98px;
+    cursor: pointer;
+    user-select: none;
+    width: 100%;
+    position: relative;
+    z-index: 2;
 }
 
-.expand-arrow {
-    font-size: 20px;
-    color: #666;
-    font-weight: bold;
-}
-
-.match-title {
-    font-weight: 800;
-    font-size: 14px;
-    letter-spacing: 0.5px;
-}
-
-.match-card-right {
+/* Left Section */
+.match-card-left {
     display: flex;
     align-items: center;
     height: 100%;
 }
 
+.expand-icon {
+    width: 88px;
+    height: 100%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: var(--border-light);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.expand-icon:hover {
+    background-color: var(--color-primary);
+}
+
+.expand-icon .material-symbols-outlined {
+    font-size: 22px;
+    color: var(--color-text);
+    transition: transform 0.2s ease;
+}
+
+.match-title {
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--color-text);
+    letter-spacing: 0.5px;
+    padding-left: 20px;
+}
+
+/* Right Section */
+.match-card-right {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-left: auto;
+}
+
 .team-logos {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--space-md);
     margin-right: 20px;
+    min-height: 45px;
 }
 
 .team-logo-img {
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
     border-radius: 50%;
+    background-color: var(--color-background);
+
 }
 
-/* Map Slanted Banner */
+/* Map Slanted Banner (Desktop View) */
 .map-banner {
     position: relative;
     width: 220px;
@@ -138,75 +119,55 @@
 
 .map-name {
     position: relative;
-    color: #fff;
-    font-weight: 800;
-    font-size: 13px;
+    color: var(--color-text);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--text-small);
     letter-spacing: 1px;
     z-index: 1;
 }
 
-.matches-loading, .no-matches {
-    text-align: center;
-    padding: 40px;
-    font-weight: 600;
-    color: #666;
+/* Expanded State */
+.match-card.expanded .expand-icon {
+    background-color: var(--color-primary);
 }
-/* --- Expandable Match Card Wrapper --- */
-.match-card-wrapper {
-    background: #ffffff;
-    border: 1px solid #e2e2e2;
-    margin-bottom: 8px;
-    border-radius: 2px;
+
+.match-card.expanded .expand-icon .material-symbols-outlined {
+    transform: rotate(90deg);
+}
+
+.expand-icon .material-symbols-outlined {
+    transition: transform 220ms ease;
+}
+
+/* .match-card.expanded .match-card-header {
+    border-bottom: var(--border-primary);
+} */
+
+/* Expanded Table & Action Bar */
+.match-card-expand-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    background: var(--color-background);
+    transition: grid-template-rows 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.match-card.expanded .match-card-expand-wrapper {
+    grid-template-rows: 1fr;
+}
+
+.match-card-expand-inner {
     overflow: hidden;
-    transition: all 0.2s ease;
+    min-height: 0;
 }
 
-.match-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
-    cursor: pointer;
-    user-select: none;
+@media (prefers-reduced-motion: reduce) {
+    .expand-icon .material-symbols-outlined,
+    .match-card-expand-wrapper {
+        transition: none;
+    }
 }
 
-/* Expanded State: Yellow Header styling */
-.match-card-wrapper.expanded .match-card-left {
-    background-color: #e6ff00; /* Neon yellow */
-    height: 100%;
-    min-width: 80px;
-    justify-content: center;
-}
-
-.match-card-wrapper.expanded .match-card-header {
-    border-bottom: 2px solid #000; /* Black divider before table */
-}
-
-/* Icons & Left Side */
-.match-card-left {
-    display: flex;
-    align-items: center;
-    padding: 0 15px;
-    gap: 15px;
-    transition: background-color 0.2s;
-}
-
-.expand-icon {
-    font-size: 16px;
-    font-weight: bold;
-    color: #000;
-    transition: transform 0.2s;
-}
-
-.expand-icon.down {
-    transform: rotate(90deg); /* Points down when expanded */
-}
-
-/* --- Table Specific Styles --- */
-.match-card-content {
-    background: #fff;
-}
-
+/* Match result table cells */
 .rank-cell {
     font-weight: 800;
     color: #000;
@@ -220,17 +181,16 @@
 }
 
 .team-cell img {
-    width: 24px;
-    height: 24px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
     border-radius: 50%;
-    border: 1px solid #eee;
+    border: var(--border-light);
 }
 
-/* --- Close Bar --- */
 .close-bar {
-    background-color: #e6ff00;
-    color: #000;
+    background-color: var(--color-primary);
+    color: var(--color-text-inverted);
     text-align: center;
     padding: 10px 0;
     cursor: pointer;
@@ -241,5 +201,110 @@
 }
 
 .close-bar:hover {
-    background-color: #d4ec00;
+    background-color: var(--color-primary-hover);
+}
+
+.team-logos {
+    margin-right: 0;
+    min-height: 52px;
+    /* Reserves space even if empty to prevent distortion */
+    min-height: 52px;
+    /* Reserves space even if empty to prevent distortion */
+}
+
+.team-logos img:first-child {
+    width: 45px;
+    height: 45px;
+    border: 3px solid var(--color-primary);
+    /* background-color: var(--color-primary); */
+}
+
+/* =========================================================
+   Mobile View (768px and below) Fixes
+   ========================================================= */
+@media (max-width: 768px) {
+    .expand-icon {
+        width: 56px;
+    }
+
+    .match-card-header {
+        height: 98px;
+        /* Fixed card height requested */
+    }
+
+    .match-card-left {
+        height: 100%;
+        align-items: center;
+        /* padding-top: 14px; */
+        margin-right: auto;
+    }
+
+    .expand-icon {
+        height: 100%;
+        flex-shrink: 0;
+    }
+
+    .match-title {
+        padding-left: 15px;
+        font-weight: var(--font-weight-bold);
+        font-size: var(--text-body);
+    }
+
+    .match-card-right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding-left: 10px;
+        gap: 4px;
+    }
+
+    /* Map label layout on mobile */
+    .map-banner {
+        width: auto;
+        height: auto;
+        background-image: none !important;
+        clip-path: none;
+        background: transparent;
+        display: flex;
+        align-items: center;
+    }
+
+
+
+    .map-overlay {
+        display: none;
+    }
+
+    .map-name {
+        color: var(--color-primary);
+        font-weight: var(--font-weight-bold);
+        font-size: var(--text-small);
+        letter-spacing: 0.5px;
+    }
+
+    .match-card-expand-inner {
+        overflow-x: auto;
+    }
+
+    .team-logos {
+        min-height: 32px;
+        /* Reserves space even if empty to prevent distortion */
+        min-height: 32px;
+        /* Reserves space even if empty to prevent distortion */
+    }
+
+    .team-logo-img {
+        width: 30px;
+        height: 30px;
+
+    }
+
+    .team-logos img:first-child {
+        width: 35px;
+        height: 35px;
+
+    }
 }

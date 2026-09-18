@@ -102,7 +102,7 @@ export function TeamGrid() {
             <section className="page">
 
                 <div className="page-content">
-                    <div className="team-section">
+                    <div className="page-section">
 
                         {error ? (
                             <div className="error-state">

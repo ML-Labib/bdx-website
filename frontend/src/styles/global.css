@@ -14,6 +14,14 @@
     padding: 0 var(--space-xl);
 }
 
+.page-section {
+    padding: var(--space-xl) 0;
+}
+
+    .match-list-container{
+        padding: 0;
+    }
+
 .table tbody td.empty-state-row {
     padding: 0;
     border: none;
@@ -138,6 +146,28 @@
 
 }
 
+.search-wrap button {
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    border: var(--border-light);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.search-wrap button:hover {
+    background: var(--color-primary-hover);
+    color: var(--color-text-inverted);
+}
+
+.select-group {
+    display: flex;
+    justify-content: center;
+    width: 50%;
+    gap: var(--space-lg);
+}
+
 .search-group input {
     border: none;
     min-width: 320px;
@@ -168,6 +198,25 @@
 
 
 
+html::-webkit-scrollbar {
+    width: var(--text-caption);
+}
+
+html::-webkit-scrollbar-track {
+    background: var(--color-surface);
+}
+
+html::-webkit-scrollbar-thumb {
+    background: var(--color-primary-disabled);
+    border: 1px solid var(--color-surface-hover);
+}
+
+html::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-hover);
+}
+
+
+
 /* .hover-underline {
     position: relative;
 }
@@ -193,19 +242,32 @@
 
 @media (max-width: 1024px) {
     .search-filters {
-        padding: var(--space-md) var(--space-sm);
+        padding: var(--space-md);
         gap: var(--space-md);
     }
 
     .page-content {
         padding: 0 var(--space-lg);
     }
+
+
 }
 
 
 @media (max-width: 768px) {
     .page-content {
         padding: 0 var(--space-md);
+    }
+
+    .page-section {
+        padding: var(--space-md) 0;
+    }
+    .match-list-container{
+        padding: 0 var(--space-md);
+    }
+
+    .page-section-small {
+        padding: 0 var(--space-sm);
     }
 
     .search-group {
@@ -222,7 +284,7 @@
     }
 
     .search-filters {
-        padding: var(--space-lg) var(--space-md);
+        /* padding: var(--space-lg) var(--space-md); */
         align-items: stretch;
     }
 

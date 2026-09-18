@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { DataTable } from '../../components/DataTable.jsx'; // Ensure correct path to your DataTable component
+import { PageHeader } from '../../components/PageHeader.jsx'; // Ensure correct path to your PageHeader component
 import './matchesTab.css';
+
+import defaulteamLogo from '../../assets/default-team-logo.png';
 
 const getMapBg = (mapName) => {
     switch (mapName?.toUpperCase()) {
@@ -31,7 +34,7 @@ export const MatchesTab = ({ tournamentId, stages = [] }) => {
     const [availableGroups, setAvailableGroups] = useState([]);
     const [groupedMatches, setGroupedMatches] = useState([]);
     const [loading, setLoading] = useState(false);
-    
+
     // State to track which match is currently expanded
     const [expandedMatchId, setExpandedMatchId] = useState(null);
 
@@ -39,10 +42,10 @@ export const MatchesTab = ({ tournamentId, stages = [] }) => {
     useEffect(() => {
         if (stages && stages.length > 0) {
             const firstStageId = stages[0]._id || stages[0].id; // Fallback to .id just in case
-            
+
             // Check if our current selected stage actually exists in the stages array
             const isCurrentStageValid = stages.some(s => (s._id || s.id) === selectedStageId);
-            
+
             // ONLY update state if invalid to prevent infinite loops
             if (!isCurrentStageValid && firstStageId) {
                 setSelectedStageId(firstStageId);
@@ -55,23 +58,23 @@ export const MatchesTab = ({ tournamentId, stages = [] }) => {
         if (!stages || stages.length === 0 || !selectedStageId) return;
 
         const currentStage = stages.find(s => (s._id || s.id) === selectedStageId);
-        
+
         if (currentStage && currentStage.groups && currentStage.groups.length > 0) {
-            
+
             // Prevent replacing the array with a new reference if the groups are identical
             setAvailableGroups(prev => {
-                const isIdentical = prev.length === currentStage.groups.length && 
-                                    prev.every((g, i) => (g._id || g.id) === (currentStage.groups[i]._id || currentStage.groups[i].id));
+                const isIdentical = prev.length === currentStage.groups.length &&
+                    prev.every((g, i) => (g._id || g.id) === (currentStage.groups[i]._id || currentStage.groups[i].id));
                 return isIdentical ? prev : currentStage.groups;
             });
-            
+
             const validGroupIds = currentStage.groups.map(g => g._id || g.id);
-            
+
             // ONLY update group state if the current group ID doesn't belong to this stage
             if (!validGroupIds.includes(selectedGroupId)) {
                 setSelectedGroupId(validGroupIds[0]);
             }
-            
+
         } else {
             // Safe reset
             setAvailableGroups(prev => prev.length === 0 ? prev : []);
@@ -94,7 +97,7 @@ export const MatchesTab = ({ tournamentId, stages = [] }) => {
 
     //         const response = await fetch(url);
     //         const data = await response.json();
-            
+
     //         // Handle multiple potential backend response structures safely
     //         if (data.success && data.data) {
     //             setGroupedMatches(data.data);
@@ -114,7 +117,7 @@ export const MatchesTab = ({ tournamentId, stages = [] }) => {
     //     }
     // };
 
-     // 3. Fetch Matches
+    // 3. Fetch Matches
     const fetchMatches = async () => {
         if (!tournamentId || !selectedStageId) return;
 
@@ -127,7 +130,8 @@ export const MatchesTab = ({ tournamentId, stages = [] }) => {
 
             const response = await fetch(url);
             const data = await response.json();
-            
+            // const data = [];
+
             // Handle multiple potential backend response structures safely
             if (data.success && data.data) {
                 setGroupedMatches(data.data);
@@ -151,8 +155,8 @@ export const MatchesTab = ({ tournamentId, stages = [] }) => {
     useEffect(() => {
         fetchMatches();
         // Close any expanded table when filters change
-        setExpandedMatchId(null); 
-        
+        setExpandedMatchId(null);
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tournamentId, selectedStageId, selectedGroupId]);
 
@@ -174,7 +178,7 @@ export const MatchesTab = ({ tournamentId, stages = [] }) => {
             sortValue: (row) => row.teamId?.name || '',
             cell: (row) => (
                 <div className="team-cell">
-                    <img src={row.teamId?.logo || '/default-team.png'} alt="logo" />
+                    <img src={row.teamId?.logo || defaulteamLogo} alt="logo" />
                     <span>{row.teamId?.name || 'Unknown Team'}</span>
                 </div>
             )
@@ -185,106 +189,135 @@ export const MatchesTab = ({ tournamentId, stages = [] }) => {
     ], []);
 
     return (
-        <div className="matches-tab-container">
-            {/* Filter Bar */}
-            <div className="matches-filter-bar">
-                <select 
-                    value={selectedStageId} 
-                    onChange={(e) => setSelectedStageId(e.target.value)}
-                    className="filter-select"
-                >
-                    {stages.map((stage) => (
-                        <option key={stage._id || stage.id} value={stage._id || stage.id}>
-                            {stage.name?.toUpperCase() || 'STAGE'}
-                        </option>
-                    ))}
-                </select>
+        <>
+            {stages.length > 0 && (
+                <div className="search-filters">
+                    <div className="search-wrap">
+                        <div className="select-group">
+                            <select
+                                value={selectedStageId}
+                                onChange={(e) => setSelectedStageId(e.target.value)}
+                                className="filter-select"
+                            >
+                                {stages.map((stage) => (
+                                    <option key={stage._id || stage.id} value={stage._id || stage.id}>
+                                        {stage.name?.toUpperCase() || 'STAGE'}
+                                    </option>
+                                ))}
+                            </select>
 
-                {availableGroups.length > 0 && (
-                    <select 
-                        value={selectedGroupId} 
-                        onChange={(e) => setSelectedGroupId(e.target.value)}
-                        className="filter-select"
-                    >
-                        {availableGroups.map((group) => (
-                            <option key={group._id || group.id} value={group._id || group.id}>
-                                {group.name?.toUpperCase()}
-                            </option>
-                        ))}
-                    </select>
-                )}
+                            {availableGroups.length > 0 && (
+                                <select
+                                    value={selectedGroupId}
+                                    onChange={(e) => setSelectedGroupId(e.target.value)}
+                                    className="filter-select"
+                                >
+                                    {availableGroups.map((group) => (
+                                        <option key={group._id || group.id} value={group._id || group.id}>
+                                            {group.name?.toUpperCase()}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
+                            <button className="refresh-btn" onClick={fetchMatches} title="Refresh">
+                                &#x21bb;
+                            </button>
+                        </div>
 
-                <button className="refresh-btn" onClick={fetchMatches} title="Refresh">
-                    &#x21bb;
-                </button>
-            </div>
+                    </div>
+                </div>
+            )}
 
-            {/* Match List */}
-            {loading ? (
-                <div className="matches-loading">Loading matches...</div>
-            ) : groupedMatches.length === 0 ? (
-                <div className="no-matches">No matches scheduled for this selection.</div>
-            ) : (
-                <div className="matches-group-list">
-                    {groupedMatches.map((group, index) => (
-                        <div key={group.date || index} className="day-group">
-                            <div className="day-header">
-                                <span className="yellow-accent">/</span> {formatDateHeader(group.date)}
-                            </div>
+            <div className="match-list-container">
+                {loading ? (
+                    <div className="matches-loading">Loading matches...</div>
+                ) : groupedMatches.length === 0 ? (
+                    <div className="empty-state">
+                        <span className="material-symbols-outlined">
+                            scoreboard
+                        </span>
+                        <p>
+                            No matches found
+                        </p>
 
-                            <div className="day-matches">
-                                {group.matches && group.matches.map((match) => {
-                                    const isExpanded = expandedMatchId === match._id;
+                    </div>
+                ) : (
+                    <div className="matches-group-list">
+                        {groupedMatches.map((group, index) => (
+                            <div key={group.date || index} className="day-group">
+                                {/* <div className="day-header">
+                                        <span className="yellow-accent">/</span> {formatDateHeader(group.date)}
+                                    </div> */}
+                                <PageHeader title={formatDateHeader(group.date)} />
 
-                                    return (
-                                        <div key={match._id} className={`match-card-wrapper ${isExpanded ? 'expanded' : ''}`}>
-                                            {/* Clickable Header */}
-                                            <div className="match-card-header" onClick={() => toggleMatch(match._id)}>
-                                                <div className="match-card-left">
-                                                    <div className={`expand-icon ${isExpanded ? 'down' : 'right'}`}>
-                                                        &#x276F;
+                                <div className="day-matches">
+                                    {group.matches && group.matches.map((match) => {
+                                        const isExpanded = expandedMatchId === match._id;
+
+                                        return (
+                                            <div key={match._id} className={`match-card ${isExpanded ? 'expanded' : ''}`}>
+                                                {/* Clickable Header */}
+                                                <div className="match-card-header" onClick={() => toggleMatch(match._id)}>
+                                                    <div className="expand-icon">
+                                                        <span className="material-symbols-outlined">
+                                                            keyboard_arrow_right
+                                                        </span>
                                                     </div>
-                                                    <span className="match-title">MATCH {match.matchNumber}</span>
+                                                    <div className="match-card-left">
+                                                        <span className="match-title">MATCH {match.matchNumber}</span>
+                                                    </div>
+
+                                                    <div className="match-card-right">
+                                                        {/* Show team logos only if teamResults exist and have length */}
+                                                        {match.teamResults && match.teamResults.length > 0 && (
+                                                            <div className="team-logos">
+                                                                {match.teamResults.slice(0, 4).map((res, idx) => (
+                                                                    <img
+                                                                        key={idx}
+                                                                        src={res.teamId?.logo || defaulteamLogo}
+                                                                        alt={res.teamId?.name || 'Team Logo'}
+                                                                        className="team-logo-img"
+                                                                    />
+                                                                ))}
+                                                            </div>
+                                                        )}
+
+                                                        <div className="map-banner" style={{ backgroundImage: `url(${getMapBg(match.mapName)})` }}>
+                                                            <div className="map-overlay"></div>
+                                                            <span className="map-name">{match.mapName?.toUpperCase()}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
-                                                <div className="match-card-right">
-                                                    <div className="team-logos">
-                                                        {match.teamResults?.slice(0, 4).map((res, idx) => (
-                                                            <img 
-                                                                key={idx} 
-                                                                src={res.teamId?.logo || '/default-team.png'} 
-                                                                alt={res.teamId?.name} 
-                                                                className="team-logo-img"
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                    <div className="map-banner" style={{ backgroundImage: `url(${getMapBg(match.mapName)})` }}>
-                                                        <div className="map-overlay"></div>
-                                                        <span className="map-name">{match.mapName?.toUpperCase()}</span>
+                                                {/* Expanded Table Content */}
+                                                <div className="match-card-expand-wrapper">
+                                                    <div className="match-card-expand-inner">
+                                                        <DataTable columns={columns} data={match.teamResults || []} />
+                                                        <div className="show-more">
+                                                            <button
+                                                                className="show-more-btn"
+                                                                onClick={(event) => {
+                                                                    event.stopPropagation();
+                                                                    setExpandedMatchId(null);
+                                                                }}
+                                                            >
+                                                                <span className="material-symbols-outlined">close_small</span>
+                                                                <span>close</span>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {/* Expanded Table Content */}
-                                            {isExpanded && (
-                                                <div className="match-card-content">
-                                                    <DataTable columns={columns} data={match.teamResults || []} />
-                                                    
-                                                    {/* Yellow Close Button at the bottom */}
-                                                    <div className="close-bar" onClick={() => setExpandedMatchId(null)}>
-                                                        <strong>&#x2715; Close</strong>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+        </>
     );
 };
 

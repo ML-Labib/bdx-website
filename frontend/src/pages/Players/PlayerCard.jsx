@@ -17,10 +17,15 @@ export function PlayerCard({ player }) {
             </div>
 
             <div className="card-content">
-                {player.teamLogo && <div className="team-logo">
-                    <img src={player.teamLogo} alt={player.teamName || "No team"} />
-                </div>
-}
+                {player.membership?.team?._id && (
+
+                    <Link to={`/team-info/${player.membership?.team?._id}`}>
+                        <div className="team-logo">
+                            <img src={player.membership?.team?.logo} alt={"No team"} />
+                        </div>
+                    </Link>
+                )
+                }
                 <div className="card-title player">
                     <Link to={`/player-info/${player.pubgId}`}>
                         <span className="name">
@@ -37,9 +42,16 @@ export function PlayerCard({ player }) {
                     </li>
 
                     <li>
+                        <span className="card-info-label">Role</span>
+                        <span className="card-info-value role">
+                            {player.membership?.role || "-"}
+                        </span>
+                    </li>
+
+                    <li>
                         <span className="card-info-label">Nationality</span>
                         <span className="card-info-value">
-                            {player.country}
+                            {player.country || "-"}
                         </span>
                     </li>
                 </ul>

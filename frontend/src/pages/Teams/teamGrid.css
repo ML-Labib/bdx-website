@@ -112,7 +112,7 @@
 
     .team-section {
     margin-top: var(--space-md);
-    padding: 0 var(--space-md);
+    /* padding: 0 var(--space-md); */
     }
 }
 
