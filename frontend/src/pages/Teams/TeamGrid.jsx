@@ -83,25 +83,25 @@ export function TeamGrid() {
     return (
         <>
             <SubHeader subTitle="TEAMS" />
-            <section className="team-page">
+            <div className="search-filters">
 
-                <div className="team-filters">
-                    <div className="search-wrap">
-                        <div className="search-group">
-                            <input
-                                type="text"
-                                placeholder="Search with Team name/tag or Country"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                <div className="search-group">
+                    <input
+                        type="text"
+                        placeholder="Search with name/tag/country"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
 
-                            />
-                            <span className="material-symbols-outlined">
-                                search
-                            </span>
-                        </div>
-                    </div>
+                    />
+                    <span className="material-symbols-outlined">
+                        search
+                    </span>
+
                 </div>
-                <div className="team-section-wrap">
+            </div>
+            <section className="page">
+
+                <div className="page-content">
                     <div className="team-section">
 
                         {error ? (

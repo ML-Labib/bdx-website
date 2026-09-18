@@ -4,12 +4,14 @@ import { Header } from "./components/Header";
 import { AuthProvider } from "./components/AuthContext";
 import { useAuth } from "./components/useAuth.jsx";
 import { Loader } from "./components/Loader";
+import { Footer } from "./components/Footer";
 import './App.css';
 // Lazy-load page components on demand
 // const Tournament = lazy(() => import("./pages/Tournament/Tournament").then(m => ({ default: m.Tournament })));
 import { Tournament } from "./pages/Tournament/Tournament";
+import { HomePage } from "./pages/HomePage/HomePage";
 const TeamGrid = lazy(() => import("./pages/Teams/TeamGrid").then(m => ({ default: m.TeamGrid })));
-const Players = lazy(() => import("./pages/Players/Players").then(m => ({ default: m.Players })));
+const PlayerGrid = lazy(() => import("./pages/Players/PlayerGrid").then(m => ({ default: m.PlayerGrid })));
 const AboutUs = lazy(() => import("./pages/AboutUs/AboutUs").then(m => ({ default: m.AboutUs })));
 const MyActivity = lazy(() => import("./pages/MyActivity/MyActivity").then(m => ({ default: m.MyActivity })));
 const TeamInfo = lazy(() => import("./pages/TeamInfo/TeamInfo").then(m => ({ default: m.TeamInfo })));
@@ -125,11 +127,11 @@ function App() {
                 {/* Wrap Routes in Suspense to show Loader while chunk files download */}
                 <Suspense fallback={<Loader />}>
                     <Routes>
-                        <Route path="/" element={<div>Home</div>} />
+                        <Route path="/" element={<HomePage />} />
                         <Route path="/tournament" element={<Tournament />} />
                         <Route path="/teams" element={<TeamGrid />} />
                         <Route path="/teams/info/:teamId?" element={<TeamInfo />} />
-                        <Route path="/players" element={<Players />} />
+                        <Route path="/players" element={<PlayerGrid />} />
                         <Route path="/about-us" element={<AboutUs />} />
                         <Route path="/my-activity" element={<RequireAuth><MyActivity /></RequireAuth>} />
                         <Route path="/login" element={<Login />} />
@@ -151,6 +153,7 @@ function App() {
 
                     </Routes>
                 </Suspense>
+                <Footer />
             </AuthProvider>
         </ErrorBoundary>
     );

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PlayerCard } from "./PlayerCard";
+import { SubHeader } from "../../components/SubHeader"
 import { Loader } from '../../components/Loader';
 import './playerGrid.css'
 
@@ -80,8 +81,9 @@ export function PlayerGrid() {
     };
 
     return (
-        <div className="player-page">
-            <div className="team-filters">
+        <>
+        <SubHeader subTitle="PLAYERS" />
+            <div className="search-filters">
                 <div className="search-wrap">
 
                     {/* Search Input */}
@@ -107,48 +109,51 @@ export function PlayerGrid() {
 
                 </div>
             </div>
+            <div className="page">
 
-            <div className="player-section-wrap">
-                <div className="player-section">
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                <div className="page-content">
+                    <div className="player-section">
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
 
-                    {(players.length === 0 && !loading) ? (
-                        <div className="empty-state">
-                            <p>No player found.</p>
-                        </div>
-                    ) :
-                        (
-                            <div className="player-grid">
-                                {players.map((player) => (
-                                    <PlayerCard key={player._id} player={player} />
-                                ))}
+                        {(players.length === 0 && !loading) ? (
+                            <div className="empty-state">
+                                <p>No player found.</p>
                             </div>
-                        )}
+                        ) :
+                            (
+                                <div className="player-grid">
+                                    {players.map((player) => (
+                                        <PlayerCard key={player._id} player={player} />
+                                    ))}
+                                </div>
+                            )}
 
-                    {/*                     
+                        {/*                     
 
                     {players.length === 0 && !loading && (
                         <div className="empty-state">
                             <p>No player found.</p>
                         </div>
                     )} */}
+                    </div>
+
+                    {!loading && hasMore && (
+                        <div className="show-more">
+                            <button className="show-more-btn" onClick={handleShowMore}>
+                                <span className="material-symbols-outlined">keyboard_arrow_down</span>
+                                <span>More</span>
+                            </button>
+                        </div>
+                    )}
+
+                    {loading && (
+                        <div className="bottom-loading">
+                            <Loader />
+                        </div>
+                    )}
                 </div>
-
-                {!loading && hasMore && (
-                    <div className="show-more">
-                        <button className="show-more-btn" onClick={handleShowMore}>
-                            <span className="material-symbols-outlined">keyboard_arrow_down</span>
-                            <span>More</span>
-                        </button>
-                    </div>
-                )}
-
-                {loading && (
-                    <div className="bottom-loading">
-                        <Loader />
-                    </div>
-                )}
             </div>
-        </div>
+        </>
     );
+
 }

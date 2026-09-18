@@ -1,0 +1,123 @@
+.tournament-registrations {
+	width: min(900px, 100%);
+	margin: 0 auto;
+	padding: 28px 0;
+}
+
+.tournament-registration-card {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	width: 100%;
+	padding: 22px;
+	margin-bottom: 14px;
+	background: #fff;
+	border: 1px solid #dedede;
+	border-left: 5px solid var(--primary-color);
+	box-sizing: border-box;
+}
+
+.tournament-registration-logo {
+	width: 86px;
+	height: 86px;
+	flex: 0 0 86px;
+	display: grid;
+	place-items: center;
+	background: #292929;
+}
+
+.tournament-registration-logo img {
+	width: 70px;
+	height: 70px;
+	object-fit: contain;
+}
+
+.tournament-registration-details {
+	min-width: 0;
+	flex: 1;
+}
+
+.tournament-registration-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.tournament-registration-heading h2 {
+	margin: 0;
+	color: #1f1f1f;
+	font-size: 1.25rem;
+}
+
+.registration-status {
+	flex: 0 0 auto;
+	padding: 6px 10px;
+	color: #111;
+	font-size: 0.72rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.status-pending { background: #f5d45c; }
+.status-approved { background: #8bd39b; }
+.status-rejected { background: #e89090; }
+.status-withdrawn { background: #c7c7c7; }
+
+.tournament-registration-date,
+.tournament-registration-reason {
+	margin: 8px 0 0;
+	color: #666;
+}
+
+.tournament-registration-reason {
+	color: #9a3d3d;
+	font-size: 0.9rem;
+}
+
+.tournament-registration-link {
+	display: inline-block;
+	margin-top: 12px;
+	color: #222;
+	font-size: 0.82rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	text-decoration: underline;
+}
+
+.tournament-registrations-state,
+.tournament-registrations-message {
+	padding: 40px 20px;
+	color: #666;
+	text-align: center;
+}
+
+.tournament-registrations-message.error {
+	color: #9a3d3d;
+}
+
+@media (max-width: 600px) {
+	.tournament-registration-card {
+		align-items: flex-start;
+		gap: 14px;
+		padding: 16px;
+	}
+
+	.tournament-registration-logo {
+		width: 58px;
+		height: 58px;
+		flex-basis: 58px;
+	}
+
+	.tournament-registration-logo img {
+		width: 48px;
+		height: 48px;
+	}
+
+	.tournament-registration-heading {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 8px;
+	}
+}

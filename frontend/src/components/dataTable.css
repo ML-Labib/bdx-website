@@ -39,6 +39,9 @@
     background-color: #0c0c0c;
     background-image: url("../../assets/subheader/table-header.png");
     background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .experience-table th {

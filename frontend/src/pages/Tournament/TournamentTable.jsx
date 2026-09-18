@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Loader } from '../../components/Loader'; // Import your Loader component
+import defaulteamLogo from '../../assets/default-team-logo.png'; // Import your default logo image
 import './tournamentTable.css';
 
 const ITEMS_PER_PAGE = 10;
@@ -19,6 +20,8 @@ export function TournamentTable() {
         setLoading(true);
         setError(null);
         try {
+
+
             const response = await fetch(`/api/tournaments?page=${nextPage}&limit=${ITEMS_PER_PAGE}`);
 
             if (!response.ok) {
@@ -30,6 +33,7 @@ export function TournamentTable() {
             setTournaments((prev) => {
                 if (nextPage === 1) {
                     return data.tournaments || [];
+
                 }
                 return [...prev, ...(data.tournaments || [])];
             });
@@ -37,7 +41,7 @@ export function TournamentTable() {
             setHasMore(nextPage < (data.totalPages || 1));
         } catch (error) {
             console.error('Failed to fetch tournaments:', error);
-            setError('Unable to load tournaments right now. Please try again later.');
+            setError(error.message || 'An error occurred while fetching tournaments.');
         } finally {
             setLoading(false);
             isFetchingRef.current = false;
@@ -60,7 +64,7 @@ export function TournamentTable() {
         if (item.startDate && item.endDate) {
             const start = new Date(item.startDate).toLocaleDateString();
             const end = new Date(item.endDate).toLocaleDateString();
-            return [`${start} ${end}`];
+            return [`${start} - ${end}`];
         }
 
         return ['-'];
@@ -94,10 +98,10 @@ export function TournamentTable() {
     };
 
     return (
-        <div className="page-container">
+        <div className="page-content">
             {/* Desktop View */}
             <div className="pc-view">
-                <table className="t-table">
+                <table className="table">
                     <thead>
                         <tr>
                             <th className="th-left">TOURNAMENT</th>
@@ -122,8 +126,13 @@ export function TournamentTable() {
                             </tr>
                         ) : tournaments.length === 0 ? (
                             <tr>
-                                <td colSpan="5" className="table-state-cell">
-                                    No data found
+                                <td colSpan="5" className="empty-state-row">
+                                    <div className="empty-state">
+                                        <span className="material-symbols-outlined">
+                                            trophy
+                                        </span>
+                                        <p> No tournaments available </p>
+                                    </div>
                                 </td>
                             </tr>
                         ) : (
@@ -139,7 +148,7 @@ export function TournamentTable() {
                                                 className="t-name-link"
                                             >
                                                 <div className="t-info">
-                                                    <img src={item.logo || 'https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png'} alt="logo" className="t-logo" />
+                                                    <img src={item.logo || defaulteamLogo} alt="logo" className="t-logo" />
                                                     <span className="t-name">{item?.title || '-'}</span>
                                                 </div>
                                             </Link>
@@ -172,7 +181,7 @@ export function TournamentTable() {
 
             {/* Mobile View */}
             <div className="mobile-view">
-                <table className="t-table">
+                <table className="table">
                     <thead>
                         <tr>
                             <th>TOURNAMENT</th>
@@ -193,10 +202,16 @@ export function TournamentTable() {
                             </tr>
                         ) : tournaments.length === 0 ? (
                             <tr>
-                                <td className="table-state-cell">
-                                    No data found
+                                <td colSpan="5" className="empty-state-row">
+                                    <div className="empty-state">
+                                        <span className="material-symbols-outlined">
+                                            trophy
+                                        </span>
+                                        <p> No tournaments available </p>
+                                    </div>
                                 </td>
                             </tr>
+
                         ) : (
                             tournaments.map((item) => {
                                 const title = item.title || item.name || 'Untitled Tournament';
@@ -208,7 +223,7 @@ export function TournamentTable() {
                                     <tr key={item._id}>
                                         <td>
                                             <div className="t-info">
-                                                <img src={item.logo || 'https://bd-extreme.com/wp-content/uploads/2025/08/BDX-EXTREME-png.png'} alt="logo" className="t-logo" />
+                                                <img src={item.logo || defaulteamLogo} alt="logo" className="t-logo" />
                                                 <Link
                                                     to={`/tournament-info/${item._id || item.id}`}
                                                     state={{ tournament: item, status: status }}
@@ -216,16 +231,16 @@ export function TournamentTable() {
                                                 >
                                                     <span className="t-name">{title}</span>
                                                 </Link>
-                                                <span className="mode-badge">{item.gameMode || item.mode || '-'}</span>    
+                                                <span className="badge primary">{item.gameMode || item.mode || '-'} {item.format}</span>
                                                 <span className={`status-badge ${status.toLowerCase().replace(/\s+/g, '-')}`}>
                                                     {status}
                                                 </span>
                                                 <div className="row-details">
-                                                    <div className="price-details">
+                                                    <div className="details">
                                                         <span className="label">Prize:</span>
                                                         <span className="value">{prize}</span>
                                                     </div>
-                                                    <div className="schedule-details">
+                                                    <div className="details">
                                                         <span className="label">Schedule:</span>
                                                         <span className="value">
                                                             {scheduleLines.map((date, i) => (
@@ -244,20 +259,9 @@ export function TournamentTable() {
                 </table>
             </div>
 
-            {loading && tournaments.length > 0 && (
-                <div className="table-loading-cell">
-                    <Loader />
-                </div>
-            )}
-
-            {!loading && !hasMore && tournaments.length === 0 && (
-                <div className="emplty-state">
-                    No tournaments to load.
-                </div>
-            )}
 
             {/* Bottom Loader when fetching additional pages ("More" button click) */}
-            {!loading && hasMore && (
+            {!error && !loading && hasMore && (
                 <div className="show-more">
                     <button className="show-more-btn" onClick={handleShowMore}>
                         <span className="material-symbols-outlined">keyboard_arrow_down</span>

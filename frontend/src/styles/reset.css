@@ -1,0 +1,54 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    color-scheme: dark;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    font-family: var(--font-family);
+    font-size: var(--text-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-normal);
+    color: var(--color-text);
+    padding-top: 80px;
+    background-color: var(--color-background);
+    background-image: url("../assets/BG-IMAGE.webp");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+@media(max-width: 768px) {
+    body {
+        padding-top: 72px;
+    }
+
+    .material-symbols-outlined {
+        font-size: 1rem;
+    }
+
+    .empty-state {
+        font-size: .875rem;
+    }
+}

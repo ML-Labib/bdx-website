@@ -1,0 +1,342 @@
+/* Container */
+.stats-tab-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 0;
+    color: #000;
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+
+/* Filter Bar */
+.stats-filter-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.filter-select {
+    padding: 8px 16px;
+    font-weight: 700;
+    border: none;
+    border-bottom: 2px solid #000;
+    background: transparent;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 14px;
+    outline: none;
+}
+
+.refresh-btn {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.refresh-btn:hover {
+    background: #e0e0e0;
+}
+
+/* View Toggle (Players / Teams) */
+.view-toggle-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.view-toggle-btn {
+    padding: 10px 40px;
+    font-weight: 800;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    background: #fdfdfd;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-toggle-btn.active {
+    background: #000;
+    color: #e6ff00; /* Neon yellow */
+    border-color: #000;
+}
+
+/* Sort Buttons */
+.sort-selector-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.sort-btn {
+    background: none;
+    border: none;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    color: #999;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 3px;
+    transition: color 0.2s;
+}
+
+.sort-btn.active {
+    color: #000;
+    border: 1px solid #000;
+    background-color: #fff;
+}
+
+/* Cards Wrapper */
+.top-cards-wrapper {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.top-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+
+.carousel-card-item {
+    width: 100%;
+}
+
+.stats-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    position: relative;
+    padding: 15px 10px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.stats-card-rank {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #e6ff00;
+    color: #000;
+    font-weight: 900;
+    font-size: 12px;
+    padding: 3px 8px;
+}
+
+.stats-card-logo-container {
+    width: 60px;
+    height: 60px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stats-card-logo {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.stats-card-name {
+    font-weight: 800;
+    font-size: 13px;
+    margin-bottom: 15px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.stats-card-metrics {
+    display: flex;
+    width: 100%;
+    background: #f7f7f7;
+    border-radius: 2px;
+    padding: 6px 0;
+}
+
+.metric-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.metric-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: #aaa;
+    margin-bottom: 2px;
+}
+
+.metric-value {
+    font-size: 14px;
+    font-weight: 900;
+    color: #666;
+}
+
+.metric-box.active .metric-label {
+    color: #666;
+}
+
+.metric-box.active .metric-value {
+    color: #000;
+}
+
+.carousel-dots {
+    display: none;
+}
+
+/* Table Wrapper */
+.stats-table-wrapper {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    overflow-x: auto; /* Enable table scrolling on mobile */
+}
+
+.table-team-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+.table-team-cell img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.team-subtext {
+    font-size: 10px;
+    color: #888;
+    font-weight: normal;
+}
+
+.rank-cell {
+    font-weight: 900;
+}
+
+.stats-loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-weight: bold;
+}
+
+/* =========================================================
+   MEDIA QUERIES (1024px & 768px)
+   ========================================================= */
+
+/* --- Tablet / Small Laptops (1024px and below) --- */
+@media (max-width: 1024px) {
+    .stats-tab-container {
+        padding: 15px;
+    }
+
+    .top-cards-grid {
+        gap: 8px;
+    }
+
+    .stats-card-name {
+        font-size: 12px;
+    }
+
+    .metric-value {
+        font-size: 12px;
+    }
+}
+
+/* --- Mobile / Small Tablet Carousel Mode (768px and below) --- */
+@media (max-width: 768px) {
+    .stats-filter-bar {
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .filter-select {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    .view-toggle-btn {
+        padding: 8px 25px;
+        font-size: 12px;
+    }
+
+    /* Convert Top 5 Cards into a Touch Carousel */
+    .top-cards-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        gap: 0;
+        padding-bottom: 10px;
+    }
+
+    /* Hide native scrollbar */
+    .top-cards-grid::-webkit-scrollbar {
+        display: none;
+    }
+    .top-cards-grid {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .carousel-card-item {
+        flex: 0 0 100%; /* Show one card per view */
+        scroll-snap-align: center;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+
+    /* Carousel Navigation Dots */
+    .carousel-dots {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .carousel-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #ccc;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .carousel-dot.active {
+        background-color: #000;
+        transform: scale(1.25);
+    }
+}

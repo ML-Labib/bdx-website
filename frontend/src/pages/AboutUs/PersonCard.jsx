@@ -17,14 +17,14 @@ export function PersonCard({ player }) {
             </div>
 
             <div className="person-card-content">
-  
+
 
                     <h3 className="person-name-wrap">
                         <span className="person-name">
                             {player.name}
                         </span>
                     </h3>
-               
+                
                 <div className="person-info">
                     <div className="person-team-wrap">
                         <div className="person-team-label">

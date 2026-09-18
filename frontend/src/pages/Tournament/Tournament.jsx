@@ -1,7 +1,6 @@
 import { SubHeader } from "../../components/SubHeader"
 import { lazy, Suspense } from "react"
 import { Loader } from "../../components/Loader"
-import './tournamentTable.css'
 const TournamentTable = lazy(() => import("./TournamentTable").then(m => ({ default: m.TournamentTable })));
 
 // import { TournamentTable } from "./TournamentTable"
@@ -11,7 +10,7 @@ export function Tournament() {
         <>
         <SubHeader subTitle="Tournaments" />
         <Suspense fallback={<Loader />}>
-            <div className="tournament-page">
+            <div className="page">
                 <TournamentTable />
             </div>
         </Suspense>

@@ -7,6 +7,8 @@ import { SubHeader } from "../../components/SubHeader.jsx";
 import { useLocation, useParams } from "react-router-dom";
 import { Loader } from "../../components/Loader.jsx";
 import { formatDate } from "../../utils/formantDateTime";
+import defaulteamtLogo from '../../assets/default-team-logo.png'; // Import your default logo image
+
 import "./tournamentInfo.css";
 
 
@@ -121,7 +123,7 @@ export function TournamentInfo() {
         { id: "Info", label: "Tournament Info", component: InfoTab },
         { id: "Matches", label: "Matches", component: MatchesTab },
         { id: "Ranking", label: "Ranking", component: RankingTab },
-        { id: "Stats", label: "Statistics", component: StatsTab },
+        { id: "Stats", label: "Stats", component: StatsTab },
     ];
 
     const ActiveComponent = tabs.find(tab => tab.id === activeTab)?.component;
@@ -158,7 +160,7 @@ export function TournamentInfo() {
 
                             <div className="tournament-logo-block">
                                 <div className="tournament-page-logo">
-                                    <img src={tournament?.logo} alt="Team Logo" className="hero-team-logo" />
+                                    <img src={tournament?.logo || defaulteamtLogo} alt="Team Logo" className="hero-team-logo" />
                                 </div>
                             </div>
 

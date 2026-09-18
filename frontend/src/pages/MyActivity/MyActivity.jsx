@@ -126,7 +126,9 @@ export function MyActivity() {
                                 reloadActivityData={() => currentUser?.uid && loadActivityData(currentUser.uid)}
                             />
                         )}
-                        {activeTab === "tournaments" && <TournamentsTab />}
+                        {activeTab === "tournaments" && (
+                            <TournamentsTab team={team} />
+                        )}
                     </div>
                 </div>
 

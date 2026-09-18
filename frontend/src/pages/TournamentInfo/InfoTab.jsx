@@ -433,12 +433,12 @@ export function InfoTab({ tournament }) {
                     >
                         <path
                             d="M32 0 16.79 16H8.095L8 15.899 23.114 0H32Z"
-                            fill="#EFF923"
+                            fill="#B6FF2E"
                         />
 
                         <path
                             d="M24 0 8.79 16H.095L0 15.899 15.114 0H24Z"
-                            fill="#000"
+                            fill="#ffffff"
                         />
                     </svg>
 
@@ -816,12 +816,12 @@ export function InfoTab({ tournament }) {
                     >
                         <path
                             d="M32 0 16.79 16H8.095L8 15.899 23.114 0H32Z"
-                            fill="#EFF923"
+                            fill="#B6FF2E"
                         />
 
                         <path
                             d="M24 0 8.79 16H.095L0 15.899 15.114 0H24Z"
-                            fill="#000"
+                            fill="#ffffff"
                         />
                     </svg>
 
@@ -864,19 +864,14 @@ export function InfoTab({ tournament }) {
                     {acceptedRegistration.length ===
                         0 ? (
 
-                        <div className="empty-team-state">
+                        <div className="empty-state">
 
                             <span className="material-symbols-outlined">
                                 groups
                             </span>
 
-                            <h4>
-                                No teams approved yet
-                            </h4>
-
                             <p>
-                                Approved teams will
-                                appear here.
+                                No teams approved yet
                             </p>
 
                         </div>

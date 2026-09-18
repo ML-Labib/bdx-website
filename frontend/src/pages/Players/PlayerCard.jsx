@@ -1,14 +1,13 @@
-import React from "react";
 import defaultProfile from "../../assets/default-profile.png";
 import { Link } from "react-router-dom";
 import "./playerCard.css";
 
 export function PlayerCard({ player }) {
     return (
-        <div className="player-card">
-            <div className="player-card-image">
+        <div className="card player">
+            <div className="card-image player">
                 <img
-                    src={ player.picture || defaultProfile}
+                    src={player.picture || defaultProfile}
                     alt={player.displayName}
                     onError={(event) => {
                         event.currentTarget.onerror = null;
@@ -17,38 +16,33 @@ export function PlayerCard({ player }) {
                 />
             </div>
 
-            <div className="player-card-content">
-                <div className="team-logo">
-                    <img src={player.teamLogo || defaultProfile} alt={player.teamName || "No team"} />
+            <div className="card-content">
+                {player.teamLogo && <div className="team-logo">
+                    <img src={player.teamLogo} alt={player.teamName || "No team"} />
                 </div>
-                <Link to={`/player-info/${player.pubgId}`}>
-                    <h3 className="player-name-wrap">
-                        <span className="player-name">
+}
+                <div className="card-title player">
+                    <Link to={`/player-info/${player.pubgId}`}>
+                        <span className="name">
                             {player.ign}
                         </span>
-                    </h3>
-                </Link>
-                <div className="player-info">
-                    <div className="player-team-wrap">
-                        <div className="player-team-label">
-                            <span>Team</span>
-                        </div>
-                        <p className="player-team">
-                            {player.teamName || "Free Agent"}
-                        </p>
-                    </div>
-                    <div className="player-nationality-wrap">
-                        <div className="player-team-label">
-                            <span>Nationality</span>
-                        </div>
-                        <p className="player-team">
-                            {player.country}
-                        </p>
-                    </div>
-
-
+                    </Link>
                 </div>
+                <ul className="card-info">
+                    <li>
+                        <span className="card-info-label">Team</span>
+                        <span className="card-info-value">
+                            {player.teamName || "Free Agent"}
+                        </span>
+                    </li>
 
+                    <li>
+                        <span className="card-info-label">Nationality</span>
+                        <span className="card-info-value">
+                            {player.country}
+                        </span>
+                    </li>
+                </ul>
             </div>
         </div>
     );

@@ -3,8 +3,8 @@ import { NavLink, Link } from "react-router-dom";
 import { useAuth } from "./useAuth.jsx";
 import { getAuthHeaders } from "../utils/authHeaders";
 import bdxLogo from "../assets/BDX_EXTREME.svg";
-import bdxTextLogo from "../assets/bd-extreme-text.svg";
-import bdxTextShortLogo from "../assets/bdx-text.svg";
+import bdxTextLogo from "../assets/BD-EXTREME-TEXT.svg";
+import bdxTextShortLogo from "../assets/BDX-TEXT.svg";
 import { NotificationPanel } from "./NotificationPanel";
 import "./header.css";
 
@@ -255,7 +255,7 @@ export function Header() {
                     ) : (
                         <NavLink to="/login" className="l-links">
                             <span className="material-symbols-outlined">account_circle</span>
-                            Log-in
+                            SIGN-IN
                         </NavLink>
                     )}
                 </div>
@@ -288,7 +288,7 @@ export function Header() {
                                         onClick={() => setSidebarDropdownOpen((prev) => !prev)}
                                     >
                                         <span className="material-symbols-outlined">account_circle</span>
-                                        <span className="username">{currentUser.displayName || currentUser.email}</span>
+                                        <span className="username">{profile?.displayName || currentUser.displayName || currentUser.email}</span>
                                         <span className={`material-symbols-outlined arrow ${sidebarDropdownOpen ? "open" : ""}`}>
                                             arrow_drop_down
                                         </span>
@@ -308,13 +308,13 @@ export function Header() {
                                         className="sidebar-dropdown-item"
                                         onClick={handleLogout}
                                     >
-                                        Log out
+                                        SIGN-OUT
                                     </button>
                                 </div>
                             </>
                         ) : (
                             <NavLink to="/login" className="sidebar-logout-btn" onClick={closeAllMenus}>
-                                Log-in
+                                SIGN-IN
                             </NavLink>
                         )}
                     </div>

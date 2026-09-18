@@ -12,9 +12,7 @@
     margin: 0 5px;
     border-radius: 0px;
     animation: loading_5192 1s ease-in-out infinite;
-    /* background-color: var(--primary-color); */
-    background-color: black;
-
+    background-color: var(--color-primary);
 }
 
 .bar:nth-child(1) {

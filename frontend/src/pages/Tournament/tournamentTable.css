@@ -1,64 +1,54 @@
-/* TournamentTable.css */
-
-/* General Container */
-.page-container {
-    padding: 0px 15px;
-    max-width: 1400px;
-    margin: 0 auto;
-
+.pc-view {
+    display: block;
+    width: 100%;
 }
 
-/* --- Table Styles --- */
-.t-table {
+
+.table {
     width: 100%;
-    font-size: 1.2rem;
+    /* font-size: 1.2rem; */
     border-collapse: collapse;
     text-align: center;
-    margin: 30px 0;
+    margin-top: var(--space-lg);
 }
 
-/* Header Styles */
-.t-table thead th {
-    background-color: #0c0c0c;
+.table thead th {
+    background-color: var(--color-primary);
     background-image: url("../../assets/subheader/table-header.png");
     background-attachment: fixed;
-    /* Almost black */
-    color: white;
-    font-weight: 700;
-    font-size: 0.9rem;
-    padding: 18px 20px;
+    color: var(--color-text-inverted);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--text-body);
     text-transform: uppercase;
     text-align: center;
+    letter-spacing: -0.03em;
+    line-height: var(--line-height-relaxed);
+    border-left: var(--border-normal);
+    padding: 5px 0;
 }
 
-.t-table thead th.th-left {
-    text-align: center;
-    padding-left: 40px;
-    /* Indent for the first column */
+.table tbody tr {
+    background-color: var(--color-surface);
+    border-bottom: var(--border-normal);
+    border-left: var(--border-normal);
+    border-right: var(--border-normal);
+
+
 }
 
-
-/* Row Styles */
-.t-table tbody tr {
-    border-bottom: 1px solid #e0e0e0;
-    border-left: 1px solid #e0e0e0;
-    border-right: 1px solid #e0e0e0;
-
-
-    background-color: white;
-}
-
-.t-table tbody td {
+.table tbody td {
     padding: 30px 20px;
     vertical-align: middle;
-    color: #000;
-    font-weight: 600;
+    color: var(--color-text);
+    font-weight: var(--font-weight-semibold);
+    height: 100px;
 }
 
 /* Column 1: Logo & Name */
 .td-tournament {
-    width: 60%;
+    width: 62%;
     text-align: left;
+    
 }
 
 .t-info {
@@ -74,11 +64,10 @@
 }
 
 .t-name {
-    font-size: 1.2rem;
-    font-weight: 800;
-    /* Extra bold */
+    font-size: var(--text-card-title);
+    font-weight: var(--font-weight-bold);
     text-transform: uppercase;
-    line-height: 1.2;
+    line-height: var(--line-height-relaxed);
     display: inline-block;
     position: relative;
 }
@@ -95,12 +84,20 @@
     display: block;
     position: absolute;
     height: 4px;
-    background-color: var(--primary-color);
+    background-color: var(--color-primary);
     transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.tr-tournament {
+    transition: background-color 0.3s ease-in;
 }
 
 .tr-tournament:hover .t-name::after {
     width: 100%;
+}
+
+.tr-tournament:hover{
+    background-color: var(--color-surface-hover);
 }
 
 /* Column 2 & 3: Prize & Schedule */
@@ -122,10 +119,9 @@
 .status-badge {
     display: inline-block;
     padding: 8px 24px;
-    border-radius: 50px;
-    /* Pill shape */
-    font-size: 0.8rem;
-    font-weight: 700;
+    border-radius: var(--radius-lg);
+    font-size: var(--text-caption);
+    font-weight: var(--font-weight-bold);
     text-transform: uppercase;
     min-width: 80px;
     text-align: center;
@@ -133,33 +129,27 @@
 
 /* Specific Badge Colors */
 .status-badge.ended {
-    background-color: #B0B0B0;
-    /* Grey for Ended */
-    color: white;
+    background-color: var(--color-background);
+    color: var(--color-text-muted);
 }
 
-.status-badge.live {
-    background-color: #ff0000;
-    /* Yellow for Live */
-    color: black;
-}
 
 .status-badge.upcoming {
-    background-color: rgb(34,187,51);
+    background-color: var(--color-primary);
     color: var(--text-color);
 }
 .status-badge.ongoing {
-    background-color: var(--text-color);
-    color: white;
+    background-color: var(--color-danger);
+    color: var(--color-text);
 }
 
 .status-badge.in-preparation {
-    background-color: rgba(255, 20, 147, 0.8);
+    background-color: var(--color-info);
     color: var(--text-color);
 }
 
 .status-badge.registration-open {
-    background-color: var(--primary-color);
+    background-color: var(--color-warning);
     color: var(--text-color);
 }
 
@@ -190,9 +180,6 @@
         font-size: 1rem;
     }
 
-    .mobile-view {
-        display: none;
-    }
 }
 
 @media (max-width: 768px) {
@@ -208,7 +195,7 @@
         display: block;
         width: 100%;
     }
-    .t-table {
+    .table {
         font-size: 16px;
     }
     .t-logo {
@@ -228,49 +215,28 @@
         display: flex;
         align-items: start;
         width: 100%;
-        margin: 24px 15px 24px 15px;
-        justify-content: space-evenly;
+        margin: 24px 0;
+        justify-content: space-between;
         font-size: 13px;
     
     }
 
     .label {
-        font-weight: 700;
         text-transform: uppercase;
         margin-right: 8px;
-        color: var(--text-faded-color);
+        color: var(--color-text-muted);
+        
     }
-    .price-details {
+    .details {
         display: flex;
         flex-direction: column;
         align-items: start;
         margin: 0 20px 0 20px;
-        gap: 10px;
-        color: var(--text-color);
-    
-    }
-    .schedule-details {
-        display: flex;
-        flex-direction: column;
-        align-items: start;
-        margin: 0px 20px 0px 20px;
-        gap: 10px;
+        gap: var(--space-sm);
     }
 
     .value {
         align-items: start;
-    }
-    .mode-badge{
-        color: var(--text-color);
-        background-color: var(--primary-color);
-        padding: 4px 4px;
-        font-size: 0.6rem;
-        border-radius: 4px;
-        border: 1px solid var(--text-color);
-    }
-
-    .status-badge {
-        font-size: 0.7rem;
     }
 
 }
